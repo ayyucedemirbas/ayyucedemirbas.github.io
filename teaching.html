@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayyuce Demirbas - Teaching</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --bg-dark: #121212;
+      --text-dark: #f0f0f0;
+      --accent-dark: #bb86fc;
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --accent: var(--accent-dark);
+      --transition-speed: 0.3s;
+    }
+
+    [data-theme="light"] {
+      --bg: #fefefe;
+      --text: #111111;
+      --accent: #0077ff;
+      --glass-bg: rgba(0, 0, 0, 0.03);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+    }
+
+    /* Enhanced Navigation */
+    nav {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 0;
+      padding: 1rem 0;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.03rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    nav a[aria-current="page"] {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    nav a[aria-current="page"]:hover {
+      background: var(--accent);
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .teaching-header {
+      text-align: center;
+      padding: 6rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .teaching-header h1 {
+      font-size: 4rem;
+      font-family: 'Playfair Display', serif;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1.5rem;
+    }
+
+    .teaching-header p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+
+    .course-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .course-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .course-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .course-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+      background: var(--gradient-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .course-title {
+      font-size: 1.6rem;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 0.5rem;
+    }
+
+    .course-meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .course-description {
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    .course-topics {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .topic {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .topic:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .course-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .course-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .course-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .schedule-section {
+      margin: 4rem 0;
+      padding: 2rem;
+      background: var(--glass-bg);
+      border-radius: 25px;
+      backdrop-filter: blur(10px);
+    }
+
+    .schedule-header {
+      font-size: 2rem;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 2rem;
+    }
+
+    .schedule-item {
+      display: flex;
+      gap: 2rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .schedule-date {
+      min-width: 120px;
+      font-weight: 500;
+    }
+
+    .schedule-content {
+      flex: 1;
+    }
+
+    .theme-switcher {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      background: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+
+      nav a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+
+      .teaching-header h1 {
+        font-size: 2.5rem;
+      }
+
+      .courses-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .schedule-item {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <ul>
+        <li><a href="index.html">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="repositories.html">Repositories</a></li>
+        <li><a href="teaching.html" aria-current="page">Teaching</a></li>
+        <li><a href="people.html">People</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="teaching-header">
+      <h1>Teaching Portfolio</h1>
+      <p>Sharing knowledge through courses, workshops, and educational resources in machine learning and AI</p>
+    </header>
+
+    <div class="courses-grid">
+      <article class="course-card">
+        <div class="course-header">
+          <div class="course-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div>
+            <h3 class="course-title">Deep Learning Fundamentals</h3>
+            <div class="course-meta">
+              <div class="meta-item">
+                <i class="fas fa-university"></i>
+                <span>CS510</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>Spring 2024</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="course-description">
+          Comprehensive introduction to deep learning architectures, including CNNs, RNNs, 
+          and transformer models with PyTorch implementations.
+        </p>
+        <div class="course-topics">
+          <span class="topic">Neural Networks</span>
+          <span class="topic">PyTorch</span>
+          <span class="topic">Computer Vision</span>
+        </div>
+        <div class="course-links">
+          <a href="#" class="course-link">
+            <i class="fas fa-syllabus"></i>
+            Syllabus
+          </a>
+          <a href="#" class="course-link">
+            <i class="fas fa-video"></i>
+            Lectures
+          </a>
+        </div>
+      </article>
+
+      <article class="course-card">
+        <div class="course-header">
+          <div class="course-icon">
+            <i class="fas fa-heartbeat"></i>
+          </div>
+          <div>
+            <h3 class="course-title">Medical Image Analysis</h3>
+            <div class="course-meta">
+              <div class="meta-item">
+                <i class="fas fa-university"></i>
+                <span>CS620</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>Fall 2024</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="course-description">
+          Advanced course covering medical image processing, segmentation, 
+          and analysis using deep learning techniques.
+        </p>
+        <div class="course-topics">
+          <span class="topic">3D Imaging</span>
+          <span class="topic">Segmentation</span>
+          <span class="topic">Clinical AI</span>
+        </div>
+        <div class="course-links">
+          <a href="#" class="course-link">
+            <i class="fas fa-syllabus"></i>
+            Syllabus
+          </a>
+          <a href="#" class="course-link">
+            <i class="fas fa-laptop-code"></i>
+            Labs
+          </a>
+        </div>
+      </article>
+
+      <article class="course-card">
+        <div class="course-header">
+          <div class="course-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <div>
+            <h3 class="course-title">AI Research Methods</h3>
+            <div class="course-meta">
+              <div class="meta-item">
+                <i class="fas fa-university"></i>
+                <span>CS800</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>Ongoing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="course-description">
+          Graduate-level seminar covering research methodologies, 
+          paper writing, and experimental design in AI.
+        </p>
+        <div class="course-topics">
+          <span class="topic">Research Methods</span>
+          <span class="topic">Paper Writing</span>
+          <span class="topic">Experimentation</span>
+        </div>
+        <div class="course-links">
+          <a href="#" class="course-link">
+            <i class="fas fa-book-open"></i>
+            Resources
+          </a>
+          <a href="#" class="course-link">
+            <i class="fas fa-comments"></i>
+            Discussions
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <section class="schedule-section">
+      <h2 class="schedule-header">Upcoming Workshops</h2>
+      <div class="schedule-item">
+        <div class="schedule-date">
+          <i class="fas fa-calendar-alt"></i>
+          March 25, 2024
+        </div>
+        <div class="schedule-content">
+          <h3>Vision Transformers Workshop</h3>
+          <p>Hands-on session covering implementation and optimization of vision transformers</p>
+        </div>
+      </div>
+      <div class="schedule-item">
+        <div class="schedule-date">
+          <i class="fas fa-calendar-alt"></i>
+          April 10, 2024
+        </div>
+        <div class="schedule-content">
+          <h3>Medical AI Hackathon</h3>
+          <p>Annual competition for developing innovative solutions in medical imaging</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="theme-switcher" id="themeSwitcher">
+    <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
+    <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
+    <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Ayyuce Demirbas. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Theme switching
+    function switchTheme(theme) {
+      if (theme === "system") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+      localStorage.setItem("preferred-theme", theme);
+    }
+
+    // Initialize theme
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("preferred-theme") || "dark";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayyuce Demirbas - Publications</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --bg-dark: #121212;
+      --text-dark: #f0f0f0;
+      --accent-dark: #bb86fc;
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --accent: var(--accent-dark);
+      --transition-speed: 0.3s;
+    }
+
+    [data-theme="light"] {
+      --bg: #fefefe;
+      --text: #111111;
+      --accent: #0077ff;
+      --glass-bg: rgba(0, 0, 0, 0.03);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+    }
+
+    /* Enhanced Navigation (matches people.html) */
+    nav {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 0;
+      padding: 1rem 0;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.03rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    nav a[aria-current="page"] {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    nav a[aria-current="page"]:hover {
+      background: var(--accent);
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .publications-header {
+      text-align: center;
+      padding: 6rem 0 4rem;
+      position: relative;
+    }
+
+    .publications-header h1 {
+      font-size: 3.5rem;
+      font-family: 'Playfair Display', serif;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .publications-header p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto;
+      color: var(--text);
+      opacity: 0.8;
+    }
+
+    .filters {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      background: var(--glass-bg);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      backdrop-filter: blur(5px);
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .publications-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+
+    .publication-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .publication-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+    }
+
+    .pub-type {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 1.5rem;
+      color: var(--accent);
+      opacity: 0.7;
+    }
+
+    .pub-title {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
+      line-height: 1.4;
+    }
+
+    .pub-authors {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+
+    .pub-details {
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .pub-details div {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pub-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .pub-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .pub-link:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+
+    .pub-badge {
+      position: absolute;
+      bottom: -30px;
+      right: -30px;
+      width: 100px;
+      height: 100px;
+      background: var(--gradient-2);
+      transform: rotate(45deg);
+      opacity: 0.1;
+      transition: opacity 0.3s ease;
+    }
+
+    .publication-card:hover .pub-badge {
+      opacity: 0.2;
+    }
+
+    .award-badge {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background: var(--gradient-1);
+      color: white;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+
+    .theme-switcher {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      background: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+
+      nav a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+
+      .publications-header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .publications-header {
+        padding: 4rem 0 2rem;
+      }
+
+      .publications-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <ul>
+        <li><a href="index.html">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="publications.html" aria-current="page">Publications</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="repositories.html">Repositories</a></li>
+        <li><a href="teaching.html">Teaching</a></li>
+        <li><a href="people.html">People</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="publications-header">
+      <h1>Research Publications</h1>
+      <p>Peer-reviewed articles, conference papers, and preprints in machine learning.</p>
+    </header>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All Publications</button>
+      <button class="filter-btn" data-filter="journal">Journal Articles</button>
+      <button class="filter-btn" data-filter="conference">Conference Papers</button>
+      <button class="filter-btn" data-filter="preprint">Preprints</button>
+      <button class="filter-btn" data-filter="thesis">Thesis</button>
+    </div>
+
+    <div class="publications-grid" id="publications-container">
+      <article class="publication-card">
+        <i class="fas fa-book-open pub-type" title="Journal Article"></i>
+        <div class="pub-badge"></div>
+        <h3 class="pub-title">Spatial-attention ConvMixer architecture for classification and detection of gastrointestinal diseases using the Kvasir dataset</h3>
+        <div class="pub-authors">A. Demirbas, H. Üzen, H. Fırat</div>
+        <div class="pub-details">
+          <div>
+            <i class="fas fa-book"></i>
+            <span>Health Information Science and Systems, Springer,Volume 12, article number 32, (2024)</span>
+          </div>
+          <div>
+            <i class="far fa-calendar-alt"></i>
+            <span>2024</span>
+          </div>
+        </div>
+        <div class="award-badge">
+          <i class="fas fa-award"></i> Placeholder
+        </div>
+        <div class="pub-links">
+          <a href="https://doi.org/10.1007/s13755-024-00290-x" target="_blank" class="pub-link">
+            <i class="fas fa-external-link-alt"></i> DOI
+          </a>
+          <a href="https://link.springer.com/article/10.1007/s13755-024-00290-x" class="pub-link">
+            <i class="fas fa-file-pdf"></i> PDF
+          </a>
+          <a href="https://github.com/ayyucedemirbas/Spatial-Attention-ConvMixer" class="pub-link">
+            <i class="fas fa-code"></i> Code
+          </a>
+        </div>
+      </article>
+
+      <article class="publication-card">
+        <i class="fas fa-microphone pub-type" title="Conference Paper"></i>
+        <div class="pub-badge"></div>
+        <h3 class="pub-title">Generation of Synthetic Lung Cancer Histopathological Images using Generative Adversarial Networks</h3>
+        <div class="pub-authors">A. Demirbas</div>
+        <div class="pub-details">
+          <div>
+            <i class="fas fa-users"></i>
+            <span>PyTorch Developer Day 2021</span>
+          </div>
+          <div>
+            <i class="far fa-calendar-alt"></i>
+            <span>2021</span>
+          </div>
+        </div>
+        <div class="pub-links">
+          <a href="#" target="_blank" class="pub-link">
+            <i class="fas fa-external-link-alt"></i> DOI
+          </a>
+          <a href="#" class="pub-link">
+            <i class="fas fa-file-pdf"></i> PDF
+          </a>
+          <a href="#" class="pub-link">
+            <i class="fas fa-code"></i> Code
+          </a>
+        </div>
+      </article>
+
+
+      <article class="publication-card" data-type="thesis">
+        <i class="fas fa-graduation-cap pub-type" title="Master's Thesis"></i>
+        <div class="pub-badge"></div>
+        <h3 class="pub-title">Generating Street Images with Bayesian Convolutional GAN</h3>
+        <div class="pub-authors">A. Demirbas</div>
+        <div class="pub-details">
+          <div>
+            <i class="fas fa-university"></i>
+            <span>Bachelors's Degree Thesis</span>
+          </div>
+          <div>
+            <i class="far fa-calendar-alt"></i>
+            <span>2022</span>
+          </div>
+        </div>
+        <div class="pub-links">
+          <a href="#" target="_blank" class="pub-link">
+            <i class="fas fa-external-link-alt"></i> University Archive
+          </a>
+          <a href="https://www.researchgate.net/publication/357713776_Bayesci_Konvolusyonel_Uretici_Cekismeli_Aglarla_Sokak_Goruntuleri_Uretimi" class="pub-link">
+            <i class="fas fa-file-pdf"></i> PDF
+          </a>
+        </div>
+      </article>
+
+
+      <article class="publication-card">
+        <i class="fas fa-book-open pub-type" title="Journal Article"></i>
+        <div class="pub-badge"></div>
+        <h3 class="pub-title">Comparing Tensor Processing Unit and CPU Performance for Image Classification</h3>
+        <div class="pub-authors">A. Demirbas, A. Cinar</div>
+        <div class="pub-details">
+          <div>
+            <i class="fas fa-book"></i>
+            <span>Journal of Computer Science and Technologies, 2020; 1(1); 10-15</span>
+          </div>
+          <div>
+            <i class="far fa-calendar-alt"></i>
+            <span>2020</span>
+          </div>
+        </div>
+        <div class="award-badge">
+          <i class="fas fa-award"></i> Placeholder
+        </div>
+        <div class="pub-links">
+          <a href="#" target="_blank" class="pub-link">
+            <i class="fas fa-external-link-alt"></i> DOI
+          </a>
+          <a href="https://dergipark.org.tr/en/download/article-file/1079128" class="pub-link">
+            <i class="fas fa-file-pdf"></i> PDF
+          </a>
+        </div>
+      </article>
+
+
+      <article class="publication-card">
+        <i class="fas fa-file-alt pub-type" title="Preprint"></i>
+        <div class="pub-badge"></div>
+        <h3 class="pub-title">Preprint</h3>
+        <div class="pub-authors">A. Demirbas</div>
+        <div class="pub-details">
+          <div>
+            <i class="far fa-calendar-alt"></i>
+            <span>2024</span>
+          </div>
+        </div>
+        <div class="pub-links">
+          <a href="https://arxiv.org/abs/xxxx.xxxxx" target="_blank" class="pub-link">
+            <i class="fas fa-archive"></i> arXiv
+          </a>
+          <a href="#" class="pub-link">
+            <i class="fas fa-file-pdf"></i> PDF
+          </a>
+        </div>
+      </article>
+
+
+
+
+    </div>
+  </div>
+
+  <div class="theme-switcher" id="themeSwitcher">
+    <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
+    <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
+    <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Ayyuce Demirbas. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Theme switching
+    function switchTheme(theme) {
+      if (theme === "system") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+      localStorage.setItem("preferred-theme", theme);
+    }
+
+    // Initialize theme
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("preferred-theme") || "dark";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    });
+  </script>
+</body>
+</html>

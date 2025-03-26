@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayyuce Demirbas - Projects</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --bg-dark: #121212;
+      --text-dark: #f0f0f0;
+      --accent-dark: #bb86fc;
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --accent: var(--accent-dark);
+      --transition-speed: 0.3s;
+    }
+
+    [data-theme="light"] {
+      --bg: #fefefe;
+      --text: #111111;
+      --accent: #0077ff;
+      --glass-bg: rgba(0, 0, 0, 0.03);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+    }
+
+    /* Enhanced Navigation */
+    nav {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 0;
+      padding: 1rem 0;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.03rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    nav a[aria-current="page"] {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    nav a[aria-current="page"]:hover {
+      background: var(--accent);
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .projects-header {
+      text-align: center;
+      padding: 6rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .projects-header h1 {
+      font-size: 4rem;
+      font-family: 'Playfair Display', serif;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1.5rem;
+    }
+
+    .projects-header p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    .project-filters {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 4rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 30px;
+      background: var(--glass-bg);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      font-weight: 500;
+      letter-spacing: 0.05rem;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 3rem;
+      padding: 2rem 0;
+    }
+
+    .project-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gradient-2);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .project-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .project-card:hover::before {
+      opacity: 0.1;
+    }
+
+    .project-image {
+      width: 100%;
+      height: 250px;
+      border-radius: 15px;
+      object-fit: cover;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .project-card:hover .project-image {
+      transform: scale(1.03);
+    }
+
+    .project-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-title {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
+      position: relative;
+    }
+
+    .project-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 50px;
+      height: 2px;
+      background: var(--gradient-1);
+      transition: width 0.3s ease;
+    }
+
+    .project-card:hover .project-title::after {
+      width: 100px;
+    }
+
+    .project-description {
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+      line-height: 1.7;
+      flex-grow: 1;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .project-tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .project-tag:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+
+    .project-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+
+    .project-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .project-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .project-link.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .project-link.secondary:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .hf-logo {
+      height: 16px;
+      width: auto;
+      margin-right: 5px;
+    }
+
+    .theme-switcher {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      background: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+
+      nav a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+
+      .projects-header h1 {
+        font-size: 2.5rem;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .project-image {
+        height: 200px;
+      }
+      
+      .project-links {
+        flex-direction: column;
+      }
+      
+      .project-link {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <ul>
+        <li><a href="index.html">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="projects.html" aria-current="page">Projects</a></li>
+        <li><a href="repositories.html">Repositories</a></li>
+        <li><a href="teaching.html">Teaching</a></li>
+        <li><a href="people.html">People</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="projects-header">
+      <h1>Projects</h1>
+      <p>My projects</p>
+    </header>
+
+    <div class="project-filters">
+      <button class="filter-btn active" data-filter="all">All Projects</button>
+      <button class="filter-btn" data-filter="ai">AI Research</button>
+      <button class="filter-btn" data-filter="medical">Medical Imaging</button>
+      <button class="filter-btn" data-filter="opensource">Open Source</button>
+    </div>
+
+    <div class="projects-grid" id="projects-container">
+      <article class="project-card" data-type="ai medical">
+        <img src="projects_content/sac.png" 
+             alt="Medical Vision Transformer" 
+             class="project-image">
+        <div class="project-content">
+          <h3 class="project-title">Spatial-attention ConvMixer</h3>
+          <p class="project-description">
+            A new technique for gastrointestinal image classification.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">AI Research</span>
+            <span class="project-tag">Medical Imaging</span>
+            <span class="project-tag">TensorFlow</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/ayyucedemirbas/Spatial-Attention-ConvMixer" class="project-link">
+              <i class="fab fa-github"></i>
+              GitHub
+            </a>
+            <a href="https://link.springer.com/article/10.1007/s13755-024-00290-x" class="project-link secondary">
+              <i class="fas fa-file-lines"></i>
+              Paper
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card" data-type="ai">
+        <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/project-llm.jpg" 
+             alt="Efficient Language Models" 
+             class="project-image">
+        <div class="project-content">
+          <h3 class="project-title">EfficientLLM</h3>
+          <p class="project-description">
+            Framework for optimizing large language models for edge devices 
+            while maintaining 98% of original performance.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">AI Research</span>
+            <span class="project-tag">NLP</span>
+            <span class="project-tag">Optimization</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">
+              <i class="fab fa-github"></i>
+              GitHub
+            </a>
+            <a href="https://huggingface.co/ayyuce/efficient-llm" target="_blank" class="project-link secondary">
+              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+              Model Hub
+            </a>
+            <a href="#" class="project-link secondary">
+              <i class="fas fa-book-open"></i>
+              Docs
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card" data-type="medical opensource">
+        <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/project-openmed.jpg" 
+             alt="Open Medical AI" 
+             class="project-image">
+        <div class="project-content">
+          <h3 class="project-title">OpenMedAI</h3>
+          <p class="project-description">
+            Comprehensive open-source toolkit for medical AI research, 
+            featuring pre-trained models and datasets.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Open Source</span>
+            <span class="project-tag">Medical Imaging</span>
+            <span class="project-tag">Community</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">
+              <i class="fab fa-github"></i>
+              GitHub
+            </a>
+            <a href="https://huggingface.co/ayyuce/openmedai" target="_blank" class="project-link secondary">
+              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+              Model Hub
+            </a>
+            <a href="#" class="project-link secondary">
+              <i class="fas fa-globe"></i>
+              Website
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="theme-switcher" id="themeSwitcher">
+    <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
+    <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
+    <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Ayyuce Demirbas. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Theme switching
+    function switchTheme(theme) {
+      if (theme === "system") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+      localStorage.setItem("preferred-theme", theme);
+    }
+
+    // Initialize theme
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("preferred-theme") || "dark";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      
+      // Add filter functionality
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const projectCards = document.querySelectorAll('.project-card');
+      
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Update active button
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          const filter = button.dataset.filter;
+          
+          // Filter projects
+          projectCards.forEach(card => {
+            if (filter === 'all' || card.dataset.type.includes(filter)) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

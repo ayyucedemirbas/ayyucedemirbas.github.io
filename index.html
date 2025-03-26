@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ayyuce Demirbas</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/logo.png" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- Styles -->
+  <style>
+    /* -------------------------------
+       VARIABLES
+    --------------------------------*/
+    :root {
+      --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --bg-dark: #121212;
+      --text-dark: #f0f0f0;
+      --accent-dark: #bb86fc;
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --accent: var(--accent-dark);
+      --transition-speed: 0.3s;
+    }
+
+    [data-theme="light"] {
+      --bg: #fefefe;
+      --text: #111111;
+      --accent: #0077ff;
+      --glass-bg: rgba(0, 0, 0, 0.03);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* -------------------------------
+       GLOBAL STYLES
+    --------------------------------*/
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    /* -------------------------------
+       ENHANCED NAVIGATION
+    --------------------------------*/
+    nav {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 0;
+      padding: 1rem 0;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.03rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: none;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    nav a[aria-current="page"] {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    nav a[aria-current="page"]:hover {
+      background: var(--accent);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+
+      nav a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+    }
+
+    /* -------------------------------
+       HERO SECTION
+    --------------------------------*/
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .hero-text {
+      flex: 1 1 500px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.4rem;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-text h2 {
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    .hero-text p {
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .awards {
+      margin-top: 1rem;
+    }
+
+    .awards h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .awards ul {
+      list-style: disc inside;
+      padding-left: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Right-side image */
+    .hero-img {
+      flex: 1 1 300px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .hero-img img {
+      border-radius: 8px;
+      max-width: 300px;
+      width: 100%;
+      object-fit: cover;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    /* Social icons */
+    .social-links {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .social-links a img {
+      width: 40px;
+      height: 40px;
+      transition: transform 0.2s;
+    }
+
+    .social-links a img:hover {
+      transform: scale(1.1);
+    }
+
+    /* -------------------------------
+       THEME SWITCHER
+    --------------------------------*/
+    .theme-switcher {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      background: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* -------------------------------
+       FOOTER
+    --------------------------------*/
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+      }
+      .hero-img {
+        order: -1;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-container">
+      <ul>
+        <li><a href="index.html" aria-current="page">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="repositories.html">Repositories</a></li>
+        <li><a href="teaching.html">Teaching</a></li>
+        <li><a href="people.html">People</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero-section">
+      <div class="hero-text">
+        <h1>Ayyuce Demirbas</h1>
+        <h2>Machine Learning Engineer & Researcher</h2>
+        <p>
+          My name is Ayyuce, and I'm a machine learning engineer and a published researcher with a strong focus on vision transformers and medical images. Currently, my activity is on leveraging vision transformers for medical image analysis, aiming to contribute to the field by solving real-world problems. Additionally, I'm also interested in developing efficient large language models for natural language understanding. I hold a bachelor's degree in computer engineering and have a deep passion for machine learning. I'm looking for Ph.D. positions this fall.
+        </p>
+        <p>
+          I'm particularly interested in staying up-to-date with the latest research and techniques in the field. As a dedicated learner, I'm always looking to seek out new challenges and explore innovative approaches. <strong>Resume is available upon request.</strong>
+        </p>
+
+        <!-- Awards section (example) -->
+        <div class="awards">
+          <h3>Awards:</h3>
+          <ul>
+            <li>Google Developer Expert in Machine Learning</li>
+            <li>Microsoft Turkey Women Leaders of Technology</li>
+          </ul>
+        </div>
+
+        <!-- Social Links -->
+        <div class="social-links">
+          <!-- E-mail -->
+          <a href="mailto: a.ayyuced@gmail.com" target="_blank">
+            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/gmail.jpg" height="70"  alt="Gmail"/>
+          </a>
+          <!-- GitHub -->
+          <a href="https://github.com/ayyucedemirbas" target="_blank">
+            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/github.jpg" alt="GitHub"/>
+          </a>
+          <!-- Google Scholar -->
+          <a href="https://scholar.google.com/citations?user=J1Zh37QAAAAJ&hl=en" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="Google Scholar"/>
+          </a>
+          <!-- ORCID -->
+          <a href="https://orcid.org/0000-0002-6731-9345" target="_blank">
+            <img src="https://cdn.simpleicons.org/orcid" alt="ORCID"/>
+          </a>
+          <!-- ResearchGate -->
+          <a href="https://www.researchgate.net/profile/Ayse-Demirbas" target="_blank">
+            <img src="https://cdn.simpleicons.org/researchgate" alt="ResearchGate"/>
+          </a>
+          <!-- Hugging Face -->
+          <a href="https://huggingface.co/ayyuce" target="_blank">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" alt="Hugging Face"/>
+          </a>
+          <!-- Kaggle -->
+          <a href="https://www.kaggle.com/ayyuce" target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kaggle/kaggle-original.svg" alt="Kaggle"/>
+          </a>
+          <!-- GitLab -->
+          <a href="https://gitlab.com/ayyuce" target="_blank">
+            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/gitlab.png" alt="GitLab"/>
+          </a>
+          <!-- Keybase -->
+          <a href="https://keybase.io/ayyuce" target="_blank">
+            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/keybase.png" alt="Keybase"/>
+          </a>
+          <!-- Medium -->
+          <a href="https://medium.com/@ayyucedemirbas" target="_blank">
+            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/medium.jpeg" alt="Medium"/>
+          </a>
+          <!-- Goodreads -->
+          <a href="https://www.goodreads.com/ayyuce" target="_blank">
+            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/goodreads.png" alt="Goodreads"/>
+          </a>
+          <!-- X -->
+          <a href="https://x.com/demirbasayyuce" target="_blank">
+            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/x.png" alt="X"/>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Image -->
+      <div class="hero-img">
+        <img 
+          src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/IMG_0126.JPG"
+          alt="Ayyuce's Photo"
+        />
+      </div>
+    </section>
+  </div>
+
+  <!-- THEME SWITCHER -->
+  <div class="theme-switcher" id="themeSwitcher">
+    <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
+    <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
+    <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Ayyuce Demirbas. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // THEME SWITCHING
+    function switchTheme(theme) {
+      if (theme === 'system') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+      localStorage.setItem('preferred-theme', theme);
+    }
+
+    // Initialize theme
+    (function initTheme() {
+      const savedTheme = localStorage.getItem('preferred-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayyuce Demirbas - Repositories</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --bg-dark: #121212;
+      --text-dark: #f0f0f0;
+      --accent-dark: #bb86fc;
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --accent: var(--accent-dark);
+      --transition-speed: 0.3s;
+    }
+
+    [data-theme="light"] {
+      --bg: #fefefe;
+      --text: #111111;
+      --accent: #0077ff;
+      --glass-bg: rgba(0, 0, 0, 0.03);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+    }
+
+    /* Enhanced Navigation */
+    nav {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 0;
+      padding: 1rem 0;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.03rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    nav a[aria-current="page"] {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    nav a[aria-current="page"]:hover {
+      background: var(--accent);
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .repos-header {
+      text-align: center;
+      padding: 6rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .repos-header h1 {
+      font-size: 4rem;
+      font-family: 'Playfair Display', serif;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1.5rem;
+    }
+
+    .repos-header p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    .repo-filters {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 4rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 30px;
+      background: var(--glass-bg);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      font-weight: 500;
+      letter-spacing: 0.05rem;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .repos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+
+    .repo-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .repo-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .repo-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .repo-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: var(--gradient-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .repo-title {
+      font-size: 1.5rem;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 0.25rem;
+    }
+
+    .repo-description {
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .repo-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-icon {
+      color: var(--accent);
+    }
+
+    .repo-topics {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .topic {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .topic:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .repo-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .repo-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .repo-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .repo-link.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .repo-link.secondary:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .hf-logo {
+      height: 16px;
+      width: auto;
+      margin-right: 5px;
+    }
+
+    .theme-switcher {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      background: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+
+      nav a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+
+      .repos-header h1 {
+        font-size: 2.5rem;
+      }
+
+      .repos-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .repo-links {
+        flex-direction: column;
+      }
+      
+      .repo-link {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <ul>
+        <li><a href="index.html">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="repositories.html" aria-current="page">Repositories</a></li>
+        <li><a href="teaching.html">Teaching</a></li>
+        <li><a href="people.html">People</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="repos-header">
+      <h1>Code Repositories</h1>
+      <p>Open-source implementations, research code, and tools for the machine learning community</p>
+    </header>
+
+    <div class="repo-filters">
+      <button class="filter-btn active" data-filter="all">All Repos</button>
+      <button class="filter-btn" data-filter="research">Research</button>
+      <button class="filter-btn" data-filter="library">Libraries</button>
+      <button class="filter-btn" data-filter="tool">Tools</button>
+    </div>
+
+    <div class="repos-grid" id="repos-container">
+      <article class="repo-card" data-type="research">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fas fa-dna"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">NeoProtein-GPT</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>0</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+            Design novel protein sequences with unique binding sites using GPT-2.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">PyTorch</span>
+          <span class="topic">Medical AI</span>
+          <span class="topic">Transformers</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/Protein-GPT" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+          <a href="https://huggingface.co/spaces/ayyuce/NeoProtein-GPT" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Space
+          </a>
+        </div>
+      </article>
+
+      <article class="repo-card" data-type="library">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">DINOv2 Nuclei Segmentation</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>1</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+            DINOv2 Nuclei Segmentation.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">Python</span>
+          <span class="topic">Medical AI</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/dinov2_nuclei_seg" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+          <a href="https://huggingface.co/ayyuce/dinov2-nuclei-segmentation" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Model Hub
+          </a>
+        </div>
+      </article>
+
+      <article class="repo-card" data-type="research tool">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fa-solid fa-x-ray"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">MAIRA 2</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>1</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+          A Gradio app for Microsoft's SOTA grounded radiology report generation model.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">Visualization</span>
+          <span class="topic">Medical AI</span>
+          <span class="topic">Python</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/MAIRA-2" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+          <a href="https://huggingface.co/spaces/ayyuce/MAIRA-2" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Space
+          </a>
+        </div>
+      </article>
+
+
+
+
+      <article class="repo-card" data-type="research tool">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fas fa-language"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">SmolGRPO-135M</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>4</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+          Fine tuned SmolLM-135M-Instruct using Group Relative Policy Optimization (with and without Flash Attenton). Made a Gradio Space for the model.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">LLMs</span>
+          <span class="topic">GRPO</span>
+          <span class="topic">Python</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/Group-Relative-Policy-Optimization" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+          <a href="https://huggingface.co/spaces/ayyuce/SmolGRPO-135M2" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Space
+          </a>
+          <a href="https://huggingface.co/ayyuce/SmolGRPO-135M" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Model Hub
+          </a>
+        </div>
+      </article>
+
+
+      <article class="repo-card" data-type="research tool">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fas fa-language"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">Llama 2 Instruction Tuning</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>4</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+          Fine tuned Llama 2 on a custom product review sentiment dataset with instructions.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">LLMs</span>
+          <span class="topic">Instruction Tuning</span>
+          <span class="topic">Python</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/llama2_instruction_tuning" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+          <a href="https://huggingface.co/datasets/ayyuce/amazon-product-review-sentiment-dataset" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Dataset
+          </a>
+          <a href="https://huggingface.co/ayyuce/SmolGRPO-135M" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Model Hub
+          </a>
+        </div>
+      </article>
+
+
+      <article class="repo-card" data-type="research tool">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fa-solid fa-x-ray"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">TotalSegmentator</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>1</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+          A Gradio app for TotalSegmentator.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">Visualization</span>
+          <span class="topic">Medical AI</span>
+          <span class="topic">Python</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/TotalSegmentator" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+          <a href="https://huggingface.co/spaces/ayyuce/TotalSegmentator" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Space
+          </a>
+        </div>
+      </article>
+
+
+
+
+      <article class="repo-card" data-type="research tool">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fa-solid fa-x-ray"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">SAM Radiology</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>0</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+          Fine-tuned the model.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">Medical AI</span>
+          <span class="topic">Python</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/sam2rad" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+          <a href="https://huggingface.co/ayyuce/sam2rad" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Model Hub
+          </a>
+        </div>
+      </article>
+
+
+      <article class="repo-card" data-type="research tool">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fas fa-toolbox"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">SegDICOM</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>4</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+          A DICOM annotation tool for 3D segmentation.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">Medical AI</span>
+          <span class="topic">Python</span>
+          <span class="topic">Visualization</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/SegDICOM" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+
+        </div>
+      </article>
+
+
+      <article class="repo-card" data-type="research tool">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fas fa-microphone"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">Speech Emotion Classification</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>2</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+            Speech emotion classification with multi-head self-attention.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">Audio classification</span>
+          <span class="topic">Python</span>
+          <span class="topic">Multi-head self-attention</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/speech_emotion_classification_multi-head_self-attention" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+
+        </div>
+      </article>
+
+
+
+      <article class="repo-card" data-type="research tool">
+        <div class="repo-header">
+          <div class="repo-icon">
+            <i class="fas fa-image"></i>
+          </div>
+          <div>
+            <h3 class="repo-title">SigLIP 2 Zero-shot Classification</h3>
+            <div class="repo-stats">
+              <div class="stat-item">
+                <i class="fas fa-star stat-icon"></i>
+                <span>0</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-code-branch stat-icon"></i>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="repo-description">
+          A Gradio app for SigLIP 2 Zero-shot image classification.
+        </p>
+        <div class="repo-topics">
+          <span class="topic">Python</span>
+        </div>
+        <div class="repo-links">
+          <a href="https://github.com/ayyucedemirbas/SigLIP-2_zero_shot_classification/tree/main" class="repo-link">
+            <i class="fab fa-github"></i>
+            View Code
+          </a>
+          <a href="https://huggingface.co/spaces/ayyuce/SigLIP_2_zero-shot_image_classification" target="_blank" class="repo-link secondary">
+            <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
+            Space
+          </a>
+        </div>
+      </article>
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+  <div class="theme-switcher" id="themeSwitcher">
+    <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
+    <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
+    <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Ayyuce Demirbas. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Theme switching
+    function switchTheme(theme) {
+      if (theme === "system") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+      localStorage.setItem("preferred-theme", theme);
+    }
+
+    // Initialize theme
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("preferred-theme") || "dark";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      
+      // Add filter functionality
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const repoCards = document.querySelectorAll('.repo-card');
+      
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Update active button
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          const filter = button.dataset.filter;
+          
+          // Filter repositories
+          repoCards.forEach(card => {
+            if (filter === 'all' || card.dataset.type.includes(filter)) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
