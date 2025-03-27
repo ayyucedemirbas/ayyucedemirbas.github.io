@@ -1,0 +1,68 @@
+==================================================================
+https://keybase.io/ayyuce
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://ayyucedemirbas.github.io
+  * I am ayyuce (https://keybase.io/ayyuce) on keybase.
+  * I have a public key with fingerprint 4F81 9EDA 8E48 39E8 903D  DE28 4576 F6E6 6EA3 213B
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "01012c32139fbf732ff49f97fa9c8ff53530a24da1e25863f8eecfbcd740ce391ec40a",
+      "fingerprint": "4f819eda8e4839e8903dde284576f6e66ea3213b",
+      "host": "keybase.io",
+      "key_id": "4576f6e66ea3213b",
+      "kid": "01012c32139fbf732ff49f97fa9c8ff53530a24da1e25863f8eecfbcd740ce391ec40a",
+      "uid": "c169c3f53f4305df929ff31f0f971319",
+      "username": "ayyuce"
+    },
+    "service": {
+      "hostname": "ayyucedemirbas.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1743040959,
+  "expire_in": 157680000,
+  "prev": "71c6df9b12b597c8c81f49354df6af8cf6105c4c6139dd466587bffd53a1596f",
+  "seqno": 15,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
+
+yMIkAnicrVJLSBZRGP0t0zIMF/YiKJxESkzmzvtKQQ9yUVBBKCjW78x9/E7pzO/M
+/OqPVIRED3q6aVEUmi1My0RTyHzlqycVBS6sjB4mLYyMWlRKd6wWQctmc+fee875
+zjnc/sTZgYSYnPHPxwv51wdi7vfWRgKht83dlZxh4yiXVcntJTMLKcbE9YJ7Tcxl
+cTzggYBEAYiQGlQVBUolSKFKdYg0SmVRFnldkLAOiCBrikg1QhA1EFYlHhERAoIk
+XucyOGpaIeKEHdPymKxENQAJ1jUiaSIkGuRFjImgSbKqUIUoCtH9mQYjFtmuz2Dm
+DN0lmabNztgmOGPvH/j/7DsyI4eAApHIaFQSeRlTKEBKRUB5JglEAH2gSxxLLyEM
+rUejEUS4fRkcOysz2S+r1c/x1z0mJabDMmWGTK8oYvxKFnZsz0Z2MUMVeV7YzfJV
+vGjYp5UTI/hbMGiYFmaNMkYZcVzTtrgswJDIM/0JQGU2JR7KMIMjFWHTIUHTR7C2
+NJ59/hxSxiRVgBSWxgCCIUMVaUgDrCdRljBVdKohqgBeRhJSWI8YS4oia6pBKZZF
+HchQoZwfsdSyfW3mUw8xTdcMWboXcVgBt3sKYgMxCYG4ObP8pxZImJf05wEWJ80N
+XDsb33Ar7nRb3vtziff63tQVLtho/6jafOF+9/C3aGuwIVc/UuteHC8YR6ktQ2u+
+bo09Flgeyn72pXbs8uVy6nTUbF+/+3t586nO7B0jFdtXZqK8Adyblvt4GCeC0snR
+T7GXxvIfbhxIfpnitV/tIrtWpB5OLSfJT9R3qzKHhJGpmwM36quCDwC9vvr5tta4
+Tu/uwpoL1ZOrr8RPT+8ZST7xIWXRlpbGk7xx5imBrQEhrqUo//jHtRN1m0YfTQ+2
+39m/Lr3nYPqh2KamF0fvWTmfOmq+Tjf21HUtnpxv5e5c2vdqIi3Nldrqa5Ext3RJ
+9eekDYM7Kr4sy89LON8/4U6hn8YgTvc=
+=CqZ8
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/ayyuce
+
+==================================================================
