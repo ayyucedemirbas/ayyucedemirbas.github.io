@@ -354,6 +354,61 @@
       color: var(--bg);
     }
 
+    .post-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      height: 100%;
+    }
+
+    /* Styles for single post page */
+    .post-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    .post-content-full {
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+
+    .post-content-full img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+
+    .post-content-full pre {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .post-content-full code {
+      font-family: 'Courier New', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.8rem 1.5rem;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
     @media (max-width: 768px) {
       nav ul {
         gap: 0.5rem;
@@ -380,6 +435,9 @@
       .featured-post .post-title {
         font-size: 1.8rem;
       }
+      .post-container {
+        padding: 2rem 1rem;
+      }
     }
   </style>
 </head>
@@ -397,24 +455,30 @@
       </ul>
     </div>
   </nav>
-  <div class="container">
+
+  <div class="container" id="main-container">
     <header class="blog-header">
       <h1>AI Research Journal</h1>
       <p>Exploring the intersection of machine learning, medical imaging, and transformer architectures</p>
     </header>
-    <article class="blog-post featured-post">
-      <img class="featured-image" src="posts/images/dino.png" alt="Featured Post">
-      <div class="featured-content">
-        <div class="post-date"><i class="fas fa-star"></i> FEATURED RESEARCH</div>
-        <h2 class="post-title">Distillation with NO Labels</h2>
-        <div class="post-tags">
-          <span class="post-tag">Self-supervised learning</span>
-          <span class="post-tag">Distillation</span>
-          <span class="post-tag">Deep Learning</span>
+
+    <a href="posts/dino.html?post=posts/dino.md" class="post-link">
+      <article class="blog-post featured-post">
+        <img class="featured-image" src="posts/images/dino/dino.png" alt="Featured Post">
+        <div class="featured-content">
+          <div class="post-date"><i class="fas fa-star"></i> FEATURED RESEARCH</div>
+          <h2 class="post-title">Distillation with NO Labels</h2>
+          <div class="post-tags">
+            <span class="post-tag">Self-supervised learning</span>
+            <span class="post-tag">Distillation</span>
+            <span class="post-tag">Deep Learning</span>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </a>
+
     <section class="blog-posts" id="posts-container"></section>
+
     <div class="pagination">
       <a href="#" class="page-number active">1</a>
       <a href="#" class="page-number">2</a>
@@ -422,68 +486,132 @@
       <a href="#" class="page-number"><i class="fas fa-chevron-right"></i></a>
     </div>
   </div>
+
   <div class="theme-switcher" id="themeSwitcher">
     <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
     <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
     <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
   </div>
+
   <footer>
     <p>&copy; 2025 Ayyuce Demirbas. All Rights Reserved.</p>
   </footer>
+
   <script>
     marked.setOptions({
       breaks: true,
       gfm: true,
-      smartypants: true
+      smartypants: true,
+      highlight: function(code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+        return hljs.highlight(code, { language }).value;
+      }
     });
 
-    async function loadPosts() {
-      // Define a simple array with the blog posts metadata and markdown file names.
-      const posts = [
-        {
-          file: 'post1.md',
-          title: 'Exploring Deep Learning in Healthcare',
-          date: '2025-03-25',
-          tags: ['Medical Imaging', 'Deep Learning']
-        },
-        {
-          file: 'post2.md',
-          title: 'Advances in Transformer Models',
-          date: '2025-03-20',
-          tags: ['Transformers', 'AI Research']
-        }
-      ];
+    // Blog posts data
+    const posts = [
+      {
+        file: 'post1.md',
+        title: 'Exploring Deep Learning in Healthcare',
+        date: '2025-03-25',
+        tags: ['Medical Imaging', 'Deep Learning'],
+        excerpt: 'Recent advances in deep learning are revolutionizing medical image analysis...'
+      },
+      {
+        file: 'post2.md',
+        title: 'Advances in Transformer Models',
+        date: '2025-03-20',
+        tags: ['Transformers', 'AI Research'],
+        excerpt: 'Transformer architectures continue to dominate the field of natural language processing...'
+      },
+      {
+        file: 'post3.md',
+        title: 'Self-Supervised Learning Techniques',
+        date: '2025-03-15',
+        tags: ['Self-Supervised', 'Computer Vision'],
+        excerpt: 'New approaches in self-supervised learning are reducing dependency on labeled data...'
+      }
+    ];
 
+    // Load blog listing
+    async function loadBlogListing() {
+      const container = document.getElementById('posts-container');
+      
       // Sort posts by date (newest first)
       posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      const container = document.getElementById('posts-container');
+      
       for (const post of posts) {
+        const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        const postElement = document.createElement('article');
+        postElement.className = 'blog-post';
+        postElement.innerHTML = `
+          <a href="post.html?post=${post.file}" class="post-link">
+            <div class="post-date"><i class="far fa-calendar-alt"></i> ${formattedDate}</div>
+            <h2 class="post-title">${post.title}</h2>
+            <div class="post-content">
+              <p>${post.excerpt}</p>
+            </div>
+            <div class="post-tags">
+              ${post.tags.map(tag => `<span class="post-tag">${tag}</span>`).join('')}
+            </div>
+          </a>
+        `;
+        container.appendChild(postElement);
+      }
+    }
+
+    // Load single post
+    async function loadSinglePost() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const postFile = urlParams.get('post');
+      
+      if (postFile) {
         try {
-          const response = await fetch('posts/' + post.file);
+          const response = await fetch(`posts/${postFile}`);
+          if (!response.ok) throw new Error('Post not found');
+          
           const markdown = await response.text();
-          const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
+          const postData = posts.find(p => p.file === postFile);
+          const formattedDate = postData ? new Date(postData.date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
-          });
-          const postElement = document.createElement('article');
-          postElement.className = 'blog-post';
-          postElement.innerHTML = `
-            <div class="post-date"><i class="far fa-calendar-alt"></i> ${formattedDate}</div>
-            <h2 class="post-title">${post.title}</h2>
-            <div class="post-content">${marked.parse(markdown)}</div>
-            <div class="post-tags">
-              ${post.tags ? post.tags.map(tag => `<span class="post-tag">${tag}</span>`).join('') : ''}
+          }) : '';
+          
+          document.getElementById('main-container').innerHTML = `
+            <div class="post-container">
+              <article class="blog-post">
+                ${postData ? `<div class="post-date"><i class="far fa-calendar-alt"></i> ${formattedDate}</div>` : ''}
+                <div class="post-content-full">${marked.parse(markdown)}</div>
+                <a href="blog.html" class="back-link">
+                  <i class="fas fa-arrow-left"></i> Back to Blog
+                </a>
+              </article>
             </div>
           `;
-          container.appendChild(postElement);
         } catch (error) {
-          console.error('Error loading post ' + post.file, error);
+          console.error('Error loading post:', error);
+          document.getElementById('main-container').innerHTML = `
+            <div class="post-container">
+              <article class="blog-post">
+                <h2>Post Not Found</h2>
+                <p>The requested post could not be loaded.</p>
+                <a href="blog.html" class="back-link">
+                  <i class="fas fa-arrow-left"></i> Back to Blog
+                </a>
+              </article>
+            </div>
+          `;
         }
       }
     }
 
+    // Theme switching functionality
     function switchTheme(theme) {
       if (theme === 'system') {
         document.documentElement.removeAttribute('data-theme');
@@ -493,6 +621,7 @@
       localStorage.setItem('preferred-theme', theme);
     }
 
+    // Initialize theme
     (function initTheme() {
       const savedTheme = localStorage.getItem('preferred-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
@@ -505,7 +634,14 @@
       });
     })();
 
-    document.addEventListener('DOMContentLoaded', loadPosts);
+    // Initialize appropriate page
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.location.pathname.includes('post.html')) {
+        loadSinglePost();
+      } else {
+        loadBlogListing();
+      }
+    });
   </script>
 </body>
 </html>
