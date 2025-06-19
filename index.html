@@ -196,8 +196,10 @@
     .hero-img {
       flex: 1 1 300px;
       display: flex;
+      flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
+      gap: 1.5rem;
     }
 
     .hero-img img {
@@ -224,6 +226,57 @@
 
     .social-links a img:hover {
       transform: scale(1.1);
+    }
+    
+    /* Goodreads widgets */
+    .goodreads-widgets {
+      margin-top: 2rem;
+    }
+    
+    .gr_grid_container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    
+    .gr_grid_book_container {
+      flex: 0 0 39px;
+      height: 60px;
+      overflow: hidden;
+    }
+    
+    .reading-challenge {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 15px;
+      max-width: 230px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+    }
+    
+    .reading-challenge h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: normal;
+    }
+    
+    .challenge-progress {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 100%;
     }
 
     /* -------------------------------
@@ -284,6 +337,9 @@
         order: -1;
         justify-content: center;
       }
+      .gr_grid_container {
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -311,13 +367,13 @@
         <h1>Ayyuce Demirbas</h1>
         <h2>Machine Learning Engineer & Researcher</h2>
         <p>
-          My name is Ayyuce, and I'm a machine learning engineer and researcher. I hold a bachelor's degree in computer engineering. My research interests are graph-based multi-omics integration methods, prediction of cancer subtypes, drug discovery, and multimodal protein language models. Currently, my focus is on vision-language models for medicine. I'm currently looking for Ph.D. positions.
+          My name is Ayyuce, and I'm a machine learning engineer and researcher. I hold a bachelor's degree in computer engineering. My research interests are graph-based multi-omics integration methods, prediction of cancer subtypes, drug discovery, and multimodal protein language models. I'm going to be a PhD student soon. 🎉 🎊
         </p>
         <p>
            I’m interested in staying up-to-date with the novel research and techniques in my field. I enjoy learning new things and am always looking for new challenges and exploring innovative approaches. <strong>Resume is available upon request.</strong>
         </p>
 
-        <!-- Awards section (example) -->
+        <!-- Awards section -->
         <div class="awards">
           <h3>Awards:</h3>
           <ul>
@@ -326,7 +382,7 @@
           </ul>
         </div>
 
-        <!-- Social Links -->
+         <!-- Social Links -->
         <div class="social-links">
           <!-- E-mail -->
           <a href="mailto: a.ayyuced@gmail.com" target="_blank">
@@ -381,14 +437,63 @@
             <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/x.png" alt="X"/>
           </a>
         </div>
+
+        <!-- Goodreads Book Grid Widget -->
+        <div class="goodreads-widgets">
+          <h3>Favorite Books</h3>
+          <div id="gr_grid_widget_1750365637">
+            <div class="gr_grid_container">
+              <div class="gr_grid_book_container"><a title="A Brief History of Time" rel="nofollow" href="https://www.goodreads.com/book/show/3869.A_Brief_History_of_Time"><img alt="A Brief History of Time" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333578746l/3869._SX50_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="The Martian" rel="nofollow" href="https://www.goodreads.com/book/show/18007564-the-martian"><img alt="The Martian" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1413706054l/18007564._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="Sapiens: A Brief History of Humankind" rel="nofollow" href="https://www.goodreads.com/book/show/23692271-sapiens"><img alt="Sapiens: A Brief History of Humankind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1703329310l/23692271._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="21 Lessons for the 21st Century" rel="nofollow" href="https://www.goodreads.com/book/show/38820046-21-lessons-for-the-21st-century"><img alt="21 Lessons for the 21st Century" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1564577305l/38820046._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="A Vindication of the Rights of Women" rel="nofollow" href="https://www.goodreads.com/book/show/419261.A_Vindication_of_the_Rights_of_Women"><img alt="A Vindication of the Rights of Women" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1174583774l/419261._SX50_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="The Quest for Artificial Intelligence" rel="nofollow" href="https://www.goodreads.com/book/show/7465939-the-quest-for-artificial-intelligence"><img alt="The Quest for Artificial Intelligence" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1347808400l/7465939._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="I, Robot (Robot, #0.1)" rel="nofollow" href="https://www.goodreads.com/book/show/41804.I_Robot"><img alt="I, Robot" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1609035271l/41804._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="The Emperor's New Mind" rel="nofollow" href="https://www.goodreads.com/book/show/179744.The_Emperor_s_New_Mind"><img alt="The Emperor's New Mind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1347652000l/179744._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="Tragic Sense of Life" rel="nofollow" href="https://www.goodreads.com/book/show/144915.Tragic_Sense_of_Life"><img alt="Tragic Sense of Life" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1401410570l/144915._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="Steve Jobs" rel="nofollow" href="https://www.goodreads.com/book/show/11084145-steve-jobs"><img alt="Steve Jobs" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1511288482l/11084145._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="Algorithms to Live By: The Computer Science of Human Decisions" rel="nofollow" href="https://www.goodreads.com/book/show/25666050-algorithms-to-live-by"><img alt="Algorithms to Live By: The Computer Science of Human Decisions" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1454296875l/25666050._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="Life 3.0: Being Human in the Age of Artificial Intelligence" rel="nofollow" href="https://www.goodreads.com/book/show/34274957-life-3-0"><img alt="Life 3.0: Being Human in the Age of Artificial Intelligence" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1498857371l/34274957._SX50_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="Why We Sleep: The New Science of Sleep and Dreams" rel="nofollow" href="https://www.goodreads.com/book/show/36303871-why-we-sleep"><img alt="Why We Sleep: The New Science of Sleep and Dreams" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1514887741l/36303871._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="How to Write & Publish a Scientific Paper" rel="nofollow" href="https://www.goodreads.com/book/show/1912729.How_to_Write_Publish_a_Scientific_Paper"><img alt="How to Write & Publish a Scientific Paper" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1387753080l/1912729._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="How to Build a Time Machine: The Real Science of Time Travel" rel="nofollow" href="https://www.goodreads.com/book/show/11499781-how-to-build-a-time-machine"><img alt="How to Build a Time Machine: The Real Science of Time Travel" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1317794132l/11499781._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="The Reason Why: The Miracle of Life on Earth" rel="nofollow" href="https://www.goodreads.com/book/show/10908797-the-reason-why"><img alt="The Reason Why: The Miracle of Life on Earth" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1328216106l/10908797._SY75_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="Sapiens: A Graphic History, Volume 1 - The Birth of Humankind" rel="nofollow" href="https://www.goodreads.com/book/show/54110137-sapiens"><img alt="Sapiens: A Graphic History, Volume 1 - The Birth of Humankind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1594616346l/54110137._SX50_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="Homo Deus: A Brief History of Tomorrow" rel="nofollow" href="https://www.goodreads.com/book/show/28092870-homo-deus"><img alt="Homo Deus: A Brief History of Tomorrow" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1455858241l/28092870._SX50_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="The Universe in a Nutshell" rel="nofollow" href="https://www.goodreads.com/book/show/2095.The_Universe_in_a_Nutshell"><img alt="The Universe in a Nutshell" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1526743965l/2095._SX50_.jpg" /></a></div>
+              <div class="gr_grid_book_container"><a title="The Star Trek Book: Strange New Worlds Boldly Explained" rel="nofollow" href="https://www.goodreads.com/book/show/27209477-the-star-trek-book"><img alt="The Star Trek Book: Strange New Worlds Boldly Explained" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1460907980l/27209477._SX50_.jpg" /></a></div>
+            </div>
+            <a class="gr_grid_branding" style="font-size: .9em; color: #382110; text-decoration: none; float: right; clear: both" rel="nofollow" href="https://www.goodreads.com/user/show/110847520-ayyuce-demirbas">More books »</a>
+          </div>
+        </div>
+
+       
       </div>
 
-      <!-- Hero Image -->
+      <!-- Hero Image and Reading Challenge -->
       <div class="hero-img">
         <img 
           src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/IMG_0126.JPG"
           alt="Ayyuce's Photo"
         />
+        
+        <!-- Reading Challenge Widget -->
+        <div class="reading-challenge">
+          <h3>2025 Reading Challenge</h3>
+          <div class="challenge-info">
+            Ayyuce has read 15 books toward her goal of 15 books.
+          </div>
+          <div class="challenge-progress">
+            <div class="progress-bar"></div>
+          </div>
+          <div class="challenge-stats">
+            15 of 15 (100%)
+          </div>
+          <div style="text-align: center; margin-top: 10px;">
+            <a href="https://www.goodreads.com/user_challenges/56669120" style="font-size: 0.9em;">View books</a>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -421,6 +526,20 @@
       const savedTheme = localStorage.getItem('preferred-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
     })();
+    
+    // Goodreads widgets scripts
+    document.addEventListener('DOMContentLoaded', function() {
+      // Book grid widget script
+      const gridScript = document.createElement('script');
+      gridScript.src = "https://www.goodreads.com/review/grid_widget/110847520.Ayyuce's%20favorites%20book%20montage?cover_size=small&hide_link=&hide_title=&num_books=40&order=a&shelf=favorites&sort=date_added&widget_id=1750365637";
+      gridScript.charset = "utf-8";
+      document.body.appendChild(gridScript);
+      
+      // Reading challenge widget script
+      const challengeScript = document.createElement('script');
+      challengeScript.src = "https://www.goodreads.com/user_challenges/widget/110847520-ayyuce-demirbas?challenge_id=11627&v=2";
+      document.body.appendChild(challengeScript);
+    });
   </script>
 </body>
 </html>
