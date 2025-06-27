@@ -256,14 +256,31 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       box-shadow: var(--shadow);
     }
-    
+
+    .challenge-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .challengePic {
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .challengePic img {
+      width: auto;
+      height: 60px;
+      max-width: 60px;
+    }
+
     .reading-challenge h3 {
       font-size: 1.1rem;
-      margin-bottom: 10px;
-      text-align: center;
       font-weight: normal;
+      margin: 0;
     }
-    
+
     .challenge-progress {
       width: 100%;
       height: 8px;
@@ -272,7 +289,7 @@
       margin: 10px 0;
       overflow: hidden;
     }
-    
+
     .progress-bar {
       height: 100%;
       background: var(--accent);
@@ -480,7 +497,14 @@
         
         <!-- Reading Challenge Widget -->
         <div class="reading-challenge">
-          <h3>2025 Reading Challenge</h3>
+          <div class="challenge-header">
+            <div class="challengePic">
+              <a rel="nofollow" href="https://www.goodreads.com/challenges/11627-2025-reading-challenge">
+                <img alt="2025 Reading Challenge" src="https://images.gr-assets.com/challenges/1733511050p2/11627.jpg" />
+              </a>
+            </div>
+            <h3>2025 Reading Challenge</h3>
+          </div>
           <div class="challenge-info">
             Ayyuce has read 15 books toward her goal of 15 books.
           </div>
