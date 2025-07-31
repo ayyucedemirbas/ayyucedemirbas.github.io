@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stray Cat Initiative - Ayyuce Demirbas</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/logo.png" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- Styles -->
+  <style>
+    /* -------------------------------
+       VARIABLES
+    --------------------------------*/
+    :root {
+      --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --bg-dark: #121212;
+      --text-dark: #f0f0f0;
+      --accent-dark: #bb86fc;
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --accent: var(--accent-dark);
+      --transition-speed: 0.3s;
+      --cat-color: #ff9e6d;
+      --cat-fur: #ffb38a;
+      --cat-eye-bg: #0a0a0a; /* Light eye background */
+      --cat-pupil: #121212;  /* Dark pupil */
+      --cat-nose: #8B4513;   /* Dark brown nose */
+    }
+
+    [data-theme="light"] {
+      --bg: #fefefe;
+      --text: #111111;
+      --accent: #0077ff;
+      --glass-bg: rgba(0, 0, 0, 0.03);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+      --cat-color: #ff7b47;
+      --cat-fur: #ff9c6d;
+      --cat-eye-bg: #0d0c0c; /* Same in light theme */
+      --cat-pupil: #121212;  /* Same in light theme */
+      --cat-nose: #8B4513;   /* Same in light theme */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* -------------------------------
+       GLOBAL STYLES
+    --------------------------------*/
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+      background-image: url('https://www.transparenttextures.com/patterns/concrete-wall-2.png');
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    /* -------------------------------
+       ENHANCED NAVIGATION
+    --------------------------------*/
+    nav {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 0;
+      padding: 1rem 0;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.03rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: none;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    nav a[aria-current="page"] {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    nav a[aria-current="page"]:hover {
+      background: var(--accent);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+
+      nav a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+    }
+
+    /* -------------------------------
+       FANCY CAT ANIMATIONS WITH MOVING FEET AND EARS
+    --------------------------------*/
+    .cat-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4rem;
+      padding: 3rem 0;
+      background: linear-gradient(135deg, rgba(187, 134, 252, 0.1) 0%, rgba(3, 218, 198, 0.1) 100%);
+      position: relative;
+      overflow: hidden;
+      height: 250px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cat-graphic {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cat-silhouette {
+      position: relative;
+      width: 120px;
+      height: 100px;
+      animation: float 4s infinite ease-in-out;
+    }
+
+    /* Cat head */
+    .cat-head {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: var(--cat-color);
+      border-radius: 50%;
+      top: 0;
+      left: 20px;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    /* Cat ears - with movement */
+    .cat-ear {
+      position: absolute;
+      width: 30px;
+      height: 40px;
+      background: var(--cat-color);
+      border-radius: 50% 50% 0 0;
+      top: -15px;
+      z-index: 1;
+      animation: ear-twitch 3s infinite;
+    }
+
+    .cat-ear.left {
+      left: 10px;
+      transform: rotate(-15deg);
+    }
+
+    .cat-ear.right {
+      right: 10px;
+      transform: rotate(15deg);
+    }
+
+    .cat-ear::before {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 20px;
+      background: var(--cat-fur);
+      border-radius: 50% 50% 0 0;
+      top: 5px;
+      left: 7px;
+    }
+
+    /* Cat face */
+    .cat-face {
+      position: absolute;
+      width: 60px;
+      height: 50px;
+      top: 20px;
+      left: 10px;
+      z-index: 3;
+    }
+
+    .cat-eyes {
+      position: absolute;
+      top: 15px;
+      display: flex;
+      gap: 25px;
+      animation: blink 6s infinite;
+    }
+
+    .cat-eye {
+      width: 12px;
+      height: 18px;
+      background: var(--cat-eye-bg); /* Fixed eye background */
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 0 2px var(--cat-color);
+    }
+
+    .cat-eye::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      top: 4px;
+      left: 3px;
+    }
+
+    .cat-eye::before {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 2px;
+      background: var(--cat-pupil); /* Fixed pupil color */
+      top: 8px;
+      left: 3px;
+      border-radius: 50%;
+    }
+
+    .cat-nose {
+      position: absolute;
+      width: 10px;
+      height: 8px;
+      background: var(--cat-nose); /* Dark brown nose */
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      top: 35px;
+      left: 25px;
+    }
+
+    .cat-whiskers {
+      position: absolute;
+      width: 40px;
+      height: 10px;
+      top: 38px;
+      left: 10px;
+    }
+
+    .whisker {
+      position: absolute;
+      height: 1px;
+      background: var(--text); /* Whiskers adapt to theme */
+    }
+
+    .whisker.left {
+      transform: rotate(-20deg);
+      width: 15px;
+      left: 0;
+    }
+
+    .whisker.right {
+      transform: rotate(20deg);
+      width: 15px;
+      right: 0;
+    }
+
+    /* Cat body */
+    .cat-body {
+      position: absolute;
+      width: 100px;
+      height: 60px;
+      background: var(--cat-color);
+      border-radius: 50% 50% 0 0;
+      top: 50px;
+      left: 10px;
+      z-index: 1;
+    }
+
+    /* Longer cat feet with movement */
+    .cat-paw {
+      position: absolute;
+      width: 20px;
+      height: 25px; /* Longer feet */
+      background: var(--cat-fur);
+      border-radius: 50%;
+      bottom: -15px;
+      animation: paw-move 2s infinite ease-in-out;
+    }
+
+    .paw-left {
+      left: 20px;
+      animation-delay: 0.2s;
+    }
+
+    .paw-right {
+      right: 20px;
+      animation-delay: 0.4s;
+    }
+
+    /* Cat tail */
+    .cat-tail {
+      position: absolute;
+      width: 50px;
+      height: 15px;
+      background: var(--cat-color);
+      border-radius: 10px;
+      top: 70px;
+      right: -40px;
+      animation: wag 3s infinite ease-in-out;
+      transform-origin: left center;
+      z-index: 0;
+    }
+
+    .tail-tip {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--cat-fur);
+      border-radius: 50%;
+      right: 0;
+      top: 2px;
+    }
+
+    /* Paw prints */
+    .cat-paw-prints {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      opacity: 0.3;
+    }
+
+    .paw-print {
+      width: 25px;
+      height: 25px;
+      position: relative;
+      opacity: 0.3;
+      animation: pulse 4s infinite;
+    }
+
+    .paw-print::before, .paw-print::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--cat-color);
+      border-radius: 50%;
+    }
+
+    .paw-print::before {
+      top: 0;
+      left: 8px;
+    }
+
+    .paw-print::after {
+      top: 8px;
+      left: 0;
+    }
+
+    .paw-print div {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--cat-color);
+      border-radius: 50%;
+    }
+
+    .paw-print div:nth-child(1) {
+      top: 8px;
+      right: 0;
+    }
+
+    .paw-print div:nth-child(2) {
+      bottom: 0;
+      left: 8px;
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    @keyframes wag {
+      0%, 100% { transform: rotate(-20deg); }
+      50% { transform: rotate(20deg); }
+    }
+
+    @keyframes blink {
+      0%, 45%, 55%, 100% { height: 18px; }
+      48%, 52% { height: 2px; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+    }
+
+    /* New animations for ears and feet */
+    @keyframes ear-twitch {
+      0%, 90%, 100% { transform: rotate(-15deg); }
+      92%, 96% { transform: rotate(-25deg); }
+      94% { transform: rotate(-5deg); }
+    }
+    
+    @keyframes ear-twitch-right {
+      0%, 90%, 100% { transform: rotate(15deg); }
+      92%, 96% { transform: rotate(25deg); }
+      94% { transform: rotate(5deg); }
+    }
+
+    @keyframes paw-move {
+      0%, 100% { transform: translateY(0); height: 25px; }
+      50% { transform: translateY(-8px); height: 20px; }
+    }
+
+    /* -------------------------------
+       HERO SECTION
+    --------------------------------*/
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 1rem;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .hero-text {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.8rem;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 1rem;
+      color: var(--cat-color);
+      background: linear-gradient(45deg, var(--cat-color), #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-text h1::after {
+      content: "🐾";
+      position: absolute;
+      top: -15px;
+      right: -40px;
+      font-size: 1.5rem;
+      opacity: 0.7;
+    }
+
+    .hero-text h1::before {
+      content: "🐾";
+      position: absolute;
+      bottom: -15px;
+      left: -40px;
+      font-size: 1.5rem;
+      opacity: 0.7;
+    }
+
+    .hero-text h2 {
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+    }
+
+    .hero-text p {
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+
+    /* Stats Container */
+    .stats-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      width: 100%;
+      max-width: 900px;
+      margin: 2rem auto;
+    }
+
+    .stat-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      z-index: -1;
+    }
+
+    .stat-card h3 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--cat-color);
+      text-align: center;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+      background: rgba(255, 255, 255, 0.07);
+      transform: translateX(5px);
+    }
+
+    .stat-label {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 1.2rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--cat-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cat-icon {
+      font-size: 1.5rem;
+      color: var(--cat-color);
+    }
+
+    .kg-icon {
+      font-size: 1.5rem;
+      color: #4ecdc4;
+    }
+
+    /* Progress Container */
+    .progress-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 800px;
+      margin-top: 2rem;
+    }
+
+    .progress-item {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .progress-title {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .progress-percent {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--cat-color);
+    }
+
+    .progress-bar-bg {
+      height: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cat-color), #ff6b6b);
+      border-radius: 10px;
+      transition: width 1s ease-in-out;
+    }
+
+    .year-comparison {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 2rem;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .comparison-item {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--glass-bg);
+      border-radius: 16px;
+      min-width: 200px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .comparison-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--cat-color);
+      margin: 0.5rem 0;
+    }
+
+    .comparison-label {
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+
+    .impact-statement {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 1.3rem;
+      font-style: italic;
+      padding: 2rem;
+      background: var(--glass-bg);
+      border-radius: 16px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      border-left: 4px solid var(--cat-color);
+      position: relative;
+    }
+
+    .impact-statement span {
+      color: var(--cat-color);
+      font-weight: bold;
+    }
+
+    .impact-statement::after {
+      content: "🐱";
+      position: absolute;
+      bottom: -20px;
+      right: 20px;
+      font-size: 2rem;
+      opacity: 0.5;
+    }
+
+    /* -------------------------------
+       THEME SWITCHER
+    --------------------------------*/
+    .theme-switcher {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      background: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* -------------------------------
+       FOOTER
+    --------------------------------*/
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .cat-container {
+        gap: 1.5rem;
+        height: 200px;
+      }
+      
+      .cat-graphic {
+        transform: scale(0.8);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .hero-text h1 {
+        font-size: 2.2rem;
+      }
+      
+      .hero-text h1::before,
+      .hero-text h1::after {
+        display: none;
+      }
+      
+      .stat-card {
+        padding: 1.5rem;
+      }
+      
+      .stat-value {
+        font-size: 1.8rem;
+      }
+      
+      .comparison-item {
+        min-width: 150px;
+        padding: 1rem;
+      }
+      
+      .comparison-value {
+        font-size: 2rem;
+      }
+      
+      .cat-container {
+        gap: 0.5rem;
+        height: 180px;
+      }
+      
+      .cat-graphic {
+        transform: scale(0.6);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-container">
+      <ul>
+        <li><a href="index.html">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="repositories.html">Repositories</a></li>
+        <li><a href="teaching.html">Teaching</a></li>
+        <li><a href="people.html">People</a></li>
+        <li><a href="cats.html" aria-current="page">🐾</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Cat Graphics Container -->
+  <div class="cat-container">
+    <div class="cat-graphic">
+      <div class="cat-silhouette" style="--cat-color: #ff9e6d; --cat-fur: #ffb38a;">
+        <div class="cat-ear left"></div>
+        <div class="cat-ear right"></div>
+        <div class="cat-head"></div>
+        <div class="cat-face">
+          <div class="cat-eyes">
+            <div class="cat-eye"></div>
+            <div class="cat-eye"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="cat-whiskers">
+            <div class="whisker left"></div>
+            <div class="whisker right"></div>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-paw paw-left"></div>
+          <div class="cat-paw paw-right"></div>
+        </div>
+        <div class="cat-tail">
+          <div class="tail-tip"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cat-graphic">
+      <div class="cat-silhouette" style="--cat-color: #bb86fc; --cat-fur: #d0a8ff; animation-delay: 0.5s;">
+        <div class="cat-ear left"></div>
+        <div class="cat-ear right"></div>
+        <div class="cat-head"></div>
+        <div class="cat-face">
+          <div class="cat-eyes">
+            <div class="cat-eye"></div>
+            <div class="cat-eye"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="cat-whiskers">
+            <div class="whisker left"></div>
+            <div class="whisker right"></div>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-paw paw-left"></div>
+          <div class="cat-paw paw-right"></div>
+        </div>
+        <div class="cat-tail" style="animation-delay: 0.3s;">
+          <div class="tail-tip"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cat-graphic">
+      <div class="cat-silhouette" style="--cat-color: #4ecdc4; --cat-fur: #70d7d0; animation-delay: 1s;">
+        <div class="cat-ear left"></div>
+        <div class="cat-ear right"></div>
+        <div class="cat-head"></div>
+        <div class="cat-face">
+          <div class="cat-eyes">
+            <div class="cat-eye"></div>
+            <div class="cat-eye"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="cat-whiskers">
+            <div class="whisker left"></div>
+            <div class="whisker right"></div>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-paw paw-left"></div>
+          <div class="cat-paw paw-right"></div>
+        </div>
+        <div class="cat-tail" style="animation-delay: 0.7s;">
+          <div class="tail-tip"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cat-graphic">
+      <div class="cat-silhouette" style="--cat-color: #ff6b6b; --cat-fur: #ff8e8e; animation-delay: 1.5s;">
+        <div class="cat-ear left"></div>
+        <div class="cat-ear right"></div>
+        <div class="cat-head"></div>
+        <div class="cat-face">
+          <div class="cat-eyes">
+            <div class="cat-eye"></div>
+            <div class="cat-eye"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="cat-whiskers">
+            <div class="whisker left"></div>
+            <div class="whisker right"></div>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-paw paw-left"></div>
+          <div class="cat-paw paw-right"></div>
+        </div>
+        <div class="cat-tail" style="animation-delay: 1s;">
+          <div class="tail-tip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Paw Print Decorations -->
+  <div class="cat-paw-prints" style="top: 20%; left: 10%;">
+    <div class="paw-print" style="animation-delay: 0s;">
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <div class="cat-paw-prints" style="top: 30%; right: 15%;">
+    <div class="paw-print" style="animation-delay: 2s;">
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <div class="cat-paw-prints" style="top: 60%; left: 5%;">
+    <div class="paw-print" style="animation-delay: 4s;">
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <div class="cat-paw-prints" style="top: 80%; right: 10%;">
+    <div class="paw-print" style="animation-delay: 6s;">
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Stray Cat Initiative</h1>
+        <h2>The Number of Stray Cats Fed</h2>
+        <p>
+          Below you'll find statistics on the number of stray cats I fed and the amount of cat food used each year. 
+          Small, consistent actions can create meaningful change for our feline friends.
+        </p>
+      </div>
+
+      <!-- Statistics Container -->
+      <div class="stats-container">
+        <!-- 2024 Card -->
+        <div class="stat-card">
+          <h3>2024</h3>
+          
+          <div class="stat-item">
+            <div class="stat-label">
+              <i class="fas fa-cat cat-icon"></i>
+              Cats Fed
+            </div>
+            <div class="stat-value">10</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-label">
+              <i class="fas fa-weight-hanging kg-icon"></i>
+              Cat Food Used
+            </div>
+            <div class="stat-value">22 kg</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-label">
+              <i class="fas fa-paw cat-icon"></i>
+              Meals Per Cat (Avg)
+            </div>
+            <div class="stat-value">73</div>
+          </div>
+        </div>
+        
+        <!-- 2025 Card -->
+        <div class="stat-card">
+          <h3>2025</h3>
+          
+          <div class="stat-item">
+            <div class="stat-label">
+              <i class="fas fa-cat cat-icon"></i>
+              Cats Fed
+            </div>
+            <div class="stat-value">30</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-label">
+              <i class="fas fa-weight-hanging kg-icon"></i>
+              Cat Food Used
+            </div>
+            <div class="stat-value">50 kg</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-label">
+              <i class="fas fa-paw cat-icon"></i>
+              Meals Per Cat (Avg)
+            </div>
+            <div class="stat-value">55</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Progress Container -->
+      <div class="progress-container">
+        <div class="progress-item">
+          <div class="progress-header">
+            <div class="progress-title">
+              <i class="fas fa-cat"></i>
+              Increase in Cats Fed (2024 to 2025)
+            </div>
+            <div class="progress-percent">200%</div>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 200%"></div>
+          </div>
+        </div>
+        
+        <div class="progress-item">
+          <div class="progress-header">
+            <div class="progress-title">
+              <i class="fas fa-weight-hanging"></i>
+              Increase in Cat Food Used (2024 to 2025)
+            </div>
+            <div class="progress-percent">127%</div>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 127%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Year Comparison -->
+      <div class="year-comparison">
+        <div class="comparison-item">
+          <div class="comparison-value">40</div>
+          <div class="comparison-label">Total Cats Fed</div>
+        </div>
+        
+        <div class="comparison-item">
+          <div class="comparison-value">72 kg</div>
+          <div class="comparison-label">Total Food Used</div>
+        </div>
+        
+        <div class="comparison-item">
+          <div class="comparison-value">128</div>
+          <div class="comparison-label">Average Meals</div>
+        </div>
+      </div>
+      
+      <!-- Impact Statement -->
+      <div class="impact-statement">
+        "Feeding <span>40 stray cats</span> over two years has required <span>72 kg of food</span>, 
+        but the real impact is measured in healthier lives and stronger community bonds."
+      </div>
+    </section>
+  </div>
+
+  <!-- THEME SWITCHER -->
+  <div class="theme-switcher" id="themeSwitcher">
+    <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
+    <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
+    <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Ayyuce Demirbas. All Rights Reserved. | Making the world better for all creatures, big and small.</p>
+  </footer>
+
+  <script>
+    // THEME SWITCHING
+    function switchTheme(theme) {
+      if (theme === 'system') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+      localStorage.setItem('preferred-theme', theme);
+    }
+
+    // Initialize theme
+    (function initTheme() {
+      const savedTheme = localStorage.getItem('preferred-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+    
+    // Animation on scroll for progress bars
+    document.addEventListener('DOMContentLoaded', function() {
+      // Simple animation for progress bars
+      const progressBars = document.querySelectorAll('.progress-bar-fill');
+      
+      // Set initial width to 0 for animation
+      progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0';
+        
+        // Animate after a short delay
+        setTimeout(() => {
+          bar.style.width = width;
+        }, 300);
+      });
+    });
+  </script>
+</body>
+</html>
