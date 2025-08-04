@@ -236,14 +236,56 @@
     .gr_grid_container {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 10px;
+      gap: 12px; /* Increased gap for better spacing */
+      margin-top: 15px;
     }
     
+    /* Updated book container styles */
     .gr_grid_book_container {
-      flex: 0 0 39px;
-      height: 60px;
-      overflow: hidden;
+      flex: 0 0 70px; /* Increased width */
+      height: auto; /* Height now adjusts automatically */
+      overflow: visible; /* Changed to visible to show entire image */
+      position: relative;
+    }
+    
+    /* New styles for book images */
+    .gr_grid_book_container img {
+      width: 70px; /* Fixed width */
+      height: 105px; /* Fixed height for consistency */
+      object-fit: contain; /* Show entire cover without cropping */
+      border-radius: 4px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    /* Hover effect for book images */
+    .gr_grid_book_container img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+    
+    /* Book title tooltip */
+    .gr_grid_book_container::after {
+      content: attr(data-title);
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 20;
+    }
+    
+    .gr_grid_book_container:hover::after {
+      opacity: 1;
     }
     
     .reading-challenge {
@@ -357,6 +399,33 @@
       .gr_grid_container {
         justify-content: center;
       }
+      
+      /* Adjust book sizes for mobile */
+      .gr_grid_book_container {
+        flex: 0 0 60px;
+      }
+      
+      .gr_grid_book_container img {
+        width: 60px;
+        height: 90px;
+      }
+    }
+    
+    /* Book grid title */
+    .goodreads-widgets h3 {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    
+    /* Grid branding */
+    .gr_grid_branding {
+      display: block;
+      text-align: right;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--accent) !important;
     }
   </style>
 </head>
@@ -461,28 +530,108 @@
           <h3>Favorite Books</h3>
           <div id="gr_grid_widget_1750365637">
             <div class="gr_grid_container">
-              <div class="gr_grid_book_container"><a title="A Brief History of Time" rel="nofollow" href="https://www.goodreads.com/book/show/3869.A_Brief_History_of_Time"><img alt="A Brief History of Time" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333578746l/3869._SX50_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="The Martian" rel="nofollow" href="https://www.goodreads.com/book/show/18007564-the-martian"><img alt="The Martian" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1413706054l/18007564._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="Sapiens: A Brief History of Humankind" rel="nofollow" href="https://www.goodreads.com/book/show/23692271-sapiens"><img alt="Sapiens: A Brief History of Humankind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1703329310l/23692271._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="21 Lessons for the 21st Century" rel="nofollow" href="https://www.goodreads.com/book/show/38820046-21-lessons-for-the-21st-century"><img alt="21 Lessons for the 21st Century" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1564577305l/38820046._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="A Vindication of the Rights of Women" rel="nofollow" href="https://www.goodreads.com/book/show/419261.A_Vindication_of_the_Rights_of_Women"><img alt="A Vindication of the Rights of Women" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1174583774l/419261._SX50_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="The Quest for Artificial Intelligence" rel="nofollow" href="https://www.goodreads.com/book/show/7465939-the-quest-for-artificial-intelligence"><img alt="The Quest for Artificial Intelligence" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1347808400l/7465939._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="I, Robot (Robot, #0.1)" rel="nofollow" href="https://www.goodreads.com/book/show/41804.I_Robot"><img alt="I, Robot" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1609035271l/41804._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="The Emperor's New Mind" rel="nofollow" href="https://www.goodreads.com/book/show/179744.The_Emperor_s_New_Mind"><img alt="The Emperor's New Mind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1347652000l/179744._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="Tragic Sense of Life" rel="nofollow" href="https://www.goodreads.com/book/show/144915.Tragic_Sense_of_Life"><img alt="Tragic Sense of Life" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1401410570l/144915._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="Steve Jobs" rel="nofollow" href="https://www.goodreads.com/book/show/11084145-steve-jobs"><img alt="Steve Jobs" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1511288482l/11084145._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="Algorithms to Live By: The Computer Science of Human Decisions" rel="nofollow" href="https://www.goodreads.com/book/show/25666050-algorithms-to-live-by"><img alt="Algorithms to Live By: The Computer Science of Human Decisions" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1454296875l/25666050._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="Life 3.0: Being Human in the Age of Artificial Intelligence" rel="nofollow" href="https://www.goodreads.com/book/show/34274957-life-3-0"><img alt="Life 3.0: Being Human in the Age of Artificial Intelligence" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1498857371l/34274957._SX50_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="Why We Sleep: The New Science of Sleep and Dreams" rel="nofollow" href="https://www.goodreads.com/book/show/36303871-why-we-sleep"><img alt="Why We Sleep: The New Science of Sleep and Dreams" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1514887741l/36303871._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="How to Write & Publish a Scientific Paper" rel="nofollow" href="https://www.goodreads.com/book/show/1912729.How_to_Write_Publish_a_Scientific_Paper"><img alt="How to Write & Publish a Scientific Paper" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1387753080l/1912729._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="How to Build a Time Machine: The Real Science of Time Travel" rel="nofollow" href="https://www.goodreads.com/book/show/11499781-how-to-build-a-time-machine"><img alt="How to Build a Time Machine: The Real Science of Time Travel" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1317794132l/11499781._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="The Reason Why: The Miracle of Life on Earth" rel="nofollow" href="https://www.goodreads.com/book/show/10908797-the-reason-why"><img alt="The Reason Why: The Miracle of Life on Earth" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1328216106l/10908797._SY75_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="Sapiens: A Graphic History, Volume 1 - The Birth of Humankind" rel="nofollow" href="https://www.goodreads.com/book/show/54110137-sapiens"><img alt="Sapiens: A Graphic History, Volume 1 - The Birth of Humankind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1594616346l/54110137._SX50_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="Homo Deus: A Brief History of Tomorrow" rel="nofollow" href="https://www.goodreads.com/book/show/28092870-homo-deus"><img alt="Homo Deus: A Brief History of Tomorrow" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1455858241l/28092870._SX50_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="The Universe in a Nutshell" rel="nofollow" href="https://www.goodreads.com/book/show/2095.The_Universe_in_a_Nutshell"><img alt="The Universe in a Nutshell" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1526743965l/2095._SX50_.jpg" /></a></div>
-              <div class="gr_grid_book_container"><a title="The Star Trek Book: Strange New Worlds Boldly Explained" rel="nofollow" href="https://www.goodreads.com/book/show/27209477-the-star-trek-book"><img alt="The Star Trek Book: Strange New Worlds Boldly Explained" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1460907980l/27209477._SX50_.jpg" /></a></div>
+              <div class="gr_grid_book_container" data-title="A Brief History of Time">
+                <a title="A Brief History of Time" rel="nofollow" href="https://www.goodreads.com/book/show/3869.A_Brief_History_of_Time">
+                  <img alt="A Brief History of Time" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333578746l/3869._SX150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="The Martian">
+                <a title="The Martian" rel="nofollow" href="https://www.goodreads.com/book/show/18007564-the-martian">
+                  <img alt="The Martian" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1413706054l/18007564._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="Sapiens: A Brief History of Humankind">
+                <a title="Sapiens: A Brief History of Humankind" rel="nofollow" href="https://www.goodreads.com/book/show/23692271-sapiens">
+                  <img alt="Sapiens: A Brief History of Humankind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1703329310l/23692271._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="21 Lessons for the 21st Century">
+                <a title="21 Lessons for the 21st Century" rel="nofollow" href="https://www.goodreads.com/book/show/38820046-21-lessons-for-the-21st-century">
+                  <img alt="21 Lessons for the 21st Century" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1564577305l/38820046._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="A Vindication of the Rights of Women">
+                <a title="A Vindication of the Rights of Women" rel="nofollow" href="https://www.goodreads.com/book/show/419261.A_Vindication_of_the_Rights_of_Women">
+                  <img alt="A Vindication of the Rights of Women" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1174583774l/419261._SX150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="The Quest for Artificial Intelligence">
+                <a title="The Quest for Artificial Intelligence" rel="nofollow" href="https://www.goodreads.com/book/show/7465939-the-quest-for-artificial-intelligence">
+                  <img alt="The Quest for Artificial Intelligence" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1347808400l/7465939._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="I, Robot">
+                <a title="I, Robot (Robot, #0.1)" rel="nofollow" href="https://www.goodreads.com/book/show/41804.I_Robot">
+                  <img alt="I, Robot" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1609035271l/41804._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="The Emperor's New Mind">
+                <a title="The Emperor's New Mind" rel="nofollow" href="https://www.goodreads.com/book/show/179744.The_Emperor_s_New_Mind">
+                  <img alt="The Emperor's New Mind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1347652000l/179744._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="Tragic Sense of Life">
+                <a title="Tragic Sense of Life" rel="nofollow" href="https://www.goodreads.com/book/show/144915.Tragic_Sense_of_Life">
+                  <img alt="Tragic Sense of Life" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1401410570l/144915._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="Steve Jobs">
+                <a title="Steve Jobs" rel="nofollow" href="https://www.goodreads.com/book/show/11084145-steve-jobs">
+                  <img alt="Steve Jobs" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1511288482l/11084145._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="Algorithms to Live By">
+                <a title="Algorithms to Live By: The Computer Science of Human Decisions" rel="nofollow" href="https://www.goodreads.com/book/show/25666050-algorithms-to-live-by">
+                  <img alt="Algorithms to Live By: The Computer Science of Human Decisions" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1454296875l/25666050._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="Life 3.0">
+                <a title="Life 3.0: Being Human in the Age of Artificial Intelligence" rel="nofollow" href="https://www.goodreads.com/book/show/34274957-life-3-0">
+                  <img alt="Life 3.0: Being Human in the Age of Artificial Intelligence" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1498857371l/34274957._SX150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="Why We Sleep">
+                <a title="Why We Sleep: The New Science of Sleep and Dreams" rel="nofollow" href="https://www.goodreads.com/book/show/36303871-why-we-sleep">
+                  <img alt="Why We Sleep: The New Science of Sleep and Dreams" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1514887741l/36303871._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="How to Write & Publish a Scientific Paper">
+                <a title="How to Write & Publish a Scientific Paper" rel="nofollow" href="https://www.goodreads.com/book/show/1912729.How_to_Write_Publish_a_Scientific_Paper">
+                  <img alt="How to Write & Publish a Scientific Paper" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1387753080l/1912729._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="How to Build a Time Machine">
+                <a title="How to Build a Time Machine: The Real Science of Time Travel" rel="nofollow" href="https://www.goodreads.com/book/show/11499781-how-to-build-a-time-machine">
+                  <img alt="How to Build a Time Machine: The Real Science of Time Travel" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1317794132l/11499781._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="The Reason Why">
+                <a title="The Reason Why: The Miracle of Life on Earth" rel="nofollow" href="https://www.goodreads.com/book/show/10908797-the-reason-why">
+                  <img alt="The Reason Why: The Miracle of Life on Earth" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1328216106l/10908797._SY150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="Sapiens: Graphic History">
+                <a title="Sapiens: A Graphic History, Volume 1 - The Birth of Humankind" rel="nofollow" href="https://www.goodreads.com/book/show/54110137-sapiens">
+                  <img alt="Sapiens: A Graphic History, Volume 1 - The Birth of Humankind" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1594616346l/54110137._SX150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="Homo Deus">
+                <a title="Homo Deus: A Brief History of Tomorrow" rel="nofollow" href="https://www.goodreads.com/book/show/28092870-homo-deus">
+                  <img alt="Homo Deus: A Brief History of Tomorrow" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1455858241l/28092870._SX150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="The Universe in a Nutshell">
+                <a title="The Universe in a Nutshell" rel="nofollow" href="https://www.goodreads.com/book/show/2095.The_Universe_in_a_Nutshell">
+                  <img alt="The Universe in a Nutshell" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1526743965l/2095._SX150_.jpg" />
+                </a>
+              </div>
+              <div class="gr_grid_book_container" data-title="The Star Trek Book">
+                <a title="The Star Trek Book: Strange New Worlds Boldly Explained" rel="nofollow" href="https://www.goodreads.com/book/show/27209477-the-star-trek-book">
+                  <img alt="The Star Trek Book: Strange New Worlds Boldly Explained" border="0" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1460907980l/27209477._SX150_.jpg" />
+                </a>
+              </div>
             </div>
-            <a class="gr_grid_branding" style="font-size: .9em; color: #382110; text-decoration: none; float: right; clear: both" rel="nofollow" href="https://www.goodreads.com/user/show/110847520-ayyuce-demirbas">More books »</a>
+            <a class="gr_grid_branding" style="font-size: .9em; text-decoration: none; float: right; clear: both" rel="nofollow" href="https://www.goodreads.com/user/show/110847520-ayyuce-demirbas">More books »</a>
           </div>
         </div>
 
