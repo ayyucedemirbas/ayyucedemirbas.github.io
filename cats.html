@@ -733,6 +733,170 @@
     }
 
     /* -------------------------------
+       GALLERY STYLES
+    --------------------------------*/
+    .gallery-section {
+      margin-top: 4rem;
+      width: 100%;
+    }
+
+    .gallery-title {
+      font-size: 2rem;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: var(--cat-color);
+    }
+
+    .gallery-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .gallery-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .gallery-slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gallery-slide.active {
+      opacity: 1;
+      z-index: 10;
+      animation: fadeSlide 0.5s ease-in-out;
+    }
+
+    .gallery-slide.prev {
+      animation: fadeOut 0.5s ease-in-out;
+    }
+
+    .gallery-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    .gallery-nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(187, 134, 252, 0.7);
+      color: white;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .gallery-nav-button:hover {
+      background: var(--cat-color);
+      transform: translateY(-50%) scale(1.15);
+      box-shadow: 0 8px 24px rgba(187, 134, 252, 0.5);
+    }
+
+    .gallery-nav-button:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    .gallery-nav-button.prev {
+      left: 1rem;
+    }
+
+    .gallery-nav-button.next {
+      right: 1rem;
+    }
+
+    .gallery-counter {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      z-index: 20;
+    }
+
+    .gallery-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    .gallery-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .gallery-dot:hover {
+      background: var(--accent);
+      transform: scale(1.2);
+    }
+
+    .gallery-dot.active {
+      background: var(--cat-color);
+      width: 32px;
+      border-radius: 6px;
+    }
+
+    /* -------------------------------
        THEME SWITCHER
     --------------------------------*/
     .theme-switcher {
@@ -827,6 +991,24 @@
       
       .cat-graphic {
         transform: scale(0.6);
+      }
+
+      .gallery-nav-button {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+
+      .gallery-nav-button.prev {
+        left: 0.5rem;
+      }
+
+      .gallery-nav-button.next {
+        right: 0.5rem;
+      }
+
+      .gallery-container {
+        padding: 1.5rem;
       }
     }
   </style>
@@ -1104,6 +1286,24 @@
         "Feeding <span>40 stray cats</span> over two years has required <span>72 kg of food</span>, 
         but the real impact is measured in healthier lives and stronger community bonds."
       </div>
+
+      <!-- Gallery Section -->
+      <div class="gallery-section">
+        <h2 class="gallery-title">Meet the Cats</h2>
+        <div class="gallery-container">
+          <div class="gallery-wrapper" id="galleryWrapper"></div>
+          <button class="gallery-nav-button prev" onclick="prevSlide()">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="gallery-nav-button next" onclick="nextSlide()">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          <div class="gallery-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">0</span>
+          </div>
+        </div>
+        <div class="gallery-dots" id="galleryDots"></div>
+      </div>
     </section>
   </div>
 
@@ -1120,6 +1320,101 @@
   </footer>
 
   <script>
+    // GALLERY FUNCTIONALITY
+    let currentSlide = 0;
+    let totalImages = 0;
+
+    function initGallery() {
+      const galleryWrapper = document.getElementById('galleryWrapper');
+      const galleryDots = document.getElementById('galleryDots');
+      let imageCount = 1;
+      let imagesLoaded = 0;
+
+      // Check how many images exist
+      const checkImages = () => {
+        const img = new Image();
+        img.onload = () => {
+          totalImages = imageCount;
+          loadGallery();
+        };
+        img.onerror = () => {
+          if (imageCount === 1) {
+            console.warn('No cat images found in the cats folder');
+            galleryWrapper.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text); font-size: 1.2rem;">No cat photos available yet. Add images to the cats folder!</div>';
+            document.getElementById('totalSlides').textContent = '0';
+          } else {
+            totalImages = imageCount - 1;
+            loadGallery();
+          }
+        };
+        img.src = `cats/cat${imageCount}.png`;
+        imageCount++;
+        
+        if (imageCount <= 5) {
+          setTimeout(checkImages, 100);
+        }
+      };
+
+      const loadGallery = () => {
+        galleryWrapper.innerHTML = '';
+        galleryDots.innerHTML = '';
+
+        for (let i = 1; i <= totalImages; i++) {
+          const slide = document.createElement('div');
+          slide.className = `gallery-slide ${i === 1 ? 'active' : ''}`;
+          slide.innerHTML = `<img src="cats/cat${i}.png" alt="Stray cat ${i}">`;
+          galleryWrapper.appendChild(slide);
+
+          const dot = document.createElement('div');
+          dot.className = `gallery-dot ${i === 1 ? 'active' : ''}`;
+          dot.onclick = () => goToSlide(i - 1);
+          galleryDots.appendChild(dot);
+        }
+
+        document.getElementById('totalSlides').textContent = totalImages;
+        document.getElementById('currentSlide').textContent = '1';
+      };
+
+      checkImages();
+    }
+
+    function showSlide(n) {
+      const slides = document.querySelectorAll('.gallery-slide');
+      const dots = document.querySelectorAll('.gallery-dot');
+
+      if (n >= totalImages) currentSlide = 0;
+      if (n < 0) currentSlide = totalImages - 1;
+
+      slides.forEach((slide, idx) => {
+        slide.classList.remove('active', 'prev');
+        if (idx !== currentSlide) {
+          slide.classList.add('prev');
+        }
+      });
+      dots.forEach(dot => dot.classList.remove('active'));
+
+      if (slides[currentSlide]) {
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+        document.getElementById('currentSlide').textContent = currentSlide + 1;
+      }
+    }
+
+    function nextSlide() {
+      currentSlide++;
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide--;
+      showSlide(currentSlide);
+    }
+
+    function goToSlide(n) {
+      currentSlide = n;
+      showSlide(currentSlide);
+    }
+
     // THEME SWITCHING
     function switchTheme(theme) {
       if (theme === 'system') {
@@ -1151,6 +1446,9 @@
           bar.style.width = width;
         }, 300);
       });
+
+      // Initialize gallery
+      initGallery();
     });
   </script>
 </body>
