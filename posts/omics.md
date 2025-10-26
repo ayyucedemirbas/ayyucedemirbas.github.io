@@ -2,7 +2,7 @@
 
 ### 1. Introduction
 
-This project implements a **Graph Neural Network (GNN)** to predict patient survival status ("Alive" or "Deceased") in the **TCGA-BRCA** (Breast Invasive Carcinoma) dataset. The code integrates **multi-omics features**—RNA expression (`rs_`), copy number variation (`cn_`), mutation (`mu_`), and proteomics (`pp_`)—into a unified framework where **each patient is represented as a node** in a graph. Edges between patients are established based on feature similarity, allowing the model to capture relationships among biologically similar individuals.
+This project implements a **Graph Neural Network (GNN)** to predict patient survival status ("Alive" or "Deceased") in the **TCGA-BRCA** (Breast Invasive Carcinoma) dataset. The code integrates **multi-omics features**, RNA expression (`rs_`), copy number variation (`cn_`), mutation (`mu_`), and proteomics (`pp_`), into a unified framework where **each patient is represented as a node** in a graph. Edges between patients are established based on feature similarity, allowing the model to capture relationships among biologically similar individuals.
 
 ---
 
@@ -143,9 +143,9 @@ adj_matrix = (cosine_similarity(X) > threshold).astype(np.float32)
 * **Edges** = Cosine similarity > threshold (e.g., 0.5)
 
 This graph captures patient-to-patient relationships based on molecular profile similarity. The adjacency matrix is normalized using the **symmetric degree normalization** technique common in GCNs:
-[
-\hat{A} = D^{-1/2}(A + I)D^{-1/2}
-]
+
+$\hat{A} = D^{-1/2}(A + I)D^{-1/2}$
+
 This normalization stabilizes message passing during training.
 
 ```python
@@ -194,9 +194,8 @@ def create_patient_adjacency_matrix(X, method='cosine', threshold=0.7, k_neighbo
 ### 5. Graph Neural Layer
 
 The custom `GraphNeuralLayer` class defines how each patient (node) updates its representation:
-[
-h_i^{(l+1)} = \sigma(W_{\text{self}}h_i^{(l)} + \sum_{j \in \mathcal{N}(i)} A_{ij}W_{\text{msg}}h_j^{(l)})
-]
+
+$h_i^{(l+1)} = \sigma(W_{\text{self}}h_i^{(l)} + \sum_{j \in \mathcal{N}(i)} A_{ij}W_{\text{msg}}h_j^{(l)})$
 
 * **`W_self`** → weights for self-feature updates
 * **`W_msg`** → weights for neighbor messages
@@ -541,10 +540,6 @@ By reframing survival prediction as a **node classification task**, this approac
 * Integrates multiple omics layers seamlessly.
 * Exploits patient similarity patterns often ignored in linear models.
 * Provides an interpretable graph structure that may reveal **subgroups of molecularly similar patients**.
-
----
-
-### 11. Extensions
 
 Possible next steps include:
 
