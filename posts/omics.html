@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cache-Augmented Generation (CAG) | Ayyuce Demirbas</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/logo.png">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  
+  <style>
+    :root {
+      --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --bg-dark: #121212;
+      --text-dark: #f0f0f0;
+      --accent-dark: #bb86fc;
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --accent: var(--accent-dark);
+      --transition-speed: 0.3s;
+    }
+
+    [data-theme="light"] {
+      --bg: #fefefe;
+      --text: #111111;
+      --accent: #0077ff;
+      --glass-bg: rgba(0, 0, 0, 0.03);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+    }
+
+    nav {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 0;
+      padding: 1rem 0;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.03rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    nav a[aria-current="page"] {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    nav a[aria-current="page"]:hover {
+      background: var(--accent);
+      opacity: 0.9;
+    }
+
+    .post-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    .blog-post {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .post-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .post-title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .post-date {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .post-tags {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .post-tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .post-tag:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+
+    .post-content-full {
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+
+    .post-content-full h1,
+    .post-content-full h2,
+    .post-content-full h3,
+    .post-content-full h4 {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .post-content-full h2 {
+      font-size: 1.8rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+    }
+
+    .post-content-full h3 {
+      font-size: 1.5rem;
+    }
+
+    .post-content-full p {
+      margin-bottom: 1.5rem;
+    }
+
+    .post-content-full img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 2rem 0;
+      display: block;
+    }
+
+    .post-content-full pre {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    .post-content-full code {
+      font-family: 'Courier New', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+    }
+
+    .post-content-full blockquote {
+      border-left: 4px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+    }
+
+    .post-content-full ul,
+    .post-content-full ol {
+      margin: 1.5rem 0;
+      padding-left: 2rem;
+    }
+
+    .post-content-full li {
+      margin-bottom: 0.5rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.8rem 1.5rem;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    .theme-switcher {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      background: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    /* Highlight featured image */
+    .featured-image-container {
+      width: 100%;
+      max-height: 400px;
+      overflow: hidden;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+
+    .featured-image {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      transition: transform 5s ease;
+    }
+
+    .featured-image-container:hover .featured-image {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+      nav a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+      .post-container {
+        padding: 2rem 1rem;
+      }
+      .post-title {
+        font-size: 1.8rem;
+      }
+      .featured-image-container {
+        max-height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <ul>
+        <li><a href="../index.html">About</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../publications.html">Publications</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../repositories.html">Repositories</a></li>
+        <li><a href="../teaching.html">Teaching</a></li>
+        <li><a href="../people.html">People</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="post-container">
+    <article class="blog-post">
+      <header class="post-header">
+        <h1 class="post-title">Building Patient Graphs for Multi-Omics Cancer Survival Classification Using Graph Neural Networks (GNNs)</h1>
+        <div class="post-date"><i class="far fa-calendar-alt"></i> October 27, 2025</div>
+        <div class="post-tags">
+          <span class="post-tag">Multi-Omics</span>
+
+        </div>
+      </header>
+
+      <div class="featured-image-container">
+        <img src="images/omics/omics.png" alt="Dataset" class="featured-image">
+      </div>
+
+      <div class="post-content-full" id="markdown-content">
+        <!-- The markdown content will be loaded and rendered here -->
+      </div>
+
+      <a href="../blog.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Blog
+      </a>
+    </article>
+  </div>
+
+  <div class="theme-switcher" id="themeSwitcher">
+    <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
+    <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
+    <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Ayyuce Demirbas. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Configure markdown parser
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      smartypants: true,
+      highlight: function(code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+        return hljs.highlight(code, { language }).value;
+      }
+    });
+
+    // Load markdown content
+    async function loadMarkdownContent() {
+      try {
+        const response = await fetch('omics.md');
+        if (!response.ok) throw new Error('Failed to load markdown content');
+        
+        const markdown = await response.text();
+        document.getElementById('markdown-content').innerHTML = marked.parse(markdown);
+        
+        // Initialize code highlighting
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightBlock(block);
+        });
+      } catch (error) {
+        console.error('Error loading markdown:', error);
+        document.getElementById('markdown-content').innerHTML = `
+          <div class="error-message">
+            <h2>Error Loading Content</h2>
+            <p>The requested markdown file could not be loaded.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Theme switching functionality
+    function switchTheme(theme) {
+      if (theme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+      localStorage.setItem('preferred-theme', theme);
+    }
+
+    // Initialize theme
+    function initTheme() {
+      const savedTheme = localStorage.getItem('preferred-theme') || 'dark';
+      if (savedTheme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+      
+      const buttons = document.querySelectorAll('.theme-switcher button');
+      buttons.forEach(btn => {
+        const btnTheme = btn.textContent.toLowerCase().includes('light') ? 'light' : 
+                         btn.textContent.toLowerCase().includes('dark') ? 'dark' : 'system';
+        if (btnTheme === savedTheme) {
+          btn.style.background = 'var(--accent)';
+          btn.style.color = 'var(--bg)';
+        }
+      });
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMarkdownContent();
+      initTheme();
+    });
+  </script>
+</body>
+</html>
