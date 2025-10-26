@@ -8,6 +8,18 @@ This project implements a **Graph Neural Network (GNN)** to predict patient surv
 
 ### 2. Data Representation
 
+- **`RNA-seq data (rs_ prefix)`** : Gene expression profiles capturing transcriptional activity
+- **`Copy number variations (cn_ prefix)`** : Genomic amplifications and deletions
+- **`Mutation data (mu_ prefix)`** : Somatic mutations in cancer-related genes
+- **`Protein expression (pp_ prefix)`** : Post-translational modifications and protein abundance
+
+The column naming convention (e.g., rs_CLEC3A, rs_CPB1, rs_SCGB2A2) indicates gene-specific measurements across these modalities. Notable genes in the dataset include:
+
+- **`CLEC3A`** : C-type lectin domain family protein, involved in immune response
+- **`TFF1`** : Trefoil factor 1, an estrogen-responsive gene commonly studied in breast cancer
+- **`KRT14/KRT5`** : Keratin markers associated with basal-like breast cancer subtypes
+- **`CEACAM5`** : Carcinoembryonic antigen, a tumor marker
+
 Each column in the dataset corresponds to a biological feature:
 
 * **`rs_*`** → RNA-seq expression levels (e.g., `rs_CLEC3A`, `rs_CPB1`)
@@ -34,6 +46,10 @@ The `load_and_preprocess_data()` function performs:
 4. **Feature categorization:** automatically detects feature types by prefix.
 
 This results in a clean, balanced dataset ready for graph construction.
+
+Missing values are imputed using median values for each feature. This approach is robust to outliers, which is particularly important in omics data where extreme values may represent genuine biological signals rather than noise. The median imputation strategy preserves the central tendency of the data distribution while avoiding the bias that mean imputation might introduce in skewed distributions.
+
+This script also implements flexible label encoding to handle various representations of survival status.
 
 
 ```python
@@ -139,8 +155,31 @@ The **patient adjacency matrix** defines how patients are connected:
 adj_matrix = (cosine_similarity(X) > threshold).astype(np.float32)
 ```
 
-* **Nodes** = Patients
-* **Edges** = Cosine similarity > threshold (e.g., 0.5)
+* **Nodes** = Individual patients
+* **Edges** = Connections between patients with similar multi-omics profiles. Cosine similarity > threshold (e.g., 0.5)
+* **Edge weights** = Strength of similarity between patients
+
+**Similarity Metrics**
+**Cosine Similarity**
+**Advantages**:
+
+- Scale-invariant (unaffected by feature magnitude)
+- Computationally efficient
+- Interpretable (ranges from -1 to 1)
+
+**Application to Multi-Omics**: Cosine similarity is particularly appropriate for gene expression data, where the pattern of expression across genes is more biologically meaningful than absolute expression levels.
+
+**Correlation-Based Similarity**
+Pearson correlation captures linear relationships between patient feature vectors. The `np.abs()` operation considers both positive and negative correlations as indicators of similarity. `np.nan_to_num()` protects against undefined correlations that might arise from constant feature values.
+
+**k-Nearest Neighbors**
+**Advantages:**
+
+- Adaptive to local density variations
+- Does not require threshold tuning
+- Guarantees minimum connectivity
+
+**Symmetrization:** The (adj_matrix + adj_matrix.T) / 2 operation ensures the graph is undirected, which is biologically appropriate (similarity should be symmetric).
 
 This graph captures patient-to-patient relationships based on molecular profile similarity. The adjacency matrix is normalized using the **symmetric degree normalization** technique common in GCNs:
 
@@ -317,6 +356,28 @@ def build_patient_gnn_model(n_patients, n_features, num_classes=2):
     return model
 
 ```
+
+**Architectural Choices:**
+
+**Hierarchical Dimension Reduction:** 128 → 64 → 32 neurons
+
+- Progressively abstracts patient representations
+- Balances expressiveness with computational efficiency
+- Reduces risk of overfitting on high-dimensional omics data
+
+
+**Dropout Regularization:** 0.3, 0.3, 0.2
+
+- Prevents co-adaptation of neurons
+- Forces robust feature learning
+- Slightly reduced in final layer to preserve information flow
+
+
+**Sigmoid Output:**
+
+- Produces probability estimates for binary classification
+- Enables interpretable confidence scores
+- Compatible with binary cross-entropy loss
 
 ---
 
