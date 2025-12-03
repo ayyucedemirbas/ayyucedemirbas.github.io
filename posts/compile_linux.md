@@ -40,8 +40,8 @@ To use your current linux kernel’s configurations, use this command
 
 7. Run these commands to prevent certification errors on Ubuntu/Debian:
 
-        ```scripts/config --disable CONFIG_SYSTEM_TRUSTED_KEYS```
-         ```scripts/config --disable CONFIG_SYSTEM_REVOCATION_KEYS```
+```scripts/config --disable CONFIG_SYSTEM_TRUSTED_KEYS```
+```scripts/config --disable CONFIG_SYSTEM_REVOCATION_KEYS```
 
 8. Check your CPU cores 
 
