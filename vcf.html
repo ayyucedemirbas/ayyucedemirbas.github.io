@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VCF Studio Web</title>
+    <style>
+        :root {
+            --bg-dark: #1e1e1e;
+            --bg-panel: #252526;
+            --bg-header: #333333;
+            --border: #3e3e42;
+            --text-main: #e0e0e0;
+            --text-muted: #858585;
+            --accent: #007acc;
+            --accent-hover: #0062a3;
+            --selection: #375a7f;
+            --code-color: #ce9178;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        #app {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #0099ff, #005a9e);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .control-group { margin-bottom: 20px; }
+        .label { font-size: 11px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+        input[type="text"] {
+            width: 100%;
+            background-color: #3c3c3c;
+            border: 1px solid #555;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--accent); }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn:hover { background-color: var(--accent-hover); }
+        
+        #fileInput { display: none; }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .stats { font-size: 12px; color: var(--text-muted); margin-top: auto; }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0; 
+        }
+
+        .table-container {
+            flex: 2;
+            overflow: auto;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            table-layout: fixed;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-header);
+            z-index: 10;
+        }
+
+        th {
+            text-align: left;
+            padding: 8px;
+            color: #cccccc;
+            font-weight: 600;
+            border-right: 1px solid #404040;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        th:nth-child(1) { width: 80px; } /* Chrom */
+        th:nth-child(2) { width: 100px; text-align: right; } /* Pos */
+        th:nth-child(3) { width: 100px; } /* ID */
+        th:nth-child(4) { width: 60px; } /* Ref */
+        th:nth-child(5) { width: 60px; } /* Alt */
+        th:nth-child(6) { width: 70px; text-align: right; } /* Qual */
+        th:nth-child(7) { width: 80px; } /* Filter */
+        th:nth-child(8) { width: auto; } /* Info */
+
+        td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #2d2d30;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+        
+
+        td:nth-child(2), td:nth-child(6) { text-align: right; font-family: 'Menlo', monospace; }
+
+        tr:nth-child(even) { background-color: #2d2d30; }
+        tr:hover { background-color: #2a2d2e; }
+        tr.selected { background-color: var(--selection) !important; color: white; }
+
+        .detail-panel {
+            flex: 1;
+            background-color: var(--bg-dark);
+            padding: 15px;
+            overflow: auto;
+            font-family: 'Menlo', 'Monaco', monospace;
+            font-size: 12px;
+            color: var(--code-color);
+            line-height: 1.5;
+        }
+
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: #424242; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4f4f4f; }
+
+
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #fff;
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="spinner"></div>
+    <div id="loaderText">Parsing VCF...</div>
+</div>
+
+<div id="app">
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">VCF</div>
+            VCF Studio
+        </div>
+
+        <div class="control-group">
+            <span class="label">File</span>
+            <button class="btn" onclick="document.getElementById('fileInput').click()">Load VCF File</button>
+            <input type="file" id="fileInput" accept=".vcf,.txt">
+        </div>
+
+        <div class="control-group">
+            <span class="label">Filter</span>
+            <input type="text" id="searchInput" placeholder="Search Chrom, ID, Info..." disabled>
+        </div>
+
+        <div class="control-group">
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="passCheckbox" disabled>
+                Show PASS Only
+            </label>
+        </div>
+
+        <div class="stats">
+            <div id="statusText">Ready to load.</div>
+            <div id="countText" style="margin-top: 5px; font-weight: bold; color: white;">Variants: 0</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="table-container">
+            <table id="vcfTable">
+                <thead>
+                    <tr>
+                        <th>CHROM</th>
+                        <th>POS</th>
+                        <th>ID</th>
+                        <th>REF</th>
+                        <th>ALT</th>
+                        <th>QUAL</th>
+                        <th>FILTER</th>
+                        <th>INFO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+        <div class="detail-panel" id="detailPanel">
+            Select a variant to view full details...
+        </div>
+    </div>
+</div>
+
+<script>
+    let allVariants = [];
+    let filteredVariants = [];
+    
+    const fileInput = document.getElementById('fileInput');
+    const searchInput = document.getElementById('searchInput');
+    const passCheckbox = document.getElementById('passCheckbox');
+    const tableBody = document.querySelector('#vcfTable tbody');
+    const detailPanel = document.getElementById('detailPanel');
+    const statusText = document.getElementById('statusText');
+    const countText = document.getElementById('countText');
+    const loader = document.getElementById('loader');
+
+    fileInput.addEventListener('change', handleFileUpload);
+    searchInput.addEventListener('input', debounce(applyFilters, 300));
+    passCheckbox.addEventListener('change', applyFilters);
+
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        allVariants = [];
+        tableBody.innerHTML = '';
+        detailPanel.textContent = 'Select a variant to view full details...';
+        statusText.textContent = `Reading ${file.name}...`;
+        
+        loader.style.display = 'flex';
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const content = e.target.result;
+            parseVCF(content);
+        };
+        reader.readAsText(file);
+    }
+
+    function parseVCF(text) {
+        setTimeout(() => {
+            const lines = text.split('\n');
+            const data = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line || line.startsWith('#')) continue;
+
+                const cols = line.split('\t');
+                if (cols.length < 8) continue;
+
+                const variant = {
+                    chrom: cols[0],
+                    pos: cols[1],
+                    id: cols[2],
+                    ref: cols[3],
+                    alt: cols[4],
+                    qual: cols[5],
+                    filter: cols[6],
+                    info: cols[7],
+                    raw: line
+                };
+                data.push(variant);
+                
+            }
+
+            allVariants = data;
+            
+            searchInput.disabled = false;
+            passCheckbox.disabled = false;
+            
+            statusText.textContent = `Loaded ${allVariants.length.toLocaleString()} variants.`;
+            loader.style.display = 'none';
+            
+            applyFilters();
+        }, 100);
+    }
+
+    function applyFilters() {
+        const query = searchInput.value.toLowerCase();
+        const showPassOnly = passCheckbox.checked;
+
+        filteredVariants = allVariants.filter(v => {
+            if (showPassOnly && v.filter !== 'PASS') return false;
+            if (query) {
+                // Search in common fields
+                const searchStr = `${v.chrom} ${v.pos} ${v.id} ${v.info}`.toLowerCase();
+                if (!searchStr.includes(query)) return false;
+            }
+            return true;
+        });
+
+        countText.textContent = `Showing: ${filteredVariants.length.toLocaleString()}`;
+        renderTable();
+    }
+
+    function renderTable() {
+        const MAX_RENDER = 1000;
+        const displayData = filteredVariants.slice(0, MAX_RENDER);
+        
+        let html = '';
+        
+        displayData.forEach((v, index) => {
+            
+            html += `
+                <tr onclick="selectVariant(${index})">
+                    <td>${v.chrom}</td>
+                    <td>${v.pos}</td>
+                    <td>${v.id === '.' ? '' : v.id}</td>
+                    <td>${v.ref}</td>
+                    <td>${v.alt}</td>
+                    <td>${v.qual === '.' ? '' : v.qual}</td>
+                    <td><span style="color: ${v.filter === 'PASS' ? '#4caf50' : '#f44336'}">${v.filter}</span></td>
+                    <td>${v.info}</td>
+                </tr>
+            `;
+        });
+        
+        if (filteredVariants.length > MAX_RENDER) {
+            html += `<tr><td colspan="8" style="text-align:center; color:#888; padding:10px;">... ${filteredVariants.length - MAX_RENDER} more variants hidden (filter to see them) ...</td></tr>`;
+        }
+
+        tableBody.innerHTML = html;
+    }
+
+    window.selectVariant = function(index) {
+        const prev = document.querySelector('tr.selected');
+        if (prev) prev.classList.remove('selected');
+        
+        const rows = tableBody.querySelectorAll('tr');
+        if (rows[index]) rows[index].classList.add('selected');
+
+        const v = filteredVariants[index];
+        if(!v) return;
+
+        const infoFormatted = v.info.split(';').join('\n');
+        
+        const detailText = 
+`=== VARIANT DETAILS ===
+Location:  ${v.chrom}:${v.pos}
+ID:        ${v.id}
+Ref / Alt: ${v.ref} -> ${v.alt}
+Quality:   ${v.qual}
+Filter:    ${v.filter}
+
+--- INFO FIELDS ---
+${infoFormatted}
+
+--- RAW LINE ---
+${v.raw}
+`;
+        detailPanel.textContent = detailText;
+    };
+
+    // Utils
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+</script>
+
+</body>
+</html>
