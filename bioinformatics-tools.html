@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioToolbox</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/igv@2.15.5/dist/igv.min.js"></script>
+
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --sidebar-bg: #1e293b;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Sidebar Styling */
+        #sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            border-right: 4px solid var(--accent);
+        }
+
+        /* Main Content Area */
+        #main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .tool-section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        
+        .tool-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-custom {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: none;
+            margin-bottom: 20px;
+            padding: 25px;
+        }
+
+        h2 { color: var(--primary-bg); font-weight: 700; margin-bottom: 20px; }
+        label { font-weight: 600; color: #475569; margin-bottom: 8px; }
+
+        /* Custom Inputs */
+        textarea, input[type="text"] {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        textarea:focus, input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Results Box */
+        .result-box {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            word-break: break-all;
+            min-height: 50px;
+        }
+
+        /* Visualization Containers */
+        #mol-container {
+            width: 100%;
+            height: 500px;
+            background: #e2e8f0;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        #igv-div {
+            padding-top: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="brand"><i class="fa-solid fa-dna"></i> BioToolbox</div>
+        <div class="nav-item active" onclick="showTool('dashboard')">
+            <i class="fa-solid fa-chart-pie"></i> Quick Calculators
+        </div>
+        <div class="nav-item" onclick="showTool('viewer')">
+            <i class="fa-solid fa-align-left"></i> Sequence Viewer
+        </div>
+        <div class="nav-item" onclick="showTool('structure')">
+            <i class="fa-solid fa-cube"></i> 3D Structure
+        </div>
+        <div class="nav-item" onclick="showTool('genome')">
+            <i class="fa-solid fa-magnifying-glass-location"></i> Genome Browser
+        </div>
+        <div class="nav-item" onclick="showTool('network')">
+            <i class="fa-solid fa-circle-nodes"></i> Network Builder
+        </div>
+        <div class="nav-item" onclick="showTool('formatter')">
+            <i class="fa-solid fa-file-code"></i> FASTA Formatter
+        </div>
+    </div>
+
+    <div id="main-content">
+        
+        <div id="dashboard" class="tool-section active">
+            <h2>Sequence Analysis Dashboard</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card-custom">
+                        <label>Input DNA Sequence (Raw or FASTA)</label>
+                        <textarea id="mainInput" class="form-control" rows="4" placeholder="ATGC..." oninput="runAnalysis()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card-custom text-center">
+                        <h5 class="text-muted">GC Content</h5>
+                        <h1 id="gcResult" style="color: var(--accent);">0%</h1>
+                        <small id="lenResult">Length: 0 bp</small>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-custom">
+                        <h5 class="text-muted">Reverse Complement</h5>
+                        <div id="revCompResult" class="result-box">Waiting for input...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card-custom">
+                        <h5 class="text-muted">Protein Translation (Frame +1)</h5>
+                        <div id="protResult" class="result-box">Waiting for input...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="viewer" class="tool-section">
+            <h2>Sequence Viewer & Highlighter</h2>
+            <div class="card-custom">
+                <p>Highlights Hydrophobic (Red) and Polar (Blue) residues in protein sequences.</p>
+                <textarea id="viewerInput" class="form-control mb-3" rows="3" placeholder="Paste Protein Sequence here...">MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHGKKVADALTNAVAHVDDMPNALSALSDLHAHKLRVDPVNFKLLSHCLLVTLAAHLPAEFTPAVHASLDKFLASVSTVLTSKYR</textarea>
+                <button class="btn btn-primary" onclick="renderViewer()">Visualize</button>
+                <hr>
+                <div id="viewerOutput" style="font-family: monospace; font-size: 1.1rem; line-height: 1.6; letter-spacing: 2px; word-break: break-all;"></div>
+            </div>
+        </div>
+
+        <div id="structure" class="tool-section">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>3D Protein Structure</h2>
+                <div>
+                    <input type="text" id="pdbInput" placeholder="PDB ID (e.g., 4HHB)" value="4HHB" style="width: 150px; padding: 5px;">
+                    <button class="btn btn-sm btn-success" onclick="loadPDB()">Load PDB</button>
+                </div>
+            </div>
+            <div class="card-custom">
+                <div id="mol-container"></div>
+                <small class="text-muted mt-2 d-block">Left click to rotate, scroll to zoom. Powered by 3Dmol.js</small>
+            </div>
+        </div>
+
+        <div id="genome" class="tool-section">
+            <h2>Genome Browser (IGV.js)</h2>
+            <div class="card-custom">
+                <div class="d-flex gap-3 align-items-center mb-3">
+                    <button class="btn btn-outline-primary" onclick="initIGV()">
+                        <i class="fa-solid fa-rotate-right"></i> Reset/Init (HG19)
+                    </button>
+                    
+                    <div class="input-group" style="max-width: 450px;">
+                        <input type="text" id="igvSearchInput" class="form-control" placeholder="Search Gene (e.g. EGFR) or Locus">
+                        <button class="btn btn-primary" onclick="runIgvSearch()">
+                            <i class="fa-solid fa-magnifying-glass"></i> Go
+                        </button>
+                    </div>
+                </div>
+
+                <div id="igv-div"></div>
+            </div>
+        </div>
+
+        <div id="network" class="tool-section">
+            <h2>Interaction Network Builder</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card-custom" style="height: 500px; display: flex; flex-direction: column;">
+                        <label><strong>Interaction List</strong></label>
+                        <small class="text-muted mb-2">Format: Source Target (Type)</small>
+                        
+                        <textarea id="cyData" class="form-control mb-3" style="flex: 1; font-size: 0.9rem;">
+TP53 MDM2 inhibits
+EGFR GRB2 binds
+GRB2 SOS1 binds
+SOS1 RAS activates
+RAS RAF activates
+RAF MEK phosphorylates
+MEK ERK phosphorylates
+ERK TP53 regulates</textarea>
+                        
+                        <label><strong>Layout Style</strong></label>
+                        <select id="cyLayout" class="form-control mb-3">
+                            <option value="circle">Circle</option>
+                            <option value="grid">Grid</option>
+                            <option value="breadthfirst">Tree / Hierarchy</option>
+                            <option value="cose">Physics (Force Directed)</option>
+                            <option value="random">Random</option>
+                        </select>
+
+                        <button class="btn btn-primary" onclick="runCytoscape()">
+                            <i class="fa-solid fa-arrows-rotate"></i> Render Graph
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-custom">
+                        <div id="cy" style="height: 450px; border: 1px solid #ddd; border-radius: 8px;"></div>
+                        <small class="text-muted text-center d-block mt-2">
+                            Drag nodes to rearrange. Scroll to zoom.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="formatter" class="tool-section">
+            <h2>FASTA Formatter</h2>
+            <div class="card-custom">
+                <label>Input Messy Sequence</label>
+                <textarea id="fastaInput" class="form-control mb-3" rows="4"></textarea>
+                <label>Header Name (Optional)</label>
+                <input type="text" id="fastaHeader" class="form-control mb-3" placeholder="e.g. My_Sequence">
+                <button class="btn btn-primary" onclick="formatFasta()">Format to 60 chars/line</button>
+                
+                <h5 class="mt-4">Output</h5>
+                <textarea id="fastaOutput" class="form-control" rows="6" readonly></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. Navigation Logic ---
+        function showTool(toolId) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(toolId).classList.add('active');
+
+            if(toolId === 'structure') loadPDB(); 
+            if(toolId === 'network') setTimeout(runCytoscape, 100); 
+        }
+
+        // --- 2. Calculator Logic ---
+        function runAnalysis() {
+            let seq = document.getElementById('mainInput').value.toUpperCase().replace(/[^ATGCU]/g, ''); 
+            
+            // GC Content
+            let gc = (seq.match(/[GC]/g) || []).length;
+            let total = seq.length;
+            let gcPercent = total > 0 ? ((gc / total) * 100).toFixed(1) : 0;
+            document.getElementById('gcResult').innerText = gcPercent + "%";
+            document.getElementById('lenResult').innerText = "Length: " + total + " bp";
+
+            // Reverse Complement
+            let revComp = seq.split('').reverse().map(b => {
+                return { 'A':'T', 'T':'A', 'U':'A', 'G':'C', 'C':'G' }[b] || b;
+            }).join('');
+            document.getElementById('revCompResult').innerText = revComp || "Waiting for input...";
+
+            // Protein Translation
+            const codonTable = {
+                'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',
+                'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',
+                'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',
+                'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',
+                'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',
+                'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',
+                'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',
+                'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',
+                'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V',
+                'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',
+                'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E',
+                'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',
+                'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S',
+                'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',
+                'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',
+                'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W',
+            };
+            
+            let protein = "";
+            for(let i = 0; i < seq.length - 2; i += 3) {
+                let codon = seq.substring(i, i+3);
+                protein += codonTable[codon] || "?";
+            }
+            document.getElementById('protResult').innerText = protein || "Waiting for input...";
+        }
+
+        // --- 3. Sequence Viewer Logic ---
+        function renderViewer() {
+            let seq = document.getElementById('viewerInput').value.toUpperCase();
+            let output = document.getElementById('viewerOutput');
+            output.innerHTML = "";
+            
+            const hydrophobic = ['A','I','L','M','F','W','V'];
+            const polar = ['S','T','N','Q','Y','C'];
+            const charged = ['R','K','H','D','E']; 
+
+            seq.split('').forEach(aa => {
+                let color = '#94a3b8'; // default gray
+                if(hydrophobic.includes(aa)) color = '#ef4444'; // red
+                if(polar.includes(aa)) color = '#3b82f6'; // blue
+                if(charged.includes(aa)) color = '#22c55e'; // green
+                
+                let span = document.createElement('span');
+                span.innerText = aa;
+                span.style.color = color;
+                span.style.fontWeight = "bold";
+                output.appendChild(span);
+            });
+        }
+
+        // --- 4. 3D Structure Logic ---
+        let viewer3d = null;
+        function loadPDB() {
+            let pdbID = document.getElementById('pdbInput').value;
+            let element = document.getElementById('mol-container');
+            
+            element.innerHTML = "";
+            viewer3d = $3Dmol.createViewer(element, { backgroundColor: '#e2e8f0' });
+            
+            $3Dmol.download("pdb:" + pdbID, viewer3d, { doAssembly: true, noSecondaryStructure: false }, function() {
+                viewer3d.setStyle({}, { cartoon: { color: 'spectrum' } });
+                viewer3d.zoomTo();
+                viewer3d.render();
+            });
+        }
+
+        // --- 5. Genome Browser (Updated with Search Logic) ---
+        let igvBrowser = null;
+        
+        function initIGV() {
+            var igvDiv = document.getElementById("igv-div");
+            igvDiv.innerHTML = ""; 
+    
+            var options = {
+                genome: "hg19",
+                locus: "chr8:128,747,267-128,754,546",
+            };
+
+            igv.createBrowser(igvDiv, options).then(function (browser) {
+                igvBrowser = browser;
+                console.log("IGV Loaded");
+            });
+        }
+
+        function runIgvSearch() {
+            let term = document.getElementById('igvSearchInput').value;
+            if(igvBrowser && term) {
+                igvBrowser.search(term);
+            } else {
+                alert("Please initialize the browser first!");
+            }
+        }
+
+        // --- 6. Network Logic ---
+        function runCytoscape() {
+            var rawData = document.getElementById('cyData').value.trim();
+            var layoutName = document.getElementById('cyLayout').value;
+            var lines = rawData.split('\n');
+            var elements = [];
+            var nodes = new Set(); 
+
+            lines.forEach(line => {
+                let parts = line.trim().split(/\s+/); 
+                if (parts.length >= 2) {
+                    let source = parts[0];
+                    let target = parts[1];
+                    let label = parts[2] || ""; 
+
+                    if (!nodes.has(source)) { elements.push({ data: { id: source } }); nodes.add(source); }
+                    if (!nodes.has(target)) { elements.push({ data: { id: target } }); nodes.add(target); }
+                    elements.push({ data: { source: source, target: target, label: label } });
+                }
+            });
+
+            var cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: elements,
+                style: [ 
+                    {
+                        selector: 'node',
+                        style: {
+                            'background-color': '#38bdf8',
+                            'label': 'data(id)',
+                            'color': '#0f172a',
+                            'font-weight': 'bold',
+                            'font-size': '12px',
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'width': '60px', 'height': '60px'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'line-color': '#94a3b8',
+                            'target-arrow-color': '#94a3b8',
+                            'target-arrow-shape': 'triangle',
+                            'curve-style': 'bezier',
+                            'label': 'data(label)',
+                            'font-size': '10px',
+                            'text-rotation': 'autorotate',
+                            'text-background-color': '#ffffff',
+                            'text-background-opacity': 1
+                        }
+                    }
+                ],
+                layout: { name: layoutName, animate: true, padding: 30 }
+            });
+        }
+
+        // --- 7. FASTA Formatter ---
+        function formatFasta() {
+            let raw = document.getElementById('fastaInput').value.replace(/\s+/g, '');
+            let header = document.getElementById('fastaHeader').value || "Formatted_Sequence";
+            
+            let formatted = ">" + header + "\n";
+            for(let i = 0; i < raw.length; i += 60) {
+                formatted += raw.substring(i, i+60) + "\n";
+            }
+            document.getElementById('fastaOutput').value = formatted;
+        }
+
+        // Initial Run
+        runAnalysis();
+    </script>
+</body>
+</html>
