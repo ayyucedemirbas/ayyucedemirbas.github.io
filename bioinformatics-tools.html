@@ -1,188 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BioToolbox</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BioToolbox | Ayyuce Demirbas</title>
+  
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas.github.io/refs/heads/main/logo.png" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/igv@2.15.5/dist/igv.min.js"></script>
+
+  <style>
+    /* -------------------------------
+       VARIABLES
+    --------------------------------*/
+    :root {
+      --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --bg-dark: #121212;
+      --text-dark: #f0f0f0;
+      --accent-dark: #bb86fc;
+      
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --accent: var(--accent-dark);
+      --card-bg: rgba(30, 30, 30, 0.6);
+      --input-bg: rgba(0, 0, 0, 0.2);
+      --transition-speed: 0.3s;
+      
+      /* VCF Specific Colors (Adaptive) */
+      --vcf-header-bg: rgba(0, 0, 0, 0.3);
+      --vcf-border: rgba(255, 255, 255, 0.1);
+      --code-color: #ce9178;
+    }
+
+    [data-theme="light"] {
+      --bg: #fefefe;
+      --text: #111111;
+      --accent: #0077ff;
+      --glass-bg: rgba(0, 0, 0, 0.03);
+      --glass-border: rgba(0, 0, 0, 0.1);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+      --card-bg: rgba(255, 255, 255, 0.8);
+      --input-bg: #ffffff;
+      
+      --vcf-header-bg: rgba(0, 0, 0, 0.05);
+      --vcf-border: rgba(0, 0, 0, 0.1);
+      --code-color: #d63384;
+    }
+
+    /* -------------------------------
+       GLOBAL STYLES
+    --------------------------------*/
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    /* Bootstrap Overrides */
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        color: var(--text);
+        font-family: 'Playfair Display', serif;
+    }
+    .text-muted {
+        color: var(--text) !important;
+        opacity: 0.7;
+    }
+
+    /* -------------------------------
+       NAVIGATION (Main Site Nav)
+    --------------------------------*/
+    nav.main-nav {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav.main-nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 0;
+      padding: 1rem 0;
+    }
+
+    nav.main-nav a {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.03rem;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav.main-nav a:hover {
+      background: var(--glass-bg);
+    }
+
+    nav.main-nav a[aria-current="page"] {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    /* -------------------------------
+       TOOL LAYOUT
+    --------------------------------*/
+    .tool-layout {
+        display: flex;
+        flex: 1;
+        max-width: 1400px;
+        margin: 0 auto;
+        width: 100%;
+        padding-top: 20px;
+        height: calc(100vh - 80px); /* Adjust based on nav height */
+    }
+
+    /* Tool Sidebar */
+    .tool-sidebar {
+        width: 250px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid var(--glass-border);
+        border-radius: 0 12px 12px 0;
+        padding: 20px 10px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .tool-nav-item {
+        padding: 12px 15px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        border: 1px solid transparent;
+    }
+
+    .tool-nav-item:hover {
+        background: var(--glass-bg);
+        border-color: var(--glass-border);
+    }
+
+    .tool-nav-item.active {
+        background: rgba(187, 134, 252, 0.15);
+        color: var(--accent);
+        border: 1px solid var(--accent);
+    }
     
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    [data-theme="light"] .tool-nav-item.active {
+        background: rgba(0, 119, 255, 0.1);
+    }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/igv@2.15.5/dist/igv.min.js"></script>
+    /* Tool Main Content */
+    .tool-content {
+        flex: 1;
+        padding: 0 30px 30px 30px;
+        overflow-y: auto;
+        position: relative;
+    }
 
-    <style>
-        :root {
-            --primary-bg: #0f172a;
-            --sidebar-bg: #1e293b;
-            --accent: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --card-bg: #ffffff;
-        }
+    .tool-section {
+        display: none;
+        animation: fadeIn 0.4s ease-in-out;
+        height: 100%; /* For VCF flex layout */
+        flex-direction: column;
+    }
+    
+    .tool-section.active {
+        display: flex; /* Changed to flex for full height apps like VCF */
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f1f5f9;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-        }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        /* Sidebar Styling */
-        #sidebar {
-            width: 260px;
-            background-color: var(--sidebar-bg);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            padding: 20px 0;
-            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
-        }
+    /* -------------------------------
+       CUSTOM CARDS & INPUTS
+    --------------------------------*/
+    .card-custom {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow);
+    }
 
-        .brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--accent);
-            letter-spacing: 1px;
-        }
+    label {
+        color: var(--accent);
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
 
-        .nav-item {
-            padding: 12px 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    textarea, input[type="text"], select, input[type="file"] {
+        background-color: var(--input-bg) !important;
+        color: var(--text) !important;
+        border: 1px solid var(--glass-border) !important;
+        font-family: 'Courier New', Courier, monospace;
+        border-radius: 8px;
+        padding: 10px;
+        width: 100%;
+    }
 
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(56, 189, 248, 0.1);
-            color: var(--accent);
-            border-right: 4px solid var(--accent);
-        }
+    textarea:focus, input:focus, select:focus {
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+        outline: none;
+    }
 
-        /* Main Content Area */
-        #main-content {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-            position: relative;
-        }
+    /* Buttons */
+    .btn-primary {
+        background-color: var(--accent);
+        border-color: var(--accent);
+        color: var(--bg);
+        font-weight: 600;
+    }
+    .btn-primary:hover {
+        background-color: var(--accent);
+        opacity: 0.9;
+        border-color: var(--accent);
+        color: var(--bg);
+    }
+    .btn-outline-primary {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
+    .btn-outline-primary:hover {
+        background-color: var(--accent);
+        color: var(--bg);
+    }
 
-        .tool-section {
-            display: none; /* Hidden by default */
-            animation: fadeIn 0.4s ease-in-out;
-        }
-        
-        .tool-section.active {
-            display: block;
-        }
+    /* Result Box */
+    .result-box {
+        background: var(--input-bg);
+        border: 1px dashed var(--glass-border);
+        padding: 15px;
+        border-radius: 8px;
+        font-family: 'Courier New', Courier, monospace;
+        word-break: break-all;
+        min-height: 50px;
+        color: var(--text);
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    /* -------------------------------
+       VCF VIEWER STYLES
+    --------------------------------*/
+    .vcf-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 180px); /* Fill available space */
+        background: var(--card-bg);
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        overflow: hidden;
+    }
 
-        .card-custom {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: none;
-            margin-bottom: 20px;
-            padding: 25px;
-        }
+    .vcf-controls {
+        padding: 15px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+        background: var(--glass-bg);
+    }
 
-        h2 { color: var(--primary-bg); font-weight: 700; margin-bottom: 20px; }
-        label { font-weight: 600; color: #475569; margin-bottom: 8px; }
+    .vcf-table-wrapper {
+        flex: 2;
+        overflow: auto;
+        position: relative;
+    }
 
-        /* Custom Inputs */
-        textarea, input[type="text"] {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-        }
-        textarea:focus, input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-        }
+    .vcf-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        table-layout: fixed;
+    }
 
-        /* Results Box */
-        .result-box {
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            word-break: break-all;
-            min-height: 50px;
-        }
+    .vcf-table th {
+        position: sticky;
+        top: 0;
+        background: var(--vcf-header-bg);
+        backdrop-filter: blur(5px);
+        color: var(--accent);
+        padding: 10px 8px;
+        text-align: left;
+        border-bottom: 2px solid var(--glass-border);
+        z-index: 5;
+    }
 
-        /* Visualization Containers */
-        #mol-container {
-            width: 100%;
-            height: 500px;
-            background: #e2e8f0;
-            border-radius: 12px;
-            position: relative;
-        }
+    .vcf-table td {
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--vcf-border);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        color: var(--text);
+    }
 
-        #igv-div {
-            padding-top: 10px;
-            background: white;
-            border-radius: 8px;
-        }
-    </style>
+    .vcf-table tr:hover {
+        background: var(--glass-bg);
+    }
+
+    .vcf-table tr.selected {
+        background: var(--accent) !important;
+    }
+    
+    .vcf-table tr.selected td {
+        color: var(--bg) !important;
+    }
+
+    .vcf-detail-panel {
+        flex: 1;
+        border-top: 2px solid var(--glass-border);
+        background: var(--input-bg);
+        padding: 15px;
+        overflow: auto;
+        font-family: 'Menlo', 'Monaco', monospace;
+        font-size: 0.8rem;
+        color: var(--code-color);
+        white-space: pre-wrap;
+    }
+    
+    /* VCF Loader */
+    .vcf-loader {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        backdrop-filter: blur(2px);
+    }
+    
+    .spinner {
+        width: 30px; height: 30px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top: 3px solid var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 10px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+
+    /* Visualization Containers */
+    #mol-container {
+        width: 100%;
+        height: 500px;
+        background: rgba(0,0,0,0.1);
+        border-radius: 12px;
+        position: relative;
+        border: 1px solid var(--glass-border);
+    }
+
+    #igv-div {
+        padding-top: 10px;
+        background: white; 
+        border-radius: 8px;
+        color: #333;
+    }
+
+    /* -------------------------------
+       THEME SWITCHER
+    --------------------------------*/
+    .theme-switcher {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      background: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .tool-layout {
+        flex-direction: column;
+        height: auto;
+      }
+      .tool-sidebar {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--glass-border);
+        border-radius: 0;
+      }
+      .tool-nav-item { white-space: nowrap; }
+      nav.main-nav ul { flex-wrap: wrap; gap: 1rem; }
+      
+      .vcf-container { height: 600px; }
+    }
+  </style>
 </head>
 <body>
 
-    <div id="sidebar">
-        <div class="brand"><i class="fa-solid fa-dna"></i> BioToolbox</div>
-        <div class="nav-item active" onclick="showTool('dashboard')">
-            <i class="fa-solid fa-chart-pie"></i> Quick Calculators
+  <nav class="main-nav">
+    <div class="nav-container">
+      <ul>
+        <li><a href="index.html">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="repositories.html">Repositories</a></li>
+         <!-- <li><a href="teaching.html">Teaching</a></li> -->
+        <li><a href="people.html">People</a></li>
+        <li><a href="bioinformatics-tools.html" aria-current="page">BioToolbox</a></li>
+        <li><a href="cats.html">🐾</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="tool-layout">
+    
+    <div class="tool-sidebar">
+        <div class="tool-nav-item active" onclick="showTool('dashboard')">
+            <i class="fa-solid fa-chart-pie"></i> Calculators
         </div>
-        <div class="nav-item" onclick="showTool('viewer')">
+        <div class="tool-nav-item" onclick="showTool('vcf-viewer')">
+            <i class="fa-solid fa-table-list"></i> VCF Viewer
+        </div>
+        <div class="tool-nav-item" onclick="showTool('viewer')">
             <i class="fa-solid fa-align-left"></i> Sequence Viewer
         </div>
-        <div class="nav-item" onclick="showTool('structure')">
+        <div class="tool-nav-item" onclick="showTool('structure')">
             <i class="fa-solid fa-cube"></i> 3D Structure
         </div>
-        <div class="nav-item" onclick="showTool('genome')">
+        <div class="tool-nav-item" onclick="showTool('genome')">
             <i class="fa-solid fa-magnifying-glass-location"></i> Genome Browser
         </div>
-        <div class="nav-item" onclick="showTool('network')">
+        <div class="tool-nav-item" onclick="showTool('network')">
             <i class="fa-solid fa-circle-nodes"></i> Network Builder
         </div>
-        <div class="nav-item" onclick="showTool('formatter')">
+        <div class="tool-nav-item" onclick="showTool('formatter')">
             <i class="fa-solid fa-file-code"></i> FASTA Formatter
         </div>
     </div>
 
-    <div id="main-content">
+    <div class="tool-content">
         
-        <div id="dashboard" class="tool-section active">
-            <h2>Sequence Analysis Dashboard</h2>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card-custom">
-                        <label>Input DNA Sequence (Raw or FASTA)</label>
-                        <textarea id="mainInput" class="form-control" rows="4" placeholder="ATGC..." oninput="runAnalysis()"></textarea>
-                    </div>
-                </div>
+        <div id="dashboard" class="tool-section active" style="display: block;"> <h2>Sequence Analysis Dashboard</h2>
+            <div class="card-custom">
+                <label>Input DNA Sequence (Raw or FASTA)</label>
+                <textarea id="mainInput" rows="4" placeholder="ATGC..." oninput="runAnalysis()"></textarea>
             </div>
 
             <div class="row">
                 <div class="col-md-4">
                     <div class="card-custom text-center">
                         <h5 class="text-muted">GC Content</h5>
-                        <h1 id="gcResult" style="color: var(--accent);">0%</h1>
-                        <small id="lenResult">Length: 0 bp</small>
+                        <h1 id="gcResult" style="color: var(--accent); font-family: 'Inter';">0%</h1>
+                        <small id="lenResult" class="text-muted">Length: 0 bp</small>
                     </div>
                 </div>
                 <div class="col-md-8">
@@ -193,33 +537,77 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card-custom">
-                        <h5 class="text-muted">Protein Translation (Frame +1)</h5>
-                        <div id="protResult" class="result-box">Waiting for input...</div>
-                    </div>
-                </div>
+            <div class="card-custom">
+                <h5 class="text-muted">Protein Translation (Frame +1)</h5>
+                <div id="protResult" class="result-box">Waiting for input...</div>
             </div>
         </div>
 
-        <div id="viewer" class="tool-section">
+        <div id="vcf-viewer" class="tool-section">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2>VCF Studio Web</h2>
+                <small id="vcf-count" class="text-muted">Variants: 0</small>
+            </div>
+            
+            <div class="vcf-container">
+                <div id="vcf-loader" class="vcf-loader">
+                    <div class="spinner"></div>
+                    <div style="color:white; font-weight:bold;">Parsing VCF...</div>
+                </div>
+
+                <div class="vcf-controls">
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="file" id="vcfFileInput" accept=".vcf,.txt" class="form-control" style="padding: 6px;">
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" id="vcfSearchInput" placeholder="Search Chrom, ID, Info..." disabled style="padding: 8px;">
+                    </div>
+                    <div class="form-check form-switch pt-1">
+                        <input class="form-check-input" type="checkbox" id="vcfPassCheckbox" disabled style="width: 40px; height: 20px;">
+                        <label class="form-check-label" for="vcfPassCheckbox" style="margin-left: 10px; font-weight: normal;">Show PASS Only</label>
+                    </div>
+                </div>
+
+                <div class="vcf-table-wrapper">
+                    <table class="vcf-table" id="vcfTable">
+                        <thead>
+                            <tr>
+                                <th style="width:80px">CHROM</th>
+                                <th style="width:100px; text-align:right;">POS</th>
+                                <th style="width:100px">ID</th>
+                                <th style="width:60px">REF</th>
+                                <th style="width:60px">ALT</th>
+                                <th style="width:70px; text-align:right;">QUAL</th>
+                                <th style="width:80px">FILTER</th>
+                                <th>INFO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="vcf-detail-panel" id="vcfDetailPanel">Select a variant to view full details...</div>
+            </div>
+        </div>
+
+        <div id="viewer" class="tool-section" style="display: none;">
             <h2>Sequence Viewer & Highlighter</h2>
             <div class="card-custom">
                 <p>Highlights Hydrophobic (Red) and Polar (Blue) residues in protein sequences.</p>
-                <textarea id="viewerInput" class="form-control mb-3" rows="3" placeholder="Paste Protein Sequence here...">MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHGKKVADALTNAVAHVDDMPNALSALSDLHAHKLRVDPVNFKLLSHCLLVTLAAHLPAEFTPAVHASLDKFLASVSTVLTSKYR</textarea>
+                <textarea id="viewerInput" class="mb-3" rows="3" placeholder="Paste Protein Sequence here...">MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHGKKVADALTNAVAHVDDMPNALSALSDLHAHKLRVDPVNFKLLSHCLLVTLAAHLPAEFTPAVHASLDKFLASVSTVLTSKYR</textarea>
                 <button class="btn btn-primary" onclick="renderViewer()">Visualize</button>
-                <hr>
+                <hr style="border-color: var(--glass-border);">
                 <div id="viewerOutput" style="font-family: monospace; font-size: 1.1rem; line-height: 1.6; letter-spacing: 2px; word-break: break-all;"></div>
             </div>
         </div>
 
-        <div id="structure" class="tool-section">
-            <div class="d-flex justify-content-between align-items-center">
+        <div id="structure" class="tool-section" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2>3D Protein Structure</h2>
-                <div>
-                    <input type="text" id="pdbInput" placeholder="PDB ID (e.g., 4HHB)" value="4HHB" style="width: 150px; padding: 5px;">
-                    <button class="btn btn-sm btn-success" onclick="loadPDB()">Load PDB</button>
+                <div class="d-flex gap-2">
+                    <input type="text" id="pdbInput" placeholder="PDB ID" value="4HHB" style="width: 100px; height: 38px;">
+                    <button class="btn btn-primary" onclick="loadPDB()">Load</button>
                 </div>
             </div>
             <div class="card-custom">
@@ -228,16 +616,16 @@
             </div>
         </div>
 
-        <div id="genome" class="tool-section">
+        <div id="genome" class="tool-section" style="display: none;">
             <h2>Genome Browser (IGV.js)</h2>
             <div class="card-custom">
-                <div class="d-flex gap-3 align-items-center mb-3">
+                <div class="d-flex gap-3 align-items-center mb-3 flex-wrap">
                     <button class="btn btn-outline-primary" onclick="initIGV()">
                         <i class="fa-solid fa-rotate-right"></i> Reset/Init (HG19)
                     </button>
                     
                     <div class="input-group" style="max-width: 450px;">
-                        <input type="text" id="igvSearchInput" class="form-control" placeholder="Search Gene (e.g. EGFR) or Locus">
+                        <input type="text" id="igvSearchInput" class="form-control" style="background: var(--input-bg); color: var(--text); border-color: var(--glass-border);" placeholder="Search Gene (e.g. EGFR)">
                         <button class="btn btn-primary" onclick="runIgvSearch()">
                             <i class="fa-solid fa-magnifying-glass"></i> Go
                         </button>
@@ -248,15 +636,15 @@
             </div>
         </div>
 
-        <div id="network" class="tool-section">
+        <div id="network" class="tool-section" style="display: none;">
             <h2>Interaction Network Builder</h2>
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card-custom" style="height: 500px; display: flex; flex-direction: column;">
+                    <div class="card-custom" style="height: 100%;">
                         <label><strong>Interaction List</strong></label>
-                        <small class="text-muted mb-2">Format: Source Target (Type)</small>
+                        <small class="text-muted mb-2 d-block">Source Target (Type)</small>
                         
-                        <textarea id="cyData" class="form-control mb-3" style="flex: 1; font-size: 0.9rem;">
+                        <textarea id="cyData" class="form-control mb-3" style="min-height: 200px; font-size: 0.9rem;">
 TP53 MDM2 inhibits
 EGFR GRB2 binds
 GRB2 SOS1 binds
@@ -271,11 +659,11 @@ ERK TP53 regulates</textarea>
                             <option value="circle">Circle</option>
                             <option value="grid">Grid</option>
                             <option value="breadthfirst">Tree / Hierarchy</option>
-                            <option value="cose">Physics (Force Directed)</option>
+                            <option value="cose" selected>Physics (Force Directed)</option>
                             <option value="random">Random</option>
                         </select>
 
-                        <button class="btn btn-primary" onclick="runCytoscape()">
+                        <button class="btn btn-primary w-100" onclick="runCytoscape()">
                             <i class="fa-solid fa-arrows-rotate"></i> Render Graph
                         </button>
                     </div>
@@ -283,7 +671,7 @@ ERK TP53 regulates</textarea>
 
                 <div class="col-md-8">
                     <div class="card-custom">
-                        <div id="cy" style="height: 450px; border: 1px solid #ddd; border-radius: 8px;"></div>
+                        <div id="cy" style="height: 500px; border: 1px solid var(--glass-border); border-radius: 8px; background: rgba(0,0,0,0.2);"></div>
                         <small class="text-muted text-center d-block mt-2">
                             Drag nodes to rearrange. Scroll to zoom.
                         </small>
@@ -292,219 +680,399 @@ ERK TP53 regulates</textarea>
             </div>
         </div>
 
-        <div id="formatter" class="tool-section">
+        <div id="formatter" class="tool-section" style="display: none;">
             <h2>FASTA Formatter</h2>
             <div class="card-custom">
                 <label>Input Messy Sequence</label>
-                <textarea id="fastaInput" class="form-control mb-3" rows="4"></textarea>
+                <textarea id="fastaInput" class="mb-3" rows="4"></textarea>
                 <label>Header Name (Optional)</label>
-                <input type="text" id="fastaHeader" class="form-control mb-3" placeholder="e.g. My_Sequence">
+                <input type="text" id="fastaHeader" class="mb-3" placeholder="e.g. My_Sequence">
                 <button class="btn btn-primary" onclick="formatFasta()">Format to 60 chars/line</button>
                 
-                <h5 class="mt-4">Output</h5>
-                <textarea id="fastaOutput" class="form-control" rows="6" readonly></textarea>
+                <h5 class="mt-4 text-muted">Output</h5>
+                <textarea id="fastaOutput" rows="6" readonly></textarea>
             </div>
         </div>
 
     </div>
+  </div>
 
-    <script>
-        // --- 1. Navigation Logic ---
-        function showTool(toolId) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+  <div class="theme-switcher" id="themeSwitcher">
+    <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
+    <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
+    <button onclick="switchTheme('system')"><i class="fas fa-desktop"></i> System</button>
+  </div>
 
-            document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(toolId).classList.add('active');
+  <script>
+    // --- THEME LOGIC ---
+    function switchTheme(theme) {
+      if (theme === 'system') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+      localStorage.setItem('preferred-theme', theme);
+      
+      // Update Viz colors if needed
+      setTimeout(() => {
+          if(document.getElementById('structure').classList.contains('active')) loadPDB();
+          if(document.getElementById('network').classList.contains('active')) runCytoscape();
+      }, 300);
+    }
 
-            if(toolId === 'structure') loadPDB(); 
-            if(toolId === 'network') setTimeout(runCytoscape, 100); 
-        }
+    (function initTheme() {
+      const savedTheme = localStorage.getItem('preferred-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
 
-        // --- 2. Calculator Logic ---
-        function runAnalysis() {
-            let seq = document.getElementById('mainInput').value.toUpperCase().replace(/[^ATGCU]/g, ''); 
-            
-            // GC Content
-            let gc = (seq.match(/[GC]/g) || []).length;
-            let total = seq.length;
-            let gcPercent = total > 0 ? ((gc / total) * 100).toFixed(1) : 0;
-            document.getElementById('gcResult').innerText = gcPercent + "%";
-            document.getElementById('lenResult').innerText = "Length: " + total + " bp";
 
-            // Reverse Complement
-            let revComp = seq.split('').reverse().map(b => {
-                return { 'A':'T', 'T':'A', 'U':'A', 'G':'C', 'C':'G' }[b] || b;
-            }).join('');
-            document.getElementById('revCompResult').innerText = revComp || "Waiting for input...";
+    // --- NAVIGATION LOGIC ---
+    function showTool(toolId) {
+        // Update nav state
+        document.querySelectorAll('.tool-nav-item').forEach(el => el.classList.remove('active'));
+        event.currentTarget.classList.add('active');
 
-            // Protein Translation
-            const codonTable = {
-                'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',
-                'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',
-                'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',
-                'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',
-                'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',
-                'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',
-                'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',
-                'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',
-                'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V',
-                'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',
-                'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E',
-                'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',
-                'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S',
-                'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',
-                'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',
-                'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W',
-            };
-            
-            let protein = "";
-            for(let i = 0; i < seq.length - 2; i += 3) {
-                let codon = seq.substring(i, i+3);
-                protein += codonTable[codon] || "?";
-            }
-            document.getElementById('protResult').innerText = protein || "Waiting for input...";
-        }
+        // Hide all sections
+        document.querySelectorAll('.tool-section').forEach(el => {
+            el.classList.remove('active');
+            el.style.display = 'none';
+        });
 
-        // --- 3. Sequence Viewer Logic ---
-        function renderViewer() {
-            let seq = document.getElementById('viewerInput').value.toUpperCase();
-            let output = document.getElementById('viewerOutput');
-            output.innerHTML = "";
-            
-            const hydrophobic = ['A','I','L','M','F','W','V'];
-            const polar = ['S','T','N','Q','Y','C'];
-            const charged = ['R','K','H','D','E']; 
-
-            seq.split('').forEach(aa => {
-                let color = '#94a3b8'; // default gray
-                if(hydrophobic.includes(aa)) color = '#ef4444'; // red
-                if(polar.includes(aa)) color = '#3b82f6'; // blue
-                if(charged.includes(aa)) color = '#22c55e'; // green
-                
-                let span = document.createElement('span');
-                span.innerText = aa;
-                span.style.color = color;
-                span.style.fontWeight = "bold";
-                output.appendChild(span);
-            });
-        }
-
-        // --- 4. 3D Structure Logic ---
-        let viewer3d = null;
-        function loadPDB() {
-            let pdbID = document.getElementById('pdbInput').value;
-            let element = document.getElementById('mol-container');
-            
-            element.innerHTML = "";
-            viewer3d = $3Dmol.createViewer(element, { backgroundColor: '#e2e8f0' });
-            
-            $3Dmol.download("pdb:" + pdbID, viewer3d, { doAssembly: true, noSecondaryStructure: false }, function() {
-                viewer3d.setStyle({}, { cartoon: { color: 'spectrum' } });
-                viewer3d.zoomTo();
-                viewer3d.render();
-            });
-        }
-
-        // --- 5. Genome Browser (Updated with Search Logic) ---
-        let igvBrowser = null;
+        // Show selected section
+        const activeSection = document.getElementById(toolId);
+        activeSection.classList.add('active');
         
-        function initIGV() {
-            var igvDiv = document.getElementById("igv-div");
-            igvDiv.innerHTML = ""; 
-    
-            var options = {
-                genome: "hg19",
-                locus: "chr8:128,747,267-128,754,546",
-            };
-
-            igv.createBrowser(igvDiv, options).then(function (browser) {
-                igvBrowser = browser;
-                console.log("IGV Loaded");
-            });
+        // Handle display type based on layout needs
+        if(toolId === 'vcf-viewer') {
+            activeSection.style.display = 'flex'; // VCF needs flex for full height
+        } else {
+            activeSection.style.display = 'block';
         }
 
-        function runIgvSearch() {
-            let term = document.getElementById('igvSearchInput').value;
-            if(igvBrowser && term) {
-                igvBrowser.search(term);
-            } else {
-                alert("Please initialize the browser first!");
-            }
-        }
+        // Lazy load specific heavy tools
+        if(toolId === 'structure') loadPDB(); 
+        if(toolId === 'network') setTimeout(runCytoscape, 100); 
+    }
 
-        // --- 6. Network Logic ---
-        function runCytoscape() {
-            var rawData = document.getElementById('cyData').value.trim();
-            var layoutName = document.getElementById('cyLayout').value;
-            var lines = rawData.split('\n');
-            var elements = [];
-            var nodes = new Set(); 
 
-            lines.forEach(line => {
-                let parts = line.trim().split(/\s+/); 
-                if (parts.length >= 2) {
-                    let source = parts[0];
-                    let target = parts[1];
-                    let label = parts[2] || ""; 
+    // ==========================================
+    // TOOL 1: VCF VIEWER LOGIC
+    // ==========================================
+    let vcfData = { all: [], filtered: [] };
 
-                    if (!nodes.has(source)) { elements.push({ data: { id: source } }); nodes.add(source); }
-                    if (!nodes.has(target)) { elements.push({ data: { id: target } }); nodes.add(target); }
-                    elements.push({ data: { source: source, target: target, label: label } });
-                }
-            });
+    document.getElementById('vcfFileInput').addEventListener('change', handleVcfUpload);
+    document.getElementById('vcfSearchInput').addEventListener('input', debounce(applyVcfFilters, 300));
+    document.getElementById('vcfPassCheckbox').addEventListener('change', applyVcfFilters);
 
-            var cy = cytoscape({
-                container: document.getElementById('cy'),
-                elements: elements,
-                style: [ 
-                    {
-                        selector: 'node',
-                        style: {
-                            'background-color': '#38bdf8',
-                            'label': 'data(id)',
-                            'color': '#0f172a',
-                            'font-weight': 'bold',
-                            'font-size': '12px',
-                            'text-valign': 'center',
-                            'text-halign': 'center',
-                            'width': '60px', 'height': '60px'
-                        }
-                    },
-                    {
-                        selector: 'edge',
-                        style: {
-                            'width': 2,
-                            'line-color': '#94a3b8',
-                            'target-arrow-color': '#94a3b8',
-                            'target-arrow-shape': 'triangle',
-                            'curve-style': 'bezier',
-                            'label': 'data(label)',
-                            'font-size': '10px',
-                            'text-rotation': 'autorotate',
-                            'text-background-color': '#ffffff',
-                            'text-background-opacity': 1
-                        }
-                    }
-                ],
-                layout: { name: layoutName, animate: true, padding: 30 }
-            });
-        }
+    function handleVcfUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
-        // --- 7. FASTA Formatter ---
-        function formatFasta() {
-            let raw = document.getElementById('fastaInput').value.replace(/\s+/g, '');
-            let header = document.getElementById('fastaHeader').value || "Formatted_Sequence";
+        // Reset
+        vcfData.all = [];
+        document.querySelector('#vcfTable tbody').innerHTML = '';
+        document.getElementById('vcfDetailPanel').textContent = 'Select a variant to view full details...';
+        
+        // Show Loader
+        document.getElementById('vcf-loader').style.display = 'flex';
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            parseVCF(e.target.result);
+        };
+        reader.readAsText(file);
+    }
+
+    function parseVCF(text) {
+        setTimeout(() => {
+            const lines = text.split('\n');
+            const data = [];
             
-            let formatted = ">" + header + "\n";
-            for(let i = 0; i < raw.length; i += 60) {
-                formatted += raw.substring(i, i+60) + "\n";
-            }
-            document.getElementById('fastaOutput').value = formatted;
-        }
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line || line.startsWith('#')) continue;
 
-        // Initial Run
-        runAnalysis();
-    </script>
+                const cols = line.split('\t');
+                if (cols.length < 8) continue;
+
+                data.push({
+                    chrom: cols[0],
+                    pos: cols[1],
+                    id: cols[2],
+                    ref: cols[3],
+                    alt: cols[4],
+                    qual: cols[5],
+                    filter: cols[6],
+                    info: cols[7],
+                    raw: line
+                });
+            }
+
+            vcfData.all = data;
+            
+            // Enable controls
+            document.getElementById('vcfSearchInput').disabled = false;
+            document.getElementById('vcfPassCheckbox').disabled = false;
+            
+            // Hide Loader
+            document.getElementById('vcf-loader').style.display = 'none';
+            
+            applyVcfFilters();
+        }, 100); // Small delay to allow UI to update loader
+    }
+
+    function applyVcfFilters() {
+        const query = document.getElementById('vcfSearchInput').value.toLowerCase();
+        const showPassOnly = document.getElementById('vcfPassCheckbox').checked;
+
+        vcfData.filtered = vcfData.all.filter(v => {
+            if (showPassOnly && v.filter !== 'PASS') return false;
+            if (query) {
+                const searchStr = `${v.chrom} ${v.pos} ${v.id} ${v.info}`.toLowerCase();
+                if (!searchStr.includes(query)) return false;
+            }
+            return true;
+        });
+
+        document.getElementById('vcf-count').textContent = `Showing: ${vcfData.filtered.length.toLocaleString()}`;
+        renderVcfTable();
+    }
+
+    function renderVcfTable() {
+        const MAX_RENDER = 500; // Cap for performance
+        const displayData = vcfData.filtered.slice(0, MAX_RENDER);
+        let html = '';
+        
+        displayData.forEach((v, index) => {
+            let filterColor = v.filter === 'PASS' ? '#22c55e' : 'var(--text)'; // Green or text color
+            if(v.filter !== 'PASS' && v.filter !== '.') filterColor = '#ef4444'; // Red for failures
+
+            html += `
+                <tr onclick="selectVariant(${index})">
+                    <td>${v.chrom}</td>
+                    <td style="text-align:right; font-family:monospace;">${v.pos}</td>
+                    <td>${v.id === '.' ? '' : v.id}</td>
+                    <td>${v.ref}</td>
+                    <td>${v.alt}</td>
+                    <td style="text-align:right;">${v.qual === '.' ? '' : v.qual}</td>
+                    <td><span style="color:${filterColor}; font-weight:bold; font-size:0.8em;">${v.filter}</span></td>
+                    <td>${v.info}</td>
+                </tr>
+            `;
+        });
+        
+        if (vcfData.filtered.length > MAX_RENDER) {
+            html += `<tr><td colspan="8" style="text-align:center; padding:10px; opacity:0.6;">... ${vcfData.filtered.length - MAX_RENDER} more variants hidden (filter to see them) ...</td></tr>`;
+        }
+        document.querySelector('#vcfTable tbody').innerHTML = html;
+    }
+
+    function selectVariant(index) {
+        // Handle row selection visual
+        const rows = document.querySelectorAll('#vcfTable tbody tr');
+        rows.forEach(r => r.classList.remove('selected'));
+        if(rows[index]) rows[index].classList.add('selected');
+
+        const v = vcfData.filtered[index];
+        if(!v) return;
+
+        const infoFormatted = v.info.split(';').join('\n');
+        const detailText = 
+`=== VARIANT DETAILS ===
+Location:  ${v.chrom}:${v.pos}
+ID:        ${v.id}
+Ref / Alt: ${v.ref} -> ${v.alt}
+Quality:   ${v.qual}
+Filter:    ${v.filter}
+
+--- INFO FIELDS ---
+${infoFormatted}
+
+--- RAW LINE ---
+${v.raw}`;
+        document.getElementById('vcfDetailPanel').textContent = detailText;
+    }
+
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+
+    // ==========================================
+    // OTHER TOOLS LOGIC
+    // ==========================================
+
+    // 2. Calculators
+    function runAnalysis() {
+        let seq = document.getElementById('mainInput').value.toUpperCase().replace(/[^ATGCU]/g, ''); 
+        
+        let gc = (seq.match(/[GC]/g) || []).length;
+        let total = seq.length;
+        let gcPercent = total > 0 ? ((gc / total) * 100).toFixed(1) : 0;
+        document.getElementById('gcResult').innerText = gcPercent + "%";
+        document.getElementById('lenResult').innerText = "Length: " + total + " bp";
+
+        let revComp = seq.split('').reverse().map(b => {
+            return { 'A':'T', 'T':'A', 'U':'A', 'G':'C', 'C':'G' }[b] || b;
+        }).join('');
+        document.getElementById('revCompResult').innerText = revComp || "Waiting for input...";
+
+        const codonTable = {
+            'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M', 'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',
+            'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K', 'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',
+            'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L', 'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',
+            'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q', 'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',
+            'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V', 'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',
+            'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E', 'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',
+            'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S', 'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',
+            'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_', 'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W',
+        };
+        
+        let protein = "";
+        for(let i = 0; i < seq.length - 2; i += 3) {
+            let codon = seq.substring(i, i+3);
+            protein += codonTable[codon] || "?";
+        }
+        document.getElementById('protResult').innerText = protein || "Waiting for input...";
+    }
+
+    // 3. Viewer
+    function renderViewer() {
+        let seq = document.getElementById('viewerInput').value.toUpperCase();
+        let output = document.getElementById('viewerOutput');
+        output.innerHTML = "";
+        
+        const hydrophobic = ['A','I','L','M','F','W','V'];
+        const polar = ['S','T','N','Q','Y','C'];
+        const charged = ['R','K','H','D','E']; 
+
+        seq.split('').forEach(aa => {
+            let color = 'var(--text)'; // Use theme text color default
+            if(hydrophobic.includes(aa)) color = '#ff6b6b'; 
+            if(polar.includes(aa)) color = '#4ecdc4'; 
+            if(charged.includes(aa)) color = '#bb86fc'; 
+            
+            let span = document.createElement('span');
+            span.innerText = aa;
+            span.style.color = color;
+            span.style.fontWeight = "bold";
+            output.appendChild(span);
+        });
+    }
+
+    // 4. 3D Structure
+    let viewer3d = null;
+    function loadPDB() {
+        let pdbID = document.getElementById('pdbInput').value;
+        let element = document.getElementById('mol-container');
+        
+        // Determine background color based on current theme
+        let isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        let bgColor = isLight ? 'white' : '#1e1e1e'; 
+        
+        element.innerHTML = "";
+        viewer3d = $3Dmol.createViewer(element, { backgroundColor: bgColor });
+        
+        $3Dmol.download("pdb:" + pdbID, viewer3d, { doAssembly: true, noSecondaryStructure: false }, function() {
+            viewer3d.setStyle({}, { cartoon: { color: 'spectrum' } });
+            viewer3d.zoomTo();
+            viewer3d.render();
+        });
+    }
+
+    // 5. Genome Browser
+    let igvBrowser = null;
+    function initIGV() {
+        var igvDiv = document.getElementById("igv-div");
+        igvDiv.innerHTML = ""; 
+        var options = { genome: "hg19", locus: "chr8:128,747,267-128,754,546" };
+        igv.createBrowser(igvDiv, options).then(function (browser) {
+            igvBrowser = browser;
+        });
+    }
+    function runIgvSearch() {
+        let term = document.getElementById('igvSearchInput').value;
+        if(igvBrowser && term) igvBrowser.search(term);
+        else alert("Please initialize the browser first!");
+    }
+
+    // 6. Network
+    function runCytoscape() {
+        var rawData = document.getElementById('cyData').value.trim();
+        var layoutName = document.getElementById('cyLayout').value;
+        var lines = rawData.split('\n');
+        var elements = [];
+        var nodes = new Set(); 
+
+        // Get theme accent color
+        let accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        let textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
+
+        lines.forEach(line => {
+            let parts = line.trim().split(/\s+/); 
+            if (parts.length >= 2) {
+                let source = parts[0];
+                let target = parts[1];
+                let label = parts[2] || ""; 
+                if (!nodes.has(source)) { elements.push({ data: { id: source } }); nodes.add(source); }
+                if (!nodes.has(target)) { elements.push({ data: { id: target } }); nodes.add(target); }
+                elements.push({ data: { source: source, target: target, label: label } });
+            }
+        });
+
+        var cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: elements,
+            style: [ 
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': accentColor,
+                        'label': 'data(id)',
+                        'color': textColor,
+                        'text-outline-color': '#000',
+                        'text-outline-width': 0, 
+                        'font-weight': 'bold',
+                        'width': '50px', 'height': '50px'
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 2,
+                        'line-color': '#888',
+                        'target-arrow-color': '#888',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'label': 'data(label)',
+                        'color': textColor,
+                        'font-size': '10px',
+                        'text-rotation': 'autorotate',
+                        'text-background-opacity': 0
+                    }
+                }
+            ],
+            layout: { name: layoutName, animate: true, padding: 30 }
+        });
+    }
+
+    // 7. Formatter
+    function formatFasta() {
+        let raw = document.getElementById('fastaInput').value.replace(/\s+/g, '');
+        let header = document.getElementById('fastaHeader').value || "Formatted_Sequence";
+        let formatted = ">" + header + "\n";
+        for(let i = 0; i < raw.length; i += 60) {
+            formatted += raw.substring(i, i+60) + "\n";
+        }
+        document.getElementById('fastaOutput').value = formatted;
+    }
+
+    // Init
+    runAnalysis();
+  </script>
 </body>
 </html>
