@@ -11,9 +11,11 @@
   
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/igv@2.15.5/dist/igv.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
   <style>
     /* -------------------------------
@@ -238,7 +240,7 @@
         font-weight: 600;
     }
 
-    textarea, input[type="text"], select, input[type="file"] {
+    textarea, input[type="text"], input[type="number"], select, input[type="file"] {
         background-color: var(--input-bg) !important;
         color: var(--text) !important;
         border: 1px solid var(--glass-border) !important;
@@ -479,8 +481,7 @@
         <li><a href="publications.html">Publications</a></li>
         <li><a href="projects.html">Projects</a></li>
         <li><a href="repositories.html">Repositories</a></li>
-         <!-- <li><a href="teaching.html">Teaching</a></li> -->
-        <li><a href="people.html">People</a></li>
+         <li><a href="people.html">People</a></li>
         <li><a href="bioinformatics-tools.html" aria-current="page">BioToolbox</a></li>
         <li><a href="cats.html">🐾</a></li>
       </ul>
@@ -492,6 +493,9 @@
     <div class="tool-sidebar">
         <div class="tool-nav-item active" onclick="showTool('dashboard')">
             <i class="fa-solid fa-chart-pie"></i> Calculators
+        </div>
+        <div class="tool-nav-item" onclick="showTool('volcano')">
+            <i class="fa-solid fa-chart-line"></i> Volcano Plot
         </div>
         <div class="tool-nav-item" onclick="showTool('vcf-viewer')">
             <i class="fa-solid fa-table-list"></i> VCF Viewer
@@ -540,6 +544,53 @@
             <div class="card-custom">
                 <h5 class="text-muted">Protein Translation (Frame +1)</h5>
                 <div id="protResult" class="result-box">Waiting for input...</div>
+            </div>
+        </div>
+
+        <div id="volcano" class="tool-section" style="display: none;">
+            <h2>Volcano Plot Generator</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card-custom h-100">
+                        <h4>Data Input</h4>
+                        
+                        <div class="mb-3">
+                            <label class="d-block mb-1">Upload CSV/TSV File</label>
+                            <input type="file" id="volcFileInput" accept=".csv,.tsv,.txt" class="form-control" style="padding: 6px;">
+                        </div>
+
+                        <div class="text-center text-muted mb-3" style="font-size: 0.85rem;">
+                             OR PASTE DATA MANUALLY 
+                        </div>
+                        
+                        <small class="text-muted mb-2 d-block">Format: Gene, Log2FC, PValue</small>
+                        <textarea id="volcInput" class="form-control mb-3" style="height: 120px; font-size: 0.8rem;"></textarea>
+                        
+                        <div class="d-flex gap-2 mb-3">
+                            <button class="btn btn-outline-primary w-100" onclick="loadVolcanoDemo()">Load Demo</button>
+                            <button class="btn btn-primary w-100" onclick="renderVolcano()">Plot</button>
+                        </div>
+
+                        <hr style="border-color: var(--glass-border);">
+                        <h4>Thresholds</h4>
+                        <div class="mb-2">
+                            <label>P-value Cutoff (e.g. 0.05)</label>
+                            <input type="number" id="pCutoff" value="0.05" step="0.01">
+                        </div>
+                        <div class="mb-2">
+                            <label>Log2FC Cutoff (e.g. 1.0)</label>
+                            <input type="number" id="fcCutoff" value="1.0" step="0.1">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-custom h-100">
+                        <div id="volcanoPlot" style="width: 100%; height: 500px;"></div>
+                        <small class="text-muted text-center d-block mt-2">
+                            Hover over points to see gene names. Powered by Plotly.js
+                        </small>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -717,6 +768,7 @@ ERK TP53 regulates</textarea>
       setTimeout(() => {
           if(document.getElementById('structure').classList.contains('active')) loadPDB();
           if(document.getElementById('network').classList.contains('active')) runCytoscape();
+          if(document.getElementById('volcano').classList.contains('active')) renderVolcano(); // Re-render plot
       }, 300);
     }
 
@@ -752,6 +804,7 @@ ERK TP53 regulates</textarea>
         // Lazy load specific heavy tools
         if(toolId === 'structure') loadPDB(); 
         if(toolId === 'network') setTimeout(runCytoscape, 100); 
+        if(toolId === 'volcano') setTimeout(renderVolcano, 100);
     }
 
 
@@ -940,7 +993,121 @@ ${v.raw}`;
         document.getElementById('protResult').innerText = protein || "Waiting for input...";
     }
 
-    // 3. Viewer
+    // 3. Volcano Plot (UPDATED)
+    
+    // Listen for file uploads
+    document.getElementById('volcFileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            // Populate textarea with file content
+            document.getElementById('volcInput').value = text;
+            // Render immediately
+            renderVolcano();
+        };
+        reader.readAsText(file);
+    });
+
+    function loadVolcanoDemo() {
+        const demoData = `Gene,Log2FC,PValue
+TP53,2.5,0.0001
+EGFR,1.8,0.005
+BRCA1,-2.1,0.0002
+PTEN,-1.5,0.004
+MYC,3.2,0.00001
+GAPDH,0.1,0.8
+ACTB,-0.2,0.6
+VEGFA,1.2,0.03
+RB1,-1.1,0.045
+KRAS,0.5,0.2
+IL6,4.5,0.000001
+TNF,3.8,0.00005
+INS,-3.5,0.0001`;
+        document.getElementById('volcInput').value = demoData;
+        renderVolcano();
+    }
+
+    function renderVolcano() {
+        const input = document.getElementById('volcInput').value.trim();
+        const pCutoff = parseFloat(document.getElementById('pCutoff').value);
+        const fcCutoff = parseFloat(document.getElementById('fcCutoff').value);
+        
+        if(!input) return;
+
+        let rows = input.split('\n');
+        let genes = [], x = [], y = [], colors = [], texts = [];
+        
+        // Skip header if present
+        let startIndex = 0;
+        if(rows[0].toLowerCase().includes('gene')) startIndex = 1;
+
+        for(let i = startIndex; i < rows.length; i++) {
+            let cols = rows[i].split(/[\t,]+/); // Handle csv or tsv
+            if(cols.length < 3) continue;
+            
+            let gene = cols[0];
+            let fc = parseFloat(cols[1]);
+            let p = parseFloat(cols[2]);
+            let negLogP = -Math.log10(p);
+
+            genes.push(gene);
+            x.push(fc);
+            y.push(negLogP);
+            
+            // Determine Color
+            if(p < pCutoff && fc > fcCutoff) {
+                colors.push('#ff6b6b'); // Up - Red
+                texts.push(`UP: ${gene}`);
+            } else if (p < pCutoff && fc < -fcCutoff) {
+                colors.push('#4ecdc4'); // Down - Blue/Cyan
+                texts.push(`DOWN: ${gene}`);
+            } else {
+                colors.push('#777777'); // NS
+                texts.push(gene);
+            }
+        }
+
+        // Get Theme Colors for Layout
+        const textColor = getComputedStyle(document.body).getPropertyValue('--text').trim();
+        const gridColor = getComputedStyle(document.body).getPropertyValue('--glass-border').trim();
+
+        const trace = {
+            x: x,
+            y: y,
+            mode: 'markers',
+            type: 'scatter',
+            text: texts,
+            marker: { size: 10, color: colors, opacity: 0.8 },
+            hoverinfo: 'x+y+text'
+        };
+
+        const layout = {
+            title: { text: 'Volcano Plot', font: { color: textColor } },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            xaxis: { 
+                title: 'Log2 Fold Change', 
+                color: textColor, 
+                gridcolor: gridColor,
+                zerolinecolor: gridColor
+            },
+            yaxis: { 
+                title: '-Log10 P-Value', 
+                color: textColor, 
+                gridcolor: gridColor,
+                zerolinecolor: gridColor
+            },
+            hovermode: 'closest',
+            margin: { l: 50, r: 20, t: 40, b: 50 }
+        };
+
+        Plotly.newPlot('volcanoPlot', [trace], layout, {responsive: true, displayModeBar: true});
+    }
+
+    // 4. Viewer
     function renderViewer() {
         let seq = document.getElementById('viewerInput').value.toUpperCase();
         let output = document.getElementById('viewerOutput');
@@ -964,7 +1131,7 @@ ${v.raw}`;
         });
     }
 
-    // 4. 3D Structure
+    // 5. 3D Structure
     let viewer3d = null;
     function loadPDB() {
         let pdbID = document.getElementById('pdbInput').value;
@@ -984,7 +1151,7 @@ ${v.raw}`;
         });
     }
 
-    // 5. Genome Browser
+    // 6. Genome Browser
     let igvBrowser = null;
     function initIGV() {
         var igvDiv = document.getElementById("igv-div");
@@ -1000,7 +1167,7 @@ ${v.raw}`;
         else alert("Please initialize the browser first!");
     }
 
-    // 6. Network
+    // 7. Network
     function runCytoscape() {
         var rawData = document.getElementById('cyData').value.trim();
         var layoutName = document.getElementById('cyLayout').value;
@@ -1060,7 +1227,7 @@ ${v.raw}`;
         });
     }
 
-    // 7. Formatter
+    // 8. Formatter
     function formatFasta() {
         let raw = document.getElementById('fastaInput').value.replace(/\s+/g, '');
         let header = document.getElementById('fastaHeader').value || "Formatted_Sequence";
@@ -1073,6 +1240,7 @@ ${v.raw}`;
 
     // Init
     runAnalysis();
+    loadVolcanoDemo(); // Preload demo data so user sees something cool immediately
   </script>
 </body>
 </html>
