@@ -264,6 +264,12 @@
         background-color: var(--accent);
         color: var(--bg);
     }
+    
+    .btn-primary:disabled {
+        background-color: #666;
+        border-color: #666;
+        cursor: not-allowed;
+    }
 
     /* Result Box */
     .result-box {
@@ -412,7 +418,7 @@
 
 
     /* Visualization Containers */
-    #mol-container {
+    #mol-container, #esm-mol-container {
         width: 100%;
         height: 500px;
         background: rgba(0,0,0,0.1);
@@ -509,6 +515,9 @@
         </div>
         <div class="tool-nav-item" onclick="showTool('volcano')">
             <i class="fa-solid fa-chart-line"></i> Volcano Plot
+        </div>
+        <div class="tool-nav-item" onclick="showTool('esmfold')">
+            <i class="fa-solid fa-dna"></i> ESMFold Predictor
         </div>
         <div class="tool-nav-item" onclick="showTool('vcf-viewer')">
             <i class="fa-solid fa-table-list"></i> VCF Viewer
@@ -607,6 +616,27 @@
                         </small>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div id="esmfold" class="tool-section" style="display: none;">
+            <h2>ESMFold Protein Predictor</h2>
+            <div class="card-custom">
+                <p>Generate high-accuracy 3D protein structures directly from sequence using Meta's ESMFold model.</p>
+                <label>Protein Sequence (Single letter, max ~400 residues recommended)</label>
+                <textarea id="esmInput" rows="3" placeholder="Paste amino acid sequence (e.g. MGSSHHH...)"></textarea>
+                
+                <div class="d-flex gap-2 mb-3">
+                    <button id="esmBtn" class="btn btn-primary" onclick="runESMFold()">
+                        <i class="fa-solid fa-cube"></i> Fold Sequence
+                    </button>
+                    <span id="esmStatus" style="align-self: center; font-weight: bold; color: var(--accent);"></span>
+                </div>
+
+                <div id="esm-mol-container"></div>
+                <small class="text-muted mt-2 d-block">
+                    Uses Vercel Serverless Function to proxy ESM Atlas API. Rendered with 3Dmol.js.
+                </small>
             </div>
         </div>
 
@@ -835,7 +865,13 @@ ERK TP53 regulates</textarea>
       setTimeout(() => {
           if(document.getElementById('structure').classList.contains('active')) loadPDB();
           if(document.getElementById('network').classList.contains('active')) runCytoscape();
-          if(document.getElementById('volcano').classList.contains('active')) renderVolcano(); // Re-render plot
+          if(document.getElementById('volcano').classList.contains('active')) renderVolcano();
+          // ESM Viewer'ı da yenilemek gerekebilir
+          const esmContent = document.getElementById('esm-mol-container').innerHTML;
+          if(document.getElementById('esmfold').classList.contains('active') && esmContent !== "") {
+              // Basitçe yeniden render alabiliriz ama state tutmak gerekir. 
+              // Şimdilik sadece background değişiyor.
+          }
       }, 300);
     }
 
@@ -872,6 +908,66 @@ ERK TP53 regulates</textarea>
         if(toolId === 'network') setTimeout(runCytoscape, 100); 
         if(toolId === 'volcano') setTimeout(renderVolcano, 100);
     }
+
+    // --- ESM FOLD LOGIC START ---
+    async function runESMFold() {
+        const seq = document.getElementById('esmInput').value.trim();
+        const btn = document.getElementById('esmBtn');
+        const status = document.getElementById('esmStatus');
+        
+        if(!seq) { alert("Please enter a protein sequence"); return; }
+        
+        // UI Loading State
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Folding...';
+        status.innerText = "Sending to Meta ESM Atlas...";
+        status.style.color = "var(--accent)";
+
+        try {
+            // Vercel'deki kendi API'mize istek atıyoruz
+            const response = await fetch('/api/fold', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sequence: seq })
+            });
+
+            if(!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || "Server Error");
+            }
+
+            const pdbData = await response.text();
+            status.innerText = "Success! Rendering...";
+            status.style.color = "#22c55e"; // Green
+
+            // 3Dmol ile çizdir
+            renderESMStructure(pdbData);
+
+        } catch (error) {
+            console.error(error);
+            status.innerText = "Error: " + error.message;
+            status.style.color = "#ef4444"; // Red
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-cube"></i> Fold Sequence';
+        }
+    }
+
+    let esmViewer = null;
+    function renderESMStructure(pdbData) {
+        let element = document.getElementById('esm-mol-container');
+        let isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        let bgColor = isLight ? 'white' : '#1e1e1e';
+        
+        element.innerHTML = "";
+        esmViewer = $3Dmol.createViewer(element, { backgroundColor: bgColor });
+        
+        esmViewer.addModel(pdbData, "pdb");
+        esmViewer.setStyle({}, { cartoon: { color: 'spectrum' } });
+        esmViewer.zoomTo();
+        esmViewer.render();
+    }
+    // --- ESM FOLD LOGIC END ---
 
 
     let vcfData = { all: [], filtered: [] };
