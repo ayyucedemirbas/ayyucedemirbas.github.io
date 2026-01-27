@@ -18,9 +18,7 @@
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
   <style>
-    /* -------------------------------
-       VARIABLES
-    --------------------------------*/
+
     :root {
       --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
       --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
@@ -59,9 +57,7 @@
       --code-color: #d63384;
     }
 
-    /* -------------------------------
-       GLOBAL STYLES
-    --------------------------------*/
+
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -90,9 +86,6 @@
         opacity: 0.7;
     }
 
-    /* -------------------------------
-       NAVIGATION (Main Site Nav)
-    --------------------------------*/
     nav.main-nav {
       background-color: rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(15px);
@@ -141,9 +134,6 @@
       box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
     }
 
-    /* -------------------------------
-       TOOL LAYOUT
-    --------------------------------*/
     .tool-layout {
         display: flex;
         flex: 1;
@@ -221,9 +211,6 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* -------------------------------
-       CUSTOM CARDS & INPUTS
-    --------------------------------*/
     .card-custom {
         background: var(--card-bg);
         backdrop-filter: blur(10px);
@@ -289,10 +276,38 @@
         min-height: 50px;
         color: var(--text);
     }
+    
+    /* Alignment Matrix Styles */
+    .matrix-wrapper {
+        overflow-x: auto;
+        margin-top: 20px;
+        padding-bottom: 10px;
+    }
+    .matrix-table {
+        border-collapse: collapse;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        margin: 0 auto;
+    }
+    .matrix-cell {
+        border: 1px solid var(--glass-border);
+        padding: 6px 10px;
+        text-align: center;
+        min-width: 40px;
+    }
+    .matrix-header {
+        font-weight: bold;
+        color: var(--accent);
+        background: rgba(0,0,0,0.1);
+    }
+    .matrix-path {
+        background-color: var(--accent);
+        color: var(--bg);
+        font-weight: bold;
+        border-color: var(--accent);
+    }
 
-    /* -------------------------------
-       VCF VIEWER STYLES
-    --------------------------------*/
+
     .vcf-container {
         display: flex;
         flex-direction: column;
@@ -413,9 +428,7 @@
         color: #333;
     }
 
-    /* -------------------------------
-       THEME SWITCHER
-    --------------------------------*/
+
     .theme-switcher {
       position: fixed;
       bottom: 1.5rem;
@@ -502,6 +515,9 @@
         </div>
         <div class="tool-nav-item" onclick="showTool('viewer')">
             <i class="fa-solid fa-align-left"></i> Sequence Viewer
+        </div>
+        <div class="tool-nav-item" onclick="showTool('alignment')">
+            <i class="fa-solid fa-bars-staggered"></i> Pairwise Alignment
         </div>
         <div class="tool-nav-item" onclick="showTool('structure')">
             <i class="fa-solid fa-cube"></i> 3D Structure
@@ -653,6 +669,59 @@
             </div>
         </div>
 
+        <div id="alignment" class="tool-section" style="display: none;">
+            <h2>Pairwise Sequence Alignment</h2>
+            <div class="card-custom">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label>Sequence A (Vertical)</label>
+                        <textarea id="alignSeq1" rows="3" placeholder="e.g. GCATGCU">GCATGCU</textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Sequence B (Horizontal)</label>
+                        <textarea id="alignSeq2" rows="3" placeholder="e.g. GATTACA">GATTACA</textarea>
+                    </div>
+                </div>
+
+                <div class="row align-items-end mb-4">
+                    <div class="col-md-4">
+                        <label>Algorithm</label>
+                        <select id="alignAlgo" onchange="toggleAlignParams()">
+                            <option value="nw">Needleman-Wunsch (Global)</option>
+                            <option value="sw">Smith-Waterman (Local)</option>
+                            <option value="lev">Levenshtein Distance</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="alignParams" class="d-flex gap-2">
+                            <div style="flex:1">
+                                <label style="font-size:0.8rem">Match</label>
+                                <input type="number" id="alignMatch" value="1">
+                            </div>
+                            <div style="flex:1">
+                                <label style="font-size:0.8rem">Mismatch</label>
+                                <input type="number" id="alignMismatch" value="-1">
+                            </div>
+                            <div style="flex:1">
+                                <label style="font-size:0.8rem">Gap</label>
+                                <input type="number" id="alignGap" value="-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-100" onclick="runAlignment()">Run Alignment</button>
+                
+                <hr style="border-color: var(--glass-border);">
+                
+                <h5 class="text-muted">Result</h5>
+                <div id="alignResult" class="result-box" style="white-space: pre; overflow-x: auto; margin-bottom: 20px;">Run an alignment to see results...</div>
+                
+                <h5 class="text-muted">Dynamic Programming Matrix</h5>
+                <div id="matrixOutput" class="matrix-wrapper"></div>
+            </div>
+        </div>
+
         <div id="structure" class="tool-section" style="display: none;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2>3D Protein Structure</h2>
@@ -755,7 +824,6 @@ ERK TP53 regulates</textarea>
   </div>
 
   <script>
-    // --- THEME LOGIC ---
     function switchTheme(theme) {
       if (theme === 'system') {
         document.documentElement.removeAttribute('data-theme');
@@ -764,7 +832,6 @@ ERK TP53 regulates</textarea>
       }
       localStorage.setItem('preferred-theme', theme);
       
-      // Update Viz colors if needed
       setTimeout(() => {
           if(document.getElementById('structure').classList.contains('active')) loadPDB();
           if(document.getElementById('network').classList.contains('active')) runCytoscape();
@@ -778,7 +845,6 @@ ERK TP53 regulates</textarea>
     })();
 
 
-    // --- NAVIGATION LOGIC ---
     function showTool(toolId) {
         // Update nav state
         document.querySelectorAll('.tool-nav-item').forEach(el => el.classList.remove('active'));
@@ -808,9 +874,6 @@ ERK TP53 regulates</textarea>
     }
 
 
-    // ==========================================
-    // TOOL 1: VCF VIEWER LOGIC
-    // ==========================================
     let vcfData = { all: [], filtered: [] };
 
     document.getElementById('vcfFileInput').addEventListener('change', handleVcfUpload);
@@ -954,12 +1017,6 @@ ${v.raw}`;
         };
     }
 
-
-    // ==========================================
-    // OTHER TOOLS LOGIC
-    // ==========================================
-
-    // 2. Calculators
     function runAnalysis() {
         let seq = document.getElementById('mainInput').value.toUpperCase().replace(/[^ATGCU]/g, ''); 
         
@@ -993,9 +1050,6 @@ ${v.raw}`;
         document.getElementById('protResult').innerText = protein || "Waiting for input...";
     }
 
-    // 3. Volcano Plot (UPDATED)
-    
-    // Listen for file uploads
     document.getElementById('volcFileInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if(!file) return;
@@ -1003,9 +1057,7 @@ ${v.raw}`;
         const reader = new FileReader();
         reader.onload = function(e) {
             const text = e.target.result;
-            // Populate textarea with file content
             document.getElementById('volcInput').value = text;
-            // Render immediately
             renderVolcano();
         };
         reader.readAsText(file);
@@ -1040,7 +1092,6 @@ INS,-3.5,0.0001`;
         let rows = input.split('\n');
         let genes = [], x = [], y = [], colors = [], texts = [];
         
-        // Skip header if present
         let startIndex = 0;
         if(rows[0].toLowerCase().includes('gene')) startIndex = 1;
 
@@ -1057,7 +1108,6 @@ INS,-3.5,0.0001`;
             x.push(fc);
             y.push(negLogP);
             
-            // Determine Color
             if(p < pCutoff && fc > fcCutoff) {
                 colors.push('#ff6b6b'); // Up - Red
                 texts.push(`UP: ${gene}`);
@@ -1070,7 +1120,6 @@ INS,-3.5,0.0001`;
             }
         }
 
-        // Get Theme Colors for Layout
         const textColor = getComputedStyle(document.body).getPropertyValue('--text').trim();
         const gridColor = getComputedStyle(document.body).getPropertyValue('--glass-border').trim();
 
@@ -1107,7 +1156,6 @@ INS,-3.5,0.0001`;
         Plotly.newPlot('volcanoPlot', [trace], layout, {responsive: true, displayModeBar: true});
     }
 
-    // 4. Viewer
     function renderViewer() {
         let seq = document.getElementById('viewerInput').value.toUpperCase();
         let output = document.getElementById('viewerOutput');
@@ -1118,7 +1166,7 @@ INS,-3.5,0.0001`;
         const charged = ['R','K','H','D','E']; 
 
         seq.split('').forEach(aa => {
-            let color = 'var(--text)'; // Use theme text color default
+            let color = 'var(--text)';
             if(hydrophobic.includes(aa)) color = '#ff6b6b'; 
             if(polar.includes(aa)) color = '#4ecdc4'; 
             if(charged.includes(aa)) color = '#bb86fc'; 
@@ -1131,13 +1179,243 @@ INS,-3.5,0.0001`;
         });
     }
 
-    // 5. 3D Structure
+    function toggleAlignParams() {
+        const algo = document.getElementById('alignAlgo').value;
+        const paramsDiv = document.getElementById('alignParams');
+        if(algo === 'lev') {
+            paramsDiv.style.opacity = '0.5';
+            paramsDiv.style.pointerEvents = 'none';
+        } else {
+            paramsDiv.style.opacity = '1';
+            paramsDiv.style.pointerEvents = 'auto';
+        }
+    }
+
+    function runAlignment() {
+        const seq1 = document.getElementById('alignSeq1').value.toUpperCase().trim();
+        const seq2 = document.getElementById('alignSeq2').value.toUpperCase().trim();
+        const algo = document.getElementById('alignAlgo').value;
+        const match = parseInt(document.getElementById('alignMatch').value);
+        const mismatch = parseInt(document.getElementById('alignMismatch').value);
+        const gap = parseInt(document.getElementById('alignGap').value);
+        const outputDiv = document.getElementById('alignResult');
+        const matrixDiv = document.getElementById('matrixOutput');
+
+        if(!seq1 || !seq2) {
+            outputDiv.innerHTML = "Please enter two sequences.";
+            matrixDiv.innerHTML = "";
+            return;
+        }
+
+        let res;
+        let typeText = "";
+        if(algo === 'lev') {
+            res = levenshtein(seq1, seq2);
+            typeText = "Levenshtein Distance";
+            outputDiv.innerHTML = `Levenshtein Distance: <strong>${res.score}</strong>`;
+        } else if (algo === 'nw') {
+            res = needlemanWunsch(seq1, seq2, match, mismatch, gap);
+            typeText = "Global (Needleman-Wunsch)";
+            outputDiv.innerHTML = formatAlignment(res.score, res.align1, res.align2, typeText);
+        } else if (algo === 'sw') {
+            res = smithWaterman(seq1, seq2, match, mismatch, gap);
+            typeText = "Local (Smith-Waterman)";
+            outputDiv.innerHTML = formatAlignment(res.score, res.align1, res.align2, typeText);
+        }
+        
+        renderMatrix(res.matrix, seq1, seq2, res.path);
+    }
+
+    function formatAlignment(score, align1, align2, type) {
+        let visual = "";
+        let matches = 0;
+        let length = align1.length;
+        
+        for(let i=0; i<length; i++) {
+            if(align1[i] === align2[i] && align1[i] !== '-') {
+                visual += "|";
+                matches++;
+            } else if (align1[i] === '-' || align2[i] === '-') {
+                visual += " ";
+            } else {
+                visual += ".";
+            }
+        }
+        
+        let identity = length > 0 ? ((matches / length) * 100).toFixed(1) : 0;
+        
+        return `<strong>${type}</strong>
+Score: ${score} | Identity: ${identity}%
+
+Seq A: ${align1}
+       ${visual}
+Seq B: ${align2}`;
+    }
+
+    function levenshtein(seq1, seq2) {
+        let n = seq1.length; // Rows
+        let m = seq2.length; // Cols
+        let matrix = Array(n + 1).fill(null).map(() => Array(m + 1).fill(0));
+        
+        for (let i = 0; i <= n; i++) matrix[i][0] = i;
+        for (let j = 0; j <= m; j++) matrix[0][j] = j;
+
+        for (let i = 1; i <= n; i++) {
+            for (let j = 1; j <= m; j++) {
+                if (seq1[i - 1] === seq2[j - 1]) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1, // substitution
+                        matrix[i][j - 1] + 1,     // insertion
+                        matrix[i - 1][j] + 1      // deletion
+                    );
+                }
+            }
+        }
+
+        let path = [];
+        let i = n, j = m;
+        path.push([i, j]);
+        while (i > 0 || j > 0) {
+            let current = matrix[i][j];
+            if (i > 0 && j > 0 && seq1[i-1] === seq2[j-1] && matrix[i-1][j-1] === current) {
+                i--; j--;
+            } else if (i > 0 && j > 0 && matrix[i-1][j-1] + 1 === current) { // Sub
+                i--; j--;
+            } else if (i > 0 && matrix[i-1][j] + 1 === current) { // Del
+                i--;
+            } else {
+                j--;
+            }
+            path.push([i, j]);
+        }
+
+        return { score: matrix[n][m], matrix: matrix, path: path };
+    }
+
+    function needlemanWunsch(seq1, seq2, match, mismatch, gap) {
+        let n = seq1.length;
+        let m = seq2.length;
+        let matrix = Array(n + 1).fill(null).map(() => Array(m + 1).fill(0));
+        
+        for (let i = 0; i <= n; i++) matrix[i][0] = i * gap;
+        for (let j = 0; j <= m; j++) matrix[0][j] = j * gap;
+
+        for (let i = 1; i <= n; i++) {
+            for (let j = 1; j <= m; j++) {
+                let scoreDiag = matrix[i-1][j-1] + (seq1[i-1] === seq2[j-1] ? match : mismatch);
+                let scoreUp = matrix[i-1][j] + gap;
+                let scoreLeft = matrix[i][j-1] + gap;
+                matrix[i][j] = Math.max(scoreDiag, scoreUp, scoreLeft);
+            }
+        }
+
+        let align1 = "", align2 = "";
+        let i = n, j = m;
+        let path = [];
+        path.push([i, j]);
+        
+        while (i > 0 || j > 0) {
+            let score = matrix[i][j];
+            if (i > 0 && j > 0 && score === matrix[i-1][j-1] + (seq1[i-1] === seq2[j-1] ? match : mismatch)) {
+                align1 = seq1[i-1] + align1;
+                align2 = seq2[j-1] + align2;
+                i--; j--;
+            } else if (i > 0 && score === matrix[i-1][j] + gap) {
+                align1 = seq1[i-1] + align1;
+                align2 = "-" + align2;
+                i--;
+            } else {
+                align1 = "-" + align1;
+                align2 = seq2[j-1] + align2;
+                j--;
+            }
+            path.push([i, j]);
+        }
+        return { score: matrix[n][m], align1, align2, matrix: matrix, path: path };
+    }
+
+    function smithWaterman(seq1, seq2, match, mismatch, gap) {
+        let n = seq1.length;
+        let m = seq2.length;
+        let matrix = Array(n + 1).fill(null).map(() => Array(m + 1).fill(0));
+        let maxScore = 0;
+        let maxI = 0, maxJ = 0;
+
+        for (let i = 1; i <= n; i++) {
+            for (let j = 1; j <= m; j++) {
+                let scoreDiag = matrix[i-1][j-1] + (seq1[i-1] === seq2[j-1] ? match : mismatch);
+                let scoreUp = matrix[i-1][j] + gap;
+                let scoreLeft = matrix[i][j-1] + gap;
+                matrix[i][j] = Math.max(0, scoreDiag, scoreUp, scoreLeft);
+                
+                if(matrix[i][j] > maxScore) {
+                    maxScore = matrix[i][j];
+                    maxI = i; maxJ = j;
+                }
+            }
+        }
+
+        let align1 = "", align2 = "";
+        let i = maxI, j = maxJ;
+        let path = [];
+        path.push([i, j]);
+
+        while (matrix[i][j] > 0) {
+            let score = matrix[i][j];
+            if (i > 0 && j > 0 && score === matrix[i-1][j-1] + (seq1[i-1] === seq2[j-1] ? match : mismatch)) {
+                align1 = seq1[i-1] + align1;
+                align2 = seq2[j-1] + align2;
+                i--; j--;
+            } else if (i > 0 && score === matrix[i-1][j] + gap) {
+                align1 = seq1[i-1] + align1;
+                align2 = "-" + align2;
+                i--;
+            } else {
+                align1 = "-" + align1;
+                align2 = seq2[j-1] + align2;
+                j--;
+            }
+            path.push([i, j]);
+        }
+        return { score: maxScore, align1, align2, matrix: matrix, path: path };
+    }
+
+    function renderMatrix(matrix, seq1, seq2, path) {
+        // path is array of [i, j] arrays
+        const pathSet = new Set(path.map(p => `${p[0]},${p[1]}`));
+        
+        let html = '<table class="matrix-table">';
+        
+        html += '<tr><td class="matrix-cell matrix-header"></td><td class="matrix-cell matrix-header"></td>';
+        for (let j = 0; j < seq2.length; j++) {
+            html += `<td class="matrix-cell matrix-header">${seq2[j]}</td>`;
+        }
+        html += '</tr>';
+
+        for (let i = 0; i < matrix.length; i++) {
+            html += '<tr>';
+            let rowLabel = i === 0 ? "" : seq1[i - 1];
+            html += `<td class="matrix-cell matrix-header">${rowLabel}</td>`;
+            
+            for (let j = 0; j < matrix[i].length; j++) {
+                let isPath = pathSet.has(`${i},${j}`);
+                let className = isPath ? 'matrix-cell matrix-path' : 'matrix-cell';
+                html += `<td class="${className}">${matrix[i][j]}</td>`;
+            }
+            html += '</tr>';
+        }
+        html += '</table>';
+        
+        document.getElementById('matrixOutput').innerHTML = html;
+    }
+
     let viewer3d = null;
     function loadPDB() {
         let pdbID = document.getElementById('pdbInput').value;
         let element = document.getElementById('mol-container');
         
-        // Determine background color based on current theme
         let isLight = document.documentElement.getAttribute('data-theme') === 'light';
         let bgColor = isLight ? 'white' : '#1e1e1e'; 
         
@@ -1151,7 +1429,6 @@ INS,-3.5,0.0001`;
         });
     }
 
-    // 6. Genome Browser
     let igvBrowser = null;
     function initIGV() {
         var igvDiv = document.getElementById("igv-div");
@@ -1167,7 +1444,6 @@ INS,-3.5,0.0001`;
         else alert("Please initialize the browser first!");
     }
 
-    // 7. Network
     function runCytoscape() {
         var rawData = document.getElementById('cyData').value.trim();
         var layoutName = document.getElementById('cyLayout').value;
@@ -1175,7 +1451,6 @@ INS,-3.5,0.0001`;
         var elements = [];
         var nodes = new Set(); 
 
-        // Get theme accent color
         let accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
         let textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
 
@@ -1227,7 +1502,6 @@ INS,-3.5,0.0001`;
         });
     }
 
-    // 8. Formatter
     function formatFasta() {
         let raw = document.getElementById('fastaInput').value.replace(/\s+/g, '');
         let header = document.getElementById('fastaHeader').value || "Formatted_Sequence";
@@ -1238,9 +1512,9 @@ INS,-3.5,0.0001`;
         document.getElementById('fastaOutput').value = formatted;
     }
 
-    // Init
+
     runAnalysis();
-    loadVolcanoDemo(); // Preload demo data so user sees something cool immediately
+    loadVolcanoDemo(); 
   </script>
 </body>
 </html>
