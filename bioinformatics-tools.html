@@ -427,6 +427,43 @@
         border-radius: 8px;
         color: #333;
     }
+    
+    /* Colab Embed Styling */
+    .colab-code-block {
+        background: #1e1e1e;
+        border-radius: 8px;
+        padding: 15px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.85rem;
+        color: #d4d4d4;
+        border: 1px solid var(--glass-border);
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+        overflow-x: auto;
+    }
+    .colab-comment { color: #6a9955; }
+    .colab-keyword { color: #c586c0; font-weight: bold; }
+    .colab-string { color: #ce9178; }
+    .colab-func { color: #dcdcaa; }
+    .colab-num { color: #b5cea8; }
+    .colab-var { color: #9cdcfe; }
+    
+    .colab-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255,255,255,0.9);
+        color: #333;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none !important;
+        transition: transform 0.2s;
+    }
+    .colab-badge:hover {
+        transform: scale(1.05);
+        background: #fff;
+    }
 
 
     .theme-switcher {
@@ -519,6 +556,11 @@
         <div class="tool-nav-item" onclick="showTool('alignment')">
             <i class="fa-solid fa-bars-staggered"></i> Pairwise Alignment
         </div>
+        
+        <div class="tool-nav-item" onclick="showTool('alphafold')">
+            <i class="fa-solid fa-dna"></i> AlphaFold Colab
+        </div>
+
         <div class="tool-nav-item" onclick="showTool('structure')">
             <i class="fa-solid fa-cube"></i> 3D Structure
         </div>
@@ -722,6 +764,99 @@
             </div>
         </div>
 
+        <div id="alphafold" class="tool-section" style="display: none;">
+            <h2>AlphaFold Protein Prediction</h2>
+            
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                    <div>
+                        <p class="mb-3">
+                            This tool links to my custom Google Colab notebook for running AlphaFold v2.0 predictions. 
+                            It utilizes GPU acceleration to predict 3D protein structures from amino acid sequences.
+                        </p>
+                        <ul class="text-muted mb-4">
+                            <li><i class="fa-solid fa-check" style="color:var(--accent)"></i> <strong>Hardware:</strong> Google Cloud GPUs (T4)</li>
+                        </ul>
+                    </div>
+                    <a href="https://colab.research.google.com/drive/1PTKWNbQ1FRPk7Jr7RIEdpRKwyZfrIv4y?usp=sharing" target="_blank" class="colab-badge">
+                        <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height: 32px;">
+                    </a>
+                </div>
+
+                <hr style="border-color: var(--glass-border); margin: 20px 0;">
+
+                <h5 class="text-muted mb-3"><i class="fa-solid fa-code"></i> Preview: Notebook Visualization Code</h5>
+                
+                <div class="colab-code-block">
+<div class="d-flex gap-2 mb-2">
+    <div style="width:12px; height:12px; border-radius:50%; background:#ff5f56"></div>
+    <div style="width:12px; height:12px; border-radius:50%; background:#ffbd2e"></div>
+    <div style="width:12px; height:12px; border-radius:50%; background:#27c93f"></div>
+</div>
+<span class="colab-keyword">import</span> py3Dmol
+<span class="colab-keyword">import</span> glob
+<span class="colab-keyword">import</span> matplotlib.pyplot <span class="colab-keyword">as</span> plt
+<span class="colab-keyword">from</span> colabfold.colabfold <span class="colab-keyword">import</span> plot_plddt_legend
+<span class="colab-keyword">from</span> colabfold.colabfold <span class="colab-keyword">import</span> pymol_color_list, alphabet_list
+
+<span class="colab-var">rank_num</span> = <span class="colab-num">1</span> <span class="colab-comment">#["1", "2", "3", "4", "5"]</span>
+<span class="colab-var">color</span> = <span class="colab-string">"lDDT"</span> <span class="colab-comment"># ["chain", "lDDT", "rainbow"]</span>
+<span class="colab-var">show_sidechains</span> = <span class="colab-keyword">True</span>
+<span class="colab-var">show_mainchains</span> = <span class="colab-keyword">True</span>
+
+<span class="colab-var">tag</span> = results[<span class="colab-string">"rank"</span>][<span class="colab-num">0</span>][rank_num - <span class="colab-num">1</span>]
+<span class="colab-var">jobname_prefix</span> = <span class="colab-string">".custom"</span> <span class="colab-keyword">if</span> msa_mode == <span class="colab-string">"custom"</span> <span class="colab-keyword">else</span> <span class="colab-string">""</span>
+<span class="colab-var">pdb_filename</span> = f<span class="colab-string">"{jobname}/{jobname}{jobname_prefix}_unrelaxed_{tag}.pdb"</span>
+<span class="colab-var">pdb_file</span> = glob.glob(pdb_filename)
+
+<span class="colab-keyword">def</span> <span class="colab-func">show_pdb</span>(rank_num=<span class="colab-num">1</span>, show_sidechains=<span class="colab-keyword">False</span>, show_mainchains=<span class="colab-keyword">False</span>, color=<span class="colab-string">"lDDT"</span>):
+  <span class="colab-var">model_name</span> = f<span class="colab-string">"rank_{rank_num}"</span>
+  <span class="colab-var">view</span> = py3Dmol.view(js=<span class="colab-string">'https://3dmol.org/build/3Dmol.js'</span>,)
+  view.addModel(open(pdb_file[<span class="colab-num">0</span>],<span class="colab-string">'r'</span>).read(),<span class="colab-string">'pdb'</span>)
+
+  <span class="colab-keyword">if</span> color == <span class="colab-string">"lDDT"</span>:
+    view.setStyle({<span class="colab-string">'cartoon'</span>: {<span class="colab-string">'colorscheme'</span>: {<span class="colab-string">'prop'</span>:<span class="colab-string">'b'</span>,<span class="colab-string">'gradient'</span>: <span class="colab-string">'roygb'</span>,<span class="colab-string">'min'</span>:<span class="colab-num">50</span>,<span class="colab-string">'max'</span>:<span class="colab-num">90</span>}}})
+  <span class="colab-keyword">elif</span> color == <span class="colab-string">"rainbow"</span>:
+    view.setStyle({<span class="colab-string">'cartoon'</span>: {<span class="colab-string">'color'</span>:<span class="colab-string">'spectrum'</span>}})
+  <span class="colab-keyword">elif</span> color == <span class="colab-string">"chain"</span>:
+    <span class="colab-var">chains</span> = len(queries[<span class="colab-num">0</span>][<span class="colab-num">1</span>]) + <span class="colab-num">1</span> <span class="colab-keyword">if</span> is_complex <span class="colab-keyword">else</span> <span class="colab-num">1</span>
+    <span class="colab-keyword">for</span> n,chain,color <span class="colab-keyword">in</span> zip(range(chains),alphabet_list,pymol_color_list):
+       view.setStyle({<span class="colab-string">'chain'</span>:chain},{<span class="colab-string">'cartoon'</span>: {<span class="colab-string">'color'</span>:color}})
+
+  <span class="colab-keyword">if</span> show_sidechains:
+    <span class="colab-var">BB</span> = [<span class="colab-string">'C'</span>,<span class="colab-string">'O'</span>,<span class="colab-string">'N'</span>]
+    view.addStyle({<span class="colab-string">'and'</span>:[{<span class="colab-string">'resn'</span>:[<span class="colab-string">"GLY"</span>,<span class="colab-string">"PRO"</span>],<span class="colab-string">'invert'</span>:<span class="colab-keyword">True</span>},{<span class="colab-string">'atom'</span>:BB,<span class="colab-string">'invert'</span>:<span class="colab-keyword">True</span>}]},
+                        {<span class="colab-string">'stick'</span>:{<span class="colab-string">'colorscheme'</span>:f<span class="colab-string">"WhiteCarbon"</span>,<span class="colab-string">'radius'</span>:<span class="colab-num">0.3</span>}})
+    view.addStyle({<span class="colab-string">'and'</span>:[{<span class="colab-string">'resn'</span>:<span class="colab-string">"GLY"</span>},{<span class="colab-string">'atom'</span>:<span class="colab-string">'CA'</span>}]},
+                        {<span class="colab-string">'sphere'</span>:{<span class="colab-string">'colorscheme'</span>:f<span class="colab-string">"WhiteCarbon"</span>,<span class="colab-string">'radius'</span>:<span class="colab-num">0.3</span>}})
+    view.addStyle({<span class="colab-string">'and'</span>:[{<span class="colab-string">'resn'</span>:<span class="colab-string">"PRO"</span>},{<span class="colab-string">'atom'</span>:[<span class="colab-string">'C'</span>,<span class="colab-string">'O'</span>],<span class="colab-string">'invert'</span>:<span class="colab-keyword">True</span>}]},
+                        {<span class="colab-string">'stick'</span>:{<span class="colab-string">'colorscheme'</span>:f<span class="colab-string">"WhiteCarbon"</span>,<span class="colab-string">'radius'</span>:<span class="colab-num">0.3</span>}})
+  <span class="colab-keyword">if</span> show_mainchains:
+    <span class="colab-var">BB</span> = [<span class="colab-string">'C'</span>,<span class="colab-string">'O'</span>,<span class="colab-string">'N'</span>,<span class="colab-string">'CA'</span>]
+    view.addStyle({<span class="colab-string">'atom'</span>:BB},{<span class="colab-string">'stick'</span>:{<span class="colab-string">'colorscheme'</span>:f<span class="colab-string">"WhiteCarbon"</span>,<span class="colab-string">'radius'</span>:<span class="colab-num">0.3</span>}})
+
+  view.zoomTo()
+  <span class="colab-keyword">return</span> view
+
+show_pdb(rank_num, show_sidechains, show_mainchains, color).show()
+<span class="colab-keyword">if</span> color == <span class="colab-string">"lDDT"</span>:
+  plot_plddt_legend().show()</div>
+
+                <div class="mb-4 text-center">
+                    <img src="alphafold/af.png" alt="AlphaFold Output Prediction" class="img-fluid" style="border-radius: 8px; border: 1px solid var(--glass-border); max-height: 400px;">
+                    <small class="text-muted d-block mt-2">Example output: Predicted Structure colored by pLDDT</small>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted small">Run this analysis with your own sequence in my Colab notebook:</p>
+                    <a href="https://colab.research.google.com/drive/1PTKWNbQ1FRPk7Jr7RIEdpRKwyZfrIv4y?usp=sharing" target="_blank" class="btn btn-primary btn-lg">
+                        <i class="fa-solid fa-rocket"></i> Launch Notebook
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
         <div id="structure" class="tool-section" style="display: none;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2>3D Protein Structure</h2>
@@ -737,7 +872,7 @@
         </div>
 
         <div id="genome" class="tool-section" style="display: none;">
-            <h2>Genome Browser (IGV.js)</h2>
+            <h2>Genome Browser</h2>
             <div class="card-custom">
                 <div class="d-flex gap-3 align-items-center mb-3 flex-wrap">
                     <button class="btn btn-outline-primary" onclick="initIGV()">
