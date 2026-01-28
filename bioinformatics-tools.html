@@ -909,44 +909,45 @@ ERK TP53 regulates</textarea>
         if(toolId === 'volcano') setTimeout(renderVolcano, 100);
     }
 
-    // --- ESM FOLD LOGIC START ---
     async function runESMFold() {
-        const seq = document.getElementById('esmInput').value.trim();
+        const seq = document.getElementById('esmInput').value.trim().toUpperCase();
         const btn = document.getElementById('esmBtn');
         const status = document.getElementById('esmStatus');
         
         if(!seq) { alert("Please enter a protein sequence"); return; }
+        if(seq.length > 400) { alert("Sequence is too long! Please use < 400 AA for free demo."); return; }
         
-        // UI Loading State
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Folding...';
-        status.innerText = "Sending to Meta ESM Atlas...";
+        status.innerText = "Processing via Vercel Edge...";
         status.style.color = "var(--accent)";
 
         try {
-            // Vercel'deki kendi API'mize istek atıyoruz
-            const response = await fetch('/api/fold', {
+            const apiUrl = "https://ayyucedemirbas.github.io.vercel.app/api/fold"; 
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ sequence: seq })
             });
 
             if(!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || "Server Error");
+                const err = await response.text();
+                throw new Error(err || `Server Error (${response.status})`);
             }
 
             const pdbData = await response.text();
-            status.innerText = "Success! Rendering...";
-            status.style.color = "#22c55e"; // Green
+            
+            if(!pdbData.includes("ATOM")) throw new Error("Invalid PDB Data received");
 
-            // 3Dmol ile çizdir
+            status.innerText = "Success!";
+            status.style.color = "#22c55e";
             renderESMStructure(pdbData);
 
         } catch (error) {
             console.error(error);
             status.innerText = "Error: " + error.message;
-            status.style.color = "#ef4444"; // Red
+            status.style.color = "#ef4444";
         } finally {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-cube"></i> Fold Sequence';
