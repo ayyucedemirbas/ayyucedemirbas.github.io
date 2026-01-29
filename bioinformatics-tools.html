@@ -945,6 +945,11 @@ show_pdb(rank_num, show_sidechains, show_mainchains, color).show()
                             <i class="fa-solid fa-magnifying-glass"></i> Go
                         </button>
                     </div>
+
+                    <div class="d-flex align-items-center gap-2" style="background: var(--input-bg); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--glass-border);">
+                        <label class="mb-0" style="white-space: nowrap; font-size: 0.9rem;">Add Track (.bed):</label>
+                        <input type="file" id="bedFileInput" accept=".bed,.bed.gz" class="form-control" style="width: auto; font-size: 0.8rem; padding: 4px;">
+                    </div>
                 </div>
 
                 <div id="igv-div"></div>
@@ -1066,6 +1071,8 @@ ERK TP53 regulates</textarea>
         if(toolId === 'structure') loadPDB(); 
         if(toolId === 'network') setTimeout(runCytoscape, 100); 
         if(toolId === 'volcano') setTimeout(renderVolcano, 100);
+        // Automatically initialize IGV if it's not already running
+        if(toolId === 'genome' && !igvBrowser) initIGV(); 
     }
 
 
@@ -1638,6 +1645,72 @@ Seq B: ${align2}`;
         if(igvBrowser && term) igvBrowser.search(term);
         else alert("Please initialize the browser first!");
     }
+    
+    // UPDATED BED Uploader Listener with Auto-Zoom
+    document.getElementById('bedFileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!igvBrowser) {
+            alert("Please initialize the Genome Browser first by clicking the Reset/Init button.");
+            return;
+        }
+
+        // 1. Load the track (IGV can read the file object directly)
+        igvBrowser.loadTrack({
+            name: file.name,
+            type: 'annotation',
+            format: 'bed',
+            url: file, 
+            displayMode: "EXPANDED",
+            color: "#ff6b6b" // Force a visible color
+        });
+
+        // 2. Read first few lines to find where to zoom
+        // If it's a .gz file, we skip auto-zoom because we can't easily peek inside without a library.
+        if(!file.name.endsWith('.gz')) {
+            const reader = new FileReader();
+            // Read only the first 10KB to save memory
+            const blob = file.slice(0, 10000); 
+            
+            reader.onload = function(event) {
+                const text = event.target.result;
+                const lines = text.split('\n');
+                
+                for(let line of lines) {
+                    line = line.trim();
+                    // Skip headers or empty lines
+                    if(!line || line.startsWith('#') || line.startsWith('track') || line.startsWith('browser')) continue;
+                    
+                    const parts = line.split(/\s+/);
+                    if(parts.length >= 3) {
+                        const chrom = parts[0];
+                        const start = parts[1];
+                        const end = parts[2];
+                        
+                        // Valid coordinate check
+                        if(!isNaN(start) && !isNaN(end)) {
+                             // Add padding to the view
+                            const loc = `${chrom}:${Math.max(0, parseInt(start)-100)}-${parseInt(end)+100}`;
+                            
+                            console.log("Auto-zooming to:", loc);
+                            setTimeout(() => {
+                                igvBrowser.search(loc);
+                            }, 500); // Slight delay to allow track load to register
+                        }
+                        break; // Stop after finding the first feature
+                    }
+                }
+            };
+            reader.readAsText(blob);
+        } else {
+            console.log("Skipping auto-zoom for compressed file.");
+        }
+
+        // Clear input to allow re-upload
+        e.target.value = '';
+    });
+
 
     function runCytoscape() {
         var rawData = document.getElementById('cyData').value.trim();
