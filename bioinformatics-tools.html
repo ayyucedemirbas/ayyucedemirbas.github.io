@@ -604,6 +604,16 @@
   <div class="tool-layout">
     
     <div class="tool-sidebar">
+        <div class="tool-nav-item" onclick="showTool('genome')">
+            <i class="fa-solid fa-magnifying-glass-location"></i> Genome Browser
+        </div>
+
+        <div class="tool-nav-item" onclick="showTool('structure')">
+            <i class="fa-solid fa-cube"></i> 3D Protein Structure
+        </div>
+        <div class="tool-nav-item" onclick="showTool('alignment')">
+            <i class="fa-solid fa-bars-staggered"></i> Pairwise Alignment
+        </div>
         <div class="tool-nav-item active" onclick="showTool('dashboard')">
             <i class="fa-solid fa-chart-pie"></i> Calculators
         </div>
@@ -616,20 +626,10 @@
         <div class="tool-nav-item" onclick="showTool('viewer')">
             <i class="fa-solid fa-align-left"></i> Sequence Viewer
         </div>
-        <div class="tool-nav-item" onclick="showTool('alignment')">
-            <i class="fa-solid fa-bars-staggered"></i> Pairwise Alignment
-        </div>
-        
         <div class="tool-nav-item" onclick="showTool('alphafold')">
             <i class="fa-solid fa-dna"></i> AlphaFold Colab
-        </div>
-
-        <div class="tool-nav-item" onclick="showTool('structure')">
-            <i class="fa-solid fa-cube"></i> 3D Structure
-        </div>
-        <div class="tool-nav-item" onclick="showTool('genome')">
-            <i class="fa-solid fa-magnifying-glass-location"></i> Genome Browser
-        </div>
+        </div>      
+        
         <div class="tool-nav-item" onclick="showTool('network')">
             <i class="fa-solid fa-circle-nodes"></i> Network Builder
         </div>
