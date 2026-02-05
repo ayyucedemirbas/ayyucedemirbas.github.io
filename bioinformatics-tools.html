@@ -640,7 +640,8 @@
 
     <div class="tool-content">
         
-        <div id="dashboard" class="tool-section" style="display: block;"> <h2>Sequence Analysis Dashboard</h2>
+        <div id="dashboard" class="tool-section" style="display: none;"> 
+            <h2>Sequence Analysis Dashboard</h2>
             <div class="card-custom">
                 <label>Input DNA Sequence (Raw or FASTA)</label>
                 <textarea id="mainInput" rows="4" placeholder="ATGC..." oninput="runAnalysis()"></textarea>
@@ -931,7 +932,7 @@ show_pdb(rank_num, show_sidechains, show_mainchains, color).show()
             </div>
         </div>
 
-        <div id="genome" class="tool-section active" style="display: none;">
+        <div id="genome" class="tool-section active" style="display: block;">
             <h2>Genome Browser (IGV.js)</h2>
             <div class="card-custom">
                 <div class="d-flex gap-3 align-items-center mb-3 flex-wrap">
@@ -1782,8 +1783,9 @@ Seq B: ${align2}`;
 
 
     runAnalysis();
-    loadVolcanoDemo();
-    initIGV();
+    loadVolcanoDemo(); 
+    
+    initIGV(); 
   </script>
 </body>
 </html>
