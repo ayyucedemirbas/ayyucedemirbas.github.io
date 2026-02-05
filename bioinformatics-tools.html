@@ -604,7 +604,7 @@
   <div class="tool-layout">
     
     <div class="tool-sidebar">
-        <div class="tool-nav-item" onclick="showTool('genome')">
+        <div class="tool-nav-item active" onclick="showTool('genome')">
             <i class="fa-solid fa-magnifying-glass-location"></i> Genome Browser
         </div>
 
@@ -614,7 +614,7 @@
         <div class="tool-nav-item" onclick="showTool('alignment')">
             <i class="fa-solid fa-bars-staggered"></i> Pairwise Alignment
         </div>
-        <div class="tool-nav-item active" onclick="showTool('dashboard')">
+        <div class="tool-nav-item" onclick="showTool('dashboard')">
             <i class="fa-solid fa-chart-pie"></i> Calculators
         </div>
         <div class="tool-nav-item" onclick="showTool('volcano')">
@@ -640,7 +640,7 @@
 
     <div class="tool-content">
         
-        <div id="dashboard" class="tool-section active" style="display: block;"> <h2>Sequence Analysis Dashboard</h2>
+        <div id="dashboard" class="tool-section" style="display: block;"> <h2>Sequence Analysis Dashboard</h2>
             <div class="card-custom">
                 <label>Input DNA Sequence (Raw or FASTA)</label>
                 <textarea id="mainInput" rows="4" placeholder="ATGC..." oninput="runAnalysis()"></textarea>
@@ -931,7 +931,7 @@ show_pdb(rank_num, show_sidechains, show_mainchains, color).show()
             </div>
         </div>
 
-        <div id="genome" class="tool-section" style="display: none;">
+        <div id="genome" class="tool-section active" style="display: none;">
             <h2>Genome Browser (IGV.js)</h2>
             <div class="card-custom">
                 <div class="d-flex gap-3 align-items-center mb-3 flex-wrap">
@@ -1782,7 +1782,8 @@ Seq B: ${align2}`;
 
 
     runAnalysis();
-    loadVolcanoDemo(); 
+    loadVolcanoDemo();
+    initIGV();
   </script>
 </body>
 </html>
