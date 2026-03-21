@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Demos & BioToolbox | Ayyuce Demirbas</title>
+  <title>BioToolbox | Ayyuce Demirbas</title>
   
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas.github.io/refs/heads/main/logo.png" />
   
@@ -16,7 +16,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/igv@2.15.5/dist/igv.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-  
+
+  <!-- TF.js for Demos -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgpu@4.17.0/dist/tf-backend-webgpu.min.js"></script>
 
@@ -39,7 +40,6 @@
       --input-bg: rgba(0, 0, 0, 0.2);
       --transition-speed: 0.3s;
       
-      /* VCF Specific Colors (Adaptive) */
       --vcf-header-bg: rgba(0, 0, 0, 0.3);
       --vcf-border: rgba(255, 255, 255, 0.1);
       --code-color: #ce9178;
@@ -54,12 +54,12 @@
       --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
       --card-bg: rgba(255, 255, 255, 0.8);
       --input-bg: #ffffff;
-      
       --vcf-header-bg: rgba(0, 0, 0, 0.05);
       --vcf-border: rgba(0, 0, 0, 0.1);
       --code-color: #d63384;
     }
 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       background-color: var(--bg);
@@ -70,7 +70,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      margin: 0;
     }
 
     a {
@@ -89,6 +88,9 @@
         opacity: 0.7;
     }
 
+    /* --------------------------------
+       NAVIGATION
+    -------------------------------- */
     nav.main-nav {
       background-color: rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(15px);
@@ -137,6 +139,70 @@
       box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
     }
 
+    /* --------------------------------
+       PAGE SWITCHER
+    -------------------------------- */
+    .page-switcher {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.15);
+      border-bottom: 1px solid var(--glass-border);
+      position: sticky;
+      top: 65px;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+
+    .page-switch-btn {
+      background: var(--glass-bg);
+      color: var(--text);
+      border: 1px solid var(--glass-border);
+      padding: 0.6rem 1.6rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .page-switch-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .page-switch-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(187, 134, 252, 0.35);
+    }
+
+    [data-theme="light"] .page-switch-btn.active {
+      box-shadow: 0 4px 20px rgba(0, 119, 255, 0.25);
+    }
+
+    /* --------------------------------
+       PAGE VIEWS
+    -------------------------------- */
+    #page-biotoolbox {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #page-demos {
+      display: none;
+    }
+
+    /* --------------------------------
+       BIOTOOLBOX LAYOUT
+    -------------------------------- */
     .tool-layout {
         display: flex;
         flex: 1;
@@ -144,10 +210,9 @@
         margin: 0 auto;
         width: 100%;
         padding-top: 20px;
-        height: calc(100vh - 80px); /* Adjust based on nav height */
+        height: calc(100vh - 145px); /* nav + page-switcher */
     }
 
-    /* Tool Sidebar */
     .tool-sidebar {
         width: 250px;
         background: var(--glass-bg);
@@ -190,7 +255,6 @@
         background: rgba(0, 119, 255, 0.1);
     }
 
-    /* Tool Main Content */
     .tool-content {
         flex: 1;
         padding: 0 30px 30px 30px;
@@ -201,12 +265,12 @@
     .tool-section {
         display: none;
         animation: fadeIn 0.4s ease-in-out;
-        height: 100%; /* For VCF flex layout */
+        height: 100%;
         flex-direction: column;
     }
     
     .tool-section.active {
-        display: flex; /* Changed to flex for full height apps like VCF */
+        display: flex;
     }
 
     @keyframes fadeIn {
@@ -280,7 +344,7 @@
         color: var(--text);
     }
     
-    /* Alignment Matrix Styles */
+    /* Alignment Matrix */
     .matrix-wrapper {
         overflow-x: auto;
         margin-top: 20px;
@@ -310,11 +374,11 @@
         border-color: var(--accent);
     }
 
-    /* VCF Styles */
+    /* VCF Viewer */
     .vcf-container {
         display: flex;
         flex-direction: column;
-        height: calc(100vh - 180px); /* Fill available space */
+        height: calc(100vh - 245px);
         background: var(--card-bg);
         border-radius: 12px;
         border: 1px solid var(--glass-border);
@@ -366,17 +430,9 @@
         color: var(--text);
     }
 
-    .vcf-table tr:hover {
-        background: var(--glass-bg);
-    }
-
-    .vcf-table tr.selected {
-        background: var(--accent) !important;
-    }
-    
-    .vcf-table tr.selected td {
-        color: var(--bg) !important;
-    }
+    .vcf-table tr:hover { background: var(--glass-bg); }
+    .vcf-table tr.selected { background: var(--accent) !important; }
+    .vcf-table tr.selected td { color: var(--bg) !important; }
 
     .vcf-detail-panel {
         flex: 1;
@@ -390,7 +446,6 @@
         white-space: pre-wrap;
     }
     
-    /* VCF Loader */
     .vcf-loader {
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
@@ -413,7 +468,7 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Visualization Containers */
+    /* Mol / IGV */
     #mol-container {
         width: 100%;
         height: 500px;
@@ -422,28 +477,23 @@
         position: relative;
         border: 1px solid var(--glass-border);
     }
-
     #igv-div {
         padding-top: 10px;
-        background: white; 
+        background: white;
         border-radius: 8px;
         color: #333;
     }
     
-    /* ------------------------------------- */
-    /* NOTEBOOK (COLAB) STYLE COMPONENTS   */
-    /* ------------------------------------- */
+    /* Notebook (Colab) style */
     .notebook-container {
         font-family: 'Roboto Mono', monospace;
         margin-top: 20px;
     }
-
     .notebook-cell {
         display: flex;
         flex-direction: row;
         margin-bottom: 15px;
     }
-
     .cell-gutter {
         width: 45px;
         padding-top: 8px;
@@ -452,36 +502,22 @@
         align-items: center;
         flex-shrink: 0;
     }
-
     .play-btn {
-        width: 28px;
-        height: 28px;
+        width: 28px; height: 28px;
         border-radius: 50%;
         border: 2px solid var(--text);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0.6;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; opacity: 0.6;
         transition: all 0.2s;
     }
-    
     .play-btn:hover {
-        opacity: 1;
-        border-color: var(--accent);
-        color: var(--accent);
+        opacity: 1; border-color: var(--accent); color: var(--accent);
         background: rgba(187, 134, 252, 0.1);
     }
-    
     .play-btn i { font-size: 0.8rem; margin-left: 2px; }
-
-    .cell-content {
-        flex: 1;
-        overflow-x: hidden;
-    }
-
+    .cell-content { flex: 1; overflow-x: hidden; }
     .input-area {
-        background: #1e1e1e; /* Specific Dark BG for code */
+        background: #1e1e1e;
         border: 1px solid var(--glass-border);
         border-radius: 4px;
         padding: 12px;
@@ -492,41 +528,49 @@
         overflow-x: auto;
         position: relative;
     }
-    
-    .nt-kw { color: #c586c0; font-weight: bold; } 
-    .nt-func { color: #dcdcaa; } 
-    .nt-str { color: #ce9178; } 
-    .nt-com { color: #6a9955; } 
-    .nt-num { color: #b5cea8; } 
-    .nt-bi { color: #4ec9b0; } 
-    .nt-op { color: #d4d4d4; } 
-
-    .output-area {
-        padding: 10px 0 10px 0;
-        animation: fadeIn 0.5s;
-    }
-    
+    .nt-kw { color: #c586c0; font-weight: bold; }
+    .nt-func { color: #dcdcaa; }
+    .nt-str { color: #ce9178; }
+    .nt-com { color: #6a9955; }
+    .nt-num { color: #b5cea8; }
+    .nt-bi { color: #4ec9b0; }
+    .nt-op { color: #d4d4d4; }
+    .output-area { padding: 10px 0; animation: fadeIn 0.5s; }
     .colab-badge {
-        display: inline-flex;
-        align-items: center;
-        background: rgba(255,255,255,0.9);
-        color: #333;
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.85rem;
+        display: inline-flex; align-items: center;
+        background: rgba(255,255,255,0.9); color: #333;
+        padding: 5px 12px; border-radius: 20px;
+        font-weight: 600; font-size: 0.85rem;
         text-decoration: none !important;
-        transition: transform 0.2s;
-        margin-bottom: 15px;
+        transition: transform 0.2s; margin-bottom: 15px;
     }
-    .colab-badge:hover {
-        transform: scale(1.05);
-        background: #fff;
+    .colab-badge:hover { transform: scale(1.05); background: #fff; }
+
+    /* --------------------------------
+       DEMOS PAGE STYLES
+    -------------------------------- */
+    .demos-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
     }
 
-    /* ------------------------------------- */
-    /* AI DEMOS SPECIFIC STYLES            */
-    /* ------------------------------------- */
+    .demos-page-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .demos-page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .demos-page-header p {
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+
     .demo-tabs {
       display: flex;
       justify-content: center;
@@ -548,6 +592,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
     }
 
     .demo-tab-btn:hover {
@@ -569,12 +614,49 @@
 
     .demo-pane.active { display: block; }
 
-    .demo-controls {
+    .demo-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .controls {
       display: flex;
       gap: 1rem;
       margin-bottom: 1.5rem;
       flex-wrap: wrap;
       justify-content: center;
+    }
+
+    button.primary-btn {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    button.primary-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    button.primary-btn:disabled {
+      background: #555;
+      color: #888;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .status-panel {
@@ -591,13 +673,11 @@
 
     .status-indicator {
       display: inline-block;
-      width: 10px;
-      height: 10px;
+      width: 10px; height: 10px;
       border-radius: 50%;
       background-color: #ff6b6b;
       margin-right: 8px;
     }
-    
     .status-indicator.ready { background-color: #4ecdc4; }
     .status-indicator.working { background-color: #feca57; }
 
@@ -611,43 +691,53 @@
       overflow-y: auto;
       border: 1px solid #333;
     }
-
     .terminal p { margin-bottom: 0.5rem; }
     .terminal .err { color: #ff6b6b; }
     .terminal .info { color: #4ecdc4; }
     .terminal .warn { color: #feca57; }
 
-    .results-container {
+    .demo-results-container {
       margin-top: 1.5rem;
       overflow-x: auto;
       display: none;
     }
 
-    .results-container table {
+    .demo-card table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
     }
 
-    .results-container th, .results-container td {
+    .demo-card th, .demo-card td {
       padding: 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .results-container th {
+    .demo-card th {
       background-color: rgba(255, 255, 255, 0.05);
       color: var(--accent);
       font-weight: 600;
     }
 
-    .correct { color: #4ecdc4; font-weight: bold; }
-    .incorrect { color: #ff6b6b; font-weight: bold; }
-    .neutral { color: #bb86fc; font-weight: bold; }
+    .demo-correct { color: #4ecdc4; font-weight: bold; }
+    .demo-incorrect { color: #ff6b6b; font-weight: bold; }
+    .demo-neutral { color: #bb86fc; font-weight: bold; }
 
-    .coming-soon { text-align: center; padding: 4rem 2rem; color: #888; }
-    .coming-soon i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+    .coming-soon {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #888;
+    }
+    .coming-soon i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+      display: block;
+    }
 
-    /* Theme Switcher */
+    /* --------------------------------
+       THEME SWITCHER
+    -------------------------------- */
     .theme-switcher {
       position: fixed;
       bottom: 1.5rem;
@@ -675,6 +765,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
     }
 
     .theme-switcher button:hover {
@@ -682,7 +773,9 @@
       color: var(--bg);
     }
 
-    /* Responsive */
+    /* --------------------------------
+       RESPONSIVE
+    -------------------------------- */
     @media (max-width: 900px) {
       .tool-layout {
         flex-direction: column;
@@ -698,9 +791,15 @@
       }
       .tool-nav-item { white-space: nowrap; }
       nav.main-nav ul { flex-wrap: wrap; gap: 1rem; }
-      
       .vcf-container { height: 600px; }
-      .cell-gutter { width: 30px; } 
+      .cell-gutter { width: 30px; }
+      .page-switcher { top: 0; position: relative; }
+    }
+
+    @media (max-width: 768px) {
+      nav.main-nav ul { gap: 0.5rem; justify-content: flex-start; overflow-x: auto; }
+      nav.main-nav a { font-size: 0.95rem; padding: 0.6rem 1rem; }
+      .page-switch-btn { font-size: 0.9rem; padding: 0.5rem 1.1rem; }
     }
   </style>
 </head>
@@ -722,383 +821,251 @@
     </div>
   </nav>
 
-  <div class="tool-layout">
-    
-    <div class="tool-sidebar">
-        <div class="tool-nav-item active" onclick="showTool('genome')">
-            <i class="fa-solid fa-magnifying-glass-location"></i> Genome Browser
-        </div>
-        <div class="tool-nav-item" onclick="showTool('ai-demos')">
-            <i class="fa-solid fa-microchip"></i> AI & ML Models
-        </div>
-        <div class="tool-nav-item" onclick="showTool('structure')">
-            <i class="fa-solid fa-cube"></i> 3D Protein Structure
-        </div>
-        <div class="tool-nav-item" onclick="showTool('alignment')">
-            <i class="fa-solid fa-bars-staggered"></i> Pairwise Alignment
-        </div>
-        <div class="tool-nav-item" onclick="showTool('dashboard')">
-            <i class="fa-solid fa-chart-pie"></i> Calculators
-        </div>
-        <div class="tool-nav-item" onclick="showTool('volcano')">
-            <i class="fa-solid fa-chart-line"></i> Volcano Plot
-        </div>
-        <div class="tool-nav-item" onclick="showTool('vcf-viewer')">
-            <i class="fa-solid fa-table-list"></i> VCF Viewer
-        </div>
-        <div class="tool-nav-item" onclick="showTool('viewer')">
-            <i class="fa-solid fa-align-left"></i> Sequence Viewer
-        </div>
-        <div class="tool-nav-item" onclick="showTool('alphafold')">
-            <i class="fa-solid fa-dna"></i> AlphaFold Colab
-        </div>      
-        <div class="tool-nav-item" onclick="showTool('network')">
-            <i class="fa-solid fa-circle-nodes"></i> Network Builder
-        </div>
-        <div class="tool-nav-item" onclick="showTool('formatter')">
-            <i class="fa-solid fa-file-code"></i> FASTA Formatter
-        </div>
-    </div>
+  <!-- Top-level page switcher -->
+  <div class="page-switcher">
+    <button class="page-switch-btn active" onclick="switchPage('biotoolbox', this)">
+      <i class="fa-solid fa-flask-vial"></i> BioToolbox
+    </button>
+    <button class="page-switch-btn" onclick="switchPage('demos', this)">
+      <i class="fa-solid fa-play-circle"></i> Interactive Demos
+    </button>
+  </div>
 
-    <div class="tool-content">
-        
-        <div id="ai-demos" class="tool-section" style="display: none;">
-            <h2>Interactive Demos</h2>
-            <p class="text-muted mb-4">Try my projects directly in your browser.</p>
+  <!-- ============================================================
+       PAGE: BIOTOOLBOX
+  ============================================================ -->
+  <div id="page-biotoolbox">
+    <div class="tool-layout">
+      
+      <div class="tool-sidebar">
+          <div class="tool-nav-item active" onclick="showTool('genome')">
+              <i class="fa-solid fa-magnifying-glass-location"></i> Genome Browser
+          </div>
+          <div class="tool-nav-item" onclick="showTool('structure')">
+              <i class="fa-solid fa-cube"></i> 3D Protein Structure
+          </div>
+          <div class="tool-nav-item" onclick="showTool('alignment')">
+              <i class="fa-solid fa-bars-staggered"></i> Pairwise Alignment
+          </div>
+          <div class="tool-nav-item" onclick="showTool('dashboard')">
+              <i class="fa-solid fa-chart-pie"></i> Calculators
+          </div>
+          <div class="tool-nav-item" onclick="showTool('volcano')">
+              <i class="fa-solid fa-chart-line"></i> Volcano Plot
+          </div>
+          <div class="tool-nav-item" onclick="showTool('vcf-viewer')">
+              <i class="fa-solid fa-table-list"></i> VCF Viewer
+          </div>
+          <div class="tool-nav-item" onclick="showTool('viewer')">
+              <i class="fa-solid fa-align-left"></i> Sequence Viewer
+          </div>
+          <div class="tool-nav-item" onclick="showTool('alphafold')">
+              <i class="fa-solid fa-dna"></i> AlphaFold Colab
+          </div>      
+          <div class="tool-nav-item" onclick="showTool('network')">
+              <i class="fa-solid fa-circle-nodes"></i> Network Builder
+          </div>
+          <div class="tool-nav-item" onclick="showTool('formatter')">
+              <i class="fa-solid fa-file-code"></i> FASTA Formatter
+          </div>
+      </div>
 
-            <div class="demo-tabs">
-              <button class="demo-tab-btn active" onclick="switchDemo('gnn-cancer', event)">
-                <i class="fas fa-project-diagram"></i> GNN Cancer Prediction
-              </button>
-              <button class="demo-tab-btn" onclick="switchDemo('drug-discovery', event)">
-                <i class="fas fa-pills"></i> Drug Discovery (DTI)
-              </button>
-              <button class="demo-tab-btn" onclick="switchDemo('multi-omics', event)">
-                <i class="fas fa-dna"></i> Multi-Omics (Soon)
-              </button>
-            </div>
-
-            <div id="gnn-cancer" class="demo-pane active">
+      <div class="tool-content">
+          
+          <div id="dashboard" class="tool-section" style="display: none;"> 
+              <h2>Sequence Analysis Dashboard</h2>
               <div class="card-custom">
-                <div style="text-align: center; margin-bottom: 1.5rem;">
-                  <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">Multi-Omics BRCA Classification</h2>
-                  <p style="color: #888; font-size: 0.95rem;">Binary classification using Graph Neural Networks</p>
-                </div>
-
-                <div class="status-panel">
-                  <div>
-                    <span class="status-indicator" id="gnn-status-dot"></span>
-                    <span id="gnn-status-text">Waiting to initialize...</span>
-                  </div>
-                  <div id="gnn-backend-info" style="color: var(--accent);">Backend: Detecting...</div>
-                </div>
-
-                <div class="demo-controls">
-                  <button id="btn-load-gnn" class="btn btn-primary d-flex align-items-center gap-2" onclick="loadGNNModel()">
-                    <i class="fas fa-download"></i> Load Weights & Graph
-                  </button>
-                  <button id="btn-predict-gnn" class="btn btn-primary d-flex align-items-center gap-2" onclick="runGNNPrediction()" disabled>
-                    <i class="fas fa-play"></i> Run Forward Pass
-                  </button>
-                </div>
-
-                <div class="terminal" id="gnn-terminal">
-                  <p class="info">> GNN System ready. Press "Load Weights & Graph" to begin.</p>
-                </div>
-
-                <div class="results-container" id="gnn-results-container">
-                  <h3>Prediction Results (Test Set)</h3>
-                  <p id="gnn-metrics-text" style="margin-bottom: 10px;"></p>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Patient Node ID</th>
-                        <th>Probability (Deceased)</th>
-                        <th>Predicted Class</th>
-                        <th>Actual Class</th>
-                        <th>Result</th>
-                      </tr>
-                    </thead>
-                    <tbody id="gnn-results-body"></tbody>
-                  </table>
-                </div>
+                  <label>Input DNA Sequence (Raw or FASTA)</label>
+                  <textarea id="mainInput" rows="4" placeholder="ATGC..." oninput="runAnalysis()"></textarea>
               </div>
-            </div>
-
-            <div id="drug-discovery" class="demo-pane">
+              <div class="row">
+                  <div class="col-md-4">
+                      <div class="card-custom text-center">
+                          <h5 class="text-muted">GC Content</h5>
+                          <h1 id="gcResult" style="color: var(--accent); font-family: 'Inter';">0%</h1>
+                          <small id="lenResult" class="text-muted">Length: 0 bp</small>
+                      </div>
+                  </div>
+                  <div class="col-md-8">
+                      <div class="card-custom">
+                          <h5 class="text-muted">Reverse Complement</h5>
+                          <div id="revCompResult" class="result-box">Waiting for input...</div>
+                      </div>
+                  </div>
+              </div>
               <div class="card-custom">
-                <div style="text-align: center; margin-bottom: 1.5rem;">
-                  <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">Drug-Target Interaction (DTI) Prediction</h2>
-                  <p style="color: #888; font-size: 0.95rem;">Affinity (pKd) regression using Deep Neural Networks</p>
-                </div>
+                  <h5 class="text-muted">Protein Translation (Frame +1)</h5>
+                  <div id="protResult" class="result-box">Waiting for input...</div>
+              </div>
+          </div>
 
-                <div class="status-panel">
-                  <div>
-                    <span class="status-indicator" id="dti-status-dot"></span>
-                    <span id="dti-status-text">Waiting to initialize...</span>
+          <div id="volcano" class="tool-section" style="display: none;">
+              <h2>Volcano Plot Generator</h2>
+              <div class="row">
+                  <div class="col-md-4">
+                      <div class="card-custom h-100">
+                          <h4>Data Input</h4>
+                          <div class="mb-3">
+                              <label class="d-block mb-1">Upload CSV/TSV File</label>
+                              <input type="file" id="volcFileInput" accept=".csv,.tsv,.txt" class="form-control" style="padding: 6px;">
+                          </div>
+                          <div class="text-center text-muted mb-3" style="font-size: 0.85rem;">OR PASTE DATA MANUALLY</div>
+                          <small class="text-muted mb-2 d-block">Format: Gene, Log2FC, PValue</small>
+                          <textarea id="volcInput" class="form-control mb-3" style="height: 120px; font-size: 0.8rem;"></textarea>
+                          <div class="d-flex gap-2 mb-3">
+                              <button class="btn btn-outline-primary w-100" onclick="loadVolcanoDemo()">Load Demo</button>
+                              <button class="btn btn-primary w-100" onclick="renderVolcano()">Plot</button>
+                          </div>
+                          <hr style="border-color: var(--glass-border);">
+                          <h4>Thresholds</h4>
+                          <div class="mb-2">
+                              <label>P-value Cutoff (e.g. 0.05)</label>
+                              <input type="number" id="pCutoff" value="0.05" step="0.01">
+                          </div>
+                          <div class="mb-2">
+                              <label>Log2FC Cutoff (e.g. 1.0)</label>
+                              <input type="number" id="fcCutoff" value="1.0" step="0.1">
+                          </div>
+                      </div>
                   </div>
-                  <div id="dti-backend-info" style="color: var(--accent);">Backend: Detecting...</div>
-                </div>
-
-                <div class="demo-controls">
-                  <button id="btn-load-dti" class="btn btn-primary d-flex align-items-center gap-2" onclick="loadDTIModel()">
-                    <i class="fas fa-download"></i> Load Weights & Samples
-                  </button>
-                  <button id="btn-predict-dti" class="btn btn-primary d-flex align-items-center gap-2" onclick="runDTIPrediction()" disabled>
-                    <i class="fas fa-play"></i> Run Forward Pass
-                  </button>
-                </div>
-
-                <div class="terminal" id="dti-terminal">
-                  <p class="info">> DTI System ready. Press "Load Weights & Samples" to begin.</p>
-                </div>
-
-                <div class="results-container" id="dti-results-container">
-                  <h3>Prediction Results (Sample Set)</h3>
-                  <p id="dti-metrics-text" style="margin-bottom: 10px;"></p>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Sample Index</th>
-                        <th>Predicted Affinity (pKd)</th>
-                        <th>Actual Affinity (pKd)</th>
-                        <th>Absolute Error</th>
-                      </tr>
-                    </thead>
-                    <tbody id="dti-results-body"></tbody>
-                  </table>
-                </div>
+                  <div class="col-md-8">
+                      <div class="card-custom h-100">
+                          <div id="volcanoPlot" style="width: 100%; height: 500px;"></div>
+                          <small class="text-muted text-center d-block mt-2">Hover over points to see gene names. Powered by Plotly.js</small>
+                      </div>
+                  </div>
               </div>
-            </div>
+          </div>
 
-            <div id="multi-omics" class="demo-pane">
-              <div class="card-custom coming-soon">
-                <i class="fas fa-network-wired"></i>
-                <h2 style="font-family: 'Inter', sans-serif;">Multi-Omics Integration Dashboard</h2>
-                <p>A new visualization and prediction tool is on the way.</p>
+          <div id="vcf-viewer" class="tool-section">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h2>VCF Studio Web</h2>
+                  <small id="vcf-count" class="text-muted">Variants: 0</small>
               </div>
-            </div>
-        </div>
+              <div class="vcf-container">
+                  <div id="vcf-loader" class="vcf-loader">
+                      <div class="spinner"></div>
+                      <div style="color:white; font-weight:bold;">Parsing VCF...</div>
+                  </div>
+                  <div class="vcf-controls">
+                      <div style="flex: 1; min-width: 200px;">
+                          <input type="file" id="vcfFileInput" accept=".vcf,.txt" class="form-control" style="padding: 6px;">
+                      </div>
+                      <div style="flex: 1; min-width: 200px;">
+                          <input type="text" id="vcfSearchInput" placeholder="Search Chrom, ID, Info..." disabled style="padding: 8px;">
+                      </div>
+                      <div class="form-check form-switch pt-1">
+                          <input class="form-check-input" type="checkbox" id="vcfPassCheckbox" disabled style="width: 40px; height: 20px;">
+                          <label class="form-check-label" for="vcfPassCheckbox" style="margin-left: 10px; font-weight: normal;">Show PASS Only</label>
+                      </div>
+                  </div>
+                  <div class="vcf-table-wrapper">
+                      <table class="vcf-table" id="vcfTable">
+                          <thead>
+                              <tr>
+                                  <th style="width:80px">CHROM</th>
+                                  <th style="width:100px; text-align:right;">POS</th>
+                                  <th style="width:100px">ID</th>
+                                  <th style="width:60px">REF</th>
+                                  <th style="width:60px">ALT</th>
+                                  <th style="width:70px; text-align:right;">QUAL</th>
+                                  <th style="width:80px">FILTER</th>
+                                  <th>INFO</th>
+                              </tr>
+                          </thead>
+                          <tbody></tbody>
+                      </table>
+                  </div>
+                  <div class="vcf-detail-panel" id="vcfDetailPanel">Select a variant to view full details...</div>
+              </div>
+          </div>
 
-        <div id="dashboard" class="tool-section" style="display: none;"> 
-            <h2>Sequence Analysis Dashboard</h2>
-            <div class="card-custom">
-                <label>Input DNA Sequence (Raw or FASTA)</label>
-                <textarea id="mainInput" rows="4" placeholder="ATGC..." oninput="runAnalysis()"></textarea>
-            </div>
+          <div id="viewer" class="tool-section" style="display: none;">
+              <h2>Sequence Viewer & Highlighter</h2>
+              <div class="card-custom">
+                  <p>Highlights Hydrophobic (Red) and Polar (Blue) residues in protein sequences.</p>
+                  <textarea id="viewerInput" class="mb-3" rows="3" placeholder="Paste Protein Sequence here...">MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHGKKVADALTNAVAHVDDMPNALSALSDLHAHKLRVDPVNFKLLSHCLLVTLAAHLPAEFTPAVHASLDKFLASVSTVLTSKYR</textarea>
+                  <button class="btn btn-primary" onclick="renderViewer()">Visualize</button>
+                  <hr style="border-color: var(--glass-border);">
+                  <div id="viewerOutput" style="font-family: monospace; font-size: 1.1rem; line-height: 1.6; letter-spacing: 2px; word-break: break-all;"></div>
+              </div>
+          </div>
 
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card-custom text-center">
-                        <h5 class="text-muted">GC Content</h5>
-                        <h1 id="gcResult" style="color: var(--accent); font-family: 'Inter';">0%</h1>
-                        <small id="lenResult" class="text-muted">Length: 0 bp</small>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="card-custom">
-                        <h5 class="text-muted">Reverse Complement</h5>
-                        <div id="revCompResult" class="result-box">Waiting for input...</div>
-                    </div>
-                </div>
-            </div>
+          <div id="alignment" class="tool-section" style="display: none;">
+              <h2>Pairwise Sequence Alignment</h2>
+              <div class="card-custom">
+                  <div class="row mb-3">
+                      <div class="col-md-6">
+                          <label>Sequence A (Vertical)</label>
+                          <textarea id="alignSeq1" rows="3" placeholder="e.g. GCATGCU">GCATGCU</textarea>
+                      </div>
+                      <div class="col-md-6">
+                          <label>Sequence B (Horizontal)</label>
+                          <textarea id="alignSeq2" rows="3" placeholder="e.g. GATTACA">GATTACA</textarea>
+                      </div>
+                  </div>
+                  <div class="row align-items-end mb-4">
+                      <div class="col-md-4">
+                          <label>Algorithm</label>
+                          <select id="alignAlgo" onchange="toggleAlignParams()">
+                              <option value="nw">Needleman-Wunsch (Global)</option>
+                              <option value="sw">Smith-Waterman (Local)</option>
+                              <option value="lev">Levenshtein Distance</option>
+                          </select>
+                      </div>
+                      <div class="col-md-8">
+                          <div id="alignParams" class="d-flex gap-2">
+                              <div style="flex:1">
+                                  <label style="font-size:0.8rem">Match</label>
+                                  <input type="number" id="alignMatch" value="1">
+                              </div>
+                              <div style="flex:1">
+                                  <label style="font-size:0.8rem">Mismatch</label>
+                                  <input type="number" id="alignMismatch" value="-1">
+                              </div>
+                              <div style="flex:1">
+                                  <label style="font-size:0.8rem">Gap</label>
+                                  <input type="number" id="alignGap" value="-2">
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <button class="btn btn-primary w-100" onclick="runAlignment()">Run Alignment</button>
+                  <hr style="border-color: var(--glass-border);">
+                  <h5 class="text-muted">Result</h5>
+                  <div id="alignResult" class="result-box" style="white-space: pre; overflow-x: auto; margin-bottom: 20px;">Run an alignment to see results...</div>
+                  <h5 class="text-muted">Dynamic Programming Matrix</h5>
+                  <div id="matrixOutput" class="matrix-wrapper"></div>
+              </div>
+          </div>
 
-            <div class="card-custom">
-                <h5 class="text-muted">Protein Translation (Frame +1)</h5>
-                <div id="protResult" class="result-box">Waiting for input...</div>
-            </div>
-        </div>
-
-        <div id="volcano" class="tool-section" style="display: none;">
-            <h2>Volcano Plot Generator</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card-custom h-100">
-                        <h4>Data Input</h4>
-                        
-                        <div class="mb-3">
-                            <label class="d-block mb-1">Upload CSV/TSV File</label>
-                            <input type="file" id="volcFileInput" accept=".csv,.tsv,.txt" class="form-control" style="padding: 6px;">
-                        </div>
-
-                        <div class="text-center text-muted mb-3" style="font-size: 0.85rem;">
-                             OR PASTE DATA MANUALLY 
-                        </div>
-                        
-                        <small class="text-muted mb-2 d-block">Format: Gene, Log2FC, PValue</small>
-                        <textarea id="volcInput" class="form-control mb-3" style="height: 120px; font-size: 0.8rem;"></textarea>
-                        
-                        <div class="d-flex gap-2 mb-3">
-                            <button class="btn btn-outline-primary w-100" onclick="loadVolcanoDemo()">Load Demo</button>
-                            <button class="btn btn-primary w-100" onclick="renderVolcano()">Plot</button>
-                        </div>
-
-                        <hr style="border-color: var(--glass-border);">
-                        <h4>Thresholds</h4>
-                        <div class="mb-2">
-                            <label>P-value Cutoff (e.g. 0.05)</label>
-                            <input type="number" id="pCutoff" value="0.05" step="0.01">
-                        </div>
-                        <div class="mb-2">
-                            <label>Log2FC Cutoff (e.g. 1.0)</label>
-                            <input type="number" id="fcCutoff" value="1.0" step="0.1">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="card-custom h-100">
-                        <div id="volcanoPlot" style="width: 100%; height: 500px;"></div>
-                        <small class="text-muted text-center d-block mt-2">
-                            Hover over points to see gene names. Powered by Plotly.js
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="vcf-viewer" class="tool-section" style="display: none;">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h2>VCF Studio Web</h2>
-                <small id="vcf-count" class="text-muted">Variants: 0</small>
-            </div>
-            
-            <div class="vcf-container">
-                <div id="vcf-loader" class="vcf-loader">
-                    <div class="spinner"></div>
-                    <div style="color:white; font-weight:bold;">Parsing VCF...</div>
-                </div>
-
-                <div class="vcf-controls">
-                    <div style="flex: 1; min-width: 200px;">
-                        <input type="file" id="vcfFileInput" accept=".vcf,.txt" class="form-control" style="padding: 6px;">
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <input type="text" id="vcfSearchInput" placeholder="Search Chrom, ID, Info..." disabled style="padding: 8px;">
-                    </div>
-                    <div class="form-check form-switch pt-1">
-                        <input class="form-check-input" type="checkbox" id="vcfPassCheckbox" disabled style="width: 40px; height: 20px;">
-                        <label class="form-check-label" for="vcfPassCheckbox" style="margin-left: 10px; font-weight: normal;">Show PASS Only</label>
-                    </div>
-                </div>
-
-                <div class="vcf-table-wrapper">
-                    <table class="vcf-table" id="vcfTable">
-                        <thead>
-                            <tr>
-                                <th style="width:80px">CHROM</th>
-                                <th style="width:100px; text-align:right;">POS</th>
-                                <th style="width:100px">ID</th>
-                                <th style="width:60px">REF</th>
-                                <th style="width:60px">ALT</th>
-                                <th style="width:70px; text-align:right;">QUAL</th>
-                                <th style="width:80px">FILTER</th>
-                                <th>INFO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            </tbody>
-                    </table>
-                </div>
-
-                <div class="vcf-detail-panel" id="vcfDetailPanel">Select a variant to view full details...</div>
-            </div>
-        </div>
-
-        <div id="viewer" class="tool-section" style="display: none;">
-            <h2>Sequence Viewer & Highlighter</h2>
-            <div class="card-custom">
-                <p>Highlights Hydrophobic (Red) and Polar (Blue) residues in protein sequences.</p>
-                <textarea id="viewerInput" class="mb-3" rows="3" placeholder="Paste Protein Sequence here...">MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHGKKVADALTNAVAHVDDMPNALSALSDLHAHKLRVDPVNFKLLSHCLLVTLAAHLPAEFTPAVHASLDKFLASVSTVLTSKYR</textarea>
-                <button class="btn btn-primary" onclick="renderViewer()">Visualize</button>
-                <hr style="border-color: var(--glass-border);">
-                <div id="viewerOutput" style="font-family: monospace; font-size: 1.1rem; line-height: 1.6; letter-spacing: 2px; word-break: break-all;"></div>
-            </div>
-        </div>
-
-        <div id="alignment" class="tool-section" style="display: none;">
-            <h2>Pairwise Sequence Alignment</h2>
-            <div class="card-custom">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label>Sequence A (Vertical)</label>
-                        <textarea id="alignSeq1" rows="3" placeholder="e.g. GCATGCU">GCATGCU</textarea>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Sequence B (Horizontal)</label>
-                        <textarea id="alignSeq2" rows="3" placeholder="e.g. GATTACA">GATTACA</textarea>
-                    </div>
-                </div>
-
-                <div class="row align-items-end mb-4">
-                    <div class="col-md-4">
-                        <label>Algorithm</label>
-                        <select id="alignAlgo" onchange="toggleAlignParams()">
-                            <option value="nw">Needleman-Wunsch (Global)</option>
-                            <option value="sw">Smith-Waterman (Local)</option>
-                            <option value="lev">Levenshtein Distance</option>
-                        </select>
-                    </div>
-                    <div class="col-md-8">
-                        <div id="alignParams" class="d-flex gap-2">
-                            <div style="flex:1">
-                                <label style="font-size:0.8rem">Match</label>
-                                <input type="number" id="alignMatch" value="1">
-                            </div>
-                            <div style="flex:1">
-                                <label style="font-size:0.8rem">Mismatch</label>
-                                <input type="number" id="alignMismatch" value="-1">
-                            </div>
-                            <div style="flex:1">
-                                <label style="font-size:0.8rem">Gap</label>
-                                <input type="number" id="alignGap" value="-2">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary w-100" onclick="runAlignment()">Run Alignment</button>
-                
-                <hr style="border-color: var(--glass-border);">
-                
-                <h5 class="text-muted">Result</h5>
-                <div id="alignResult" class="result-box" style="white-space: pre; overflow-x: auto; margin-bottom: 20px;">Run an alignment to see results...</div>
-                
-                <h5 class="text-muted">Dynamic Programming Matrix</h5>
-                <div id="matrixOutput" class="matrix-wrapper"></div>
-            </div>
-        </div>
-
-        <div id="alphafold" class="tool-section" style="display: none;">
-            <h2>AlphaFold Protein Prediction</h2>
-            
-            <div class="card-custom">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-                    <div>
-                        <p class="mb-2">
-                            This tool links to my custom Google Colab notebook for running AlphaFold v2.0 predictions. 
-                            It utilizes GPU acceleration to predict 3D protein structures.
-                        </p>
-                        <ul class="text-muted mb-4 small" style="list-style: none; padding-left: 0;">
-                            <li><i class="fa-solid fa-check" style="color:var(--accent); margin-right:5px;"></i> Hardware: Google Cloud GPUs (T4)</li>
-                        </ul>
-                    </div>
-                    <a href="https://colab.research.google.com/drive/1PTKWNbQ1FRPk7Jr7RIEdpRKwyZfrIv4y?usp=sharing" target="_blank" class="colab-badge">
-                        <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height: 32px;">
-                    </a>
-                </div>
-
-                <h5 class="text-muted mb-3"><i class="fa-solid fa-code"></i> Preview: Notebook Visualization Code</h5>
-                
-                <div class="notebook-container">
-                    <div class="notebook-cell">
-                        <div class="cell-gutter">
-                            <a href="https://colab.research.google.com/drive/1PTKWNbQ1FRPk7Jr7RIEdpRKwyZfrIv4y?usp=sharing" target="_blank" class="play-btn">
-                                <i class="fa-solid fa-play"></i>
-                            </a>
-                        </div>
-                        
-                        <div class="cell-content">
-                            <div class="input-area">
+          <div id="alphafold" class="tool-section" style="display: none;">
+              <h2>AlphaFold Protein Prediction</h2>
+              <div class="card-custom">
+                  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                      <div>
+                          <p class="mb-2">
+                              This tool links to my custom Google Colab notebook for running AlphaFold v2.0 predictions. 
+                              It utilizes GPU acceleration to predict 3D protein structures.
+                          </p>
+                          <ul class="text-muted mb-4 small" style="list-style: none; padding-left: 0;">
+                              <li><i class="fa-solid fa-check" style="color:var(--accent); margin-right:5px;"></i> Hardware: Google Cloud GPUs (T4)</li>
+                          </ul>
+                      </div>
+                      <a href="https://colab.research.google.com/drive/1PTKWNbQ1FRPk7Jr7RIEdpRKwyZfrIv4y?usp=sharing" target="_blank" class="colab-badge">
+                          <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height: 32px;">
+                      </a>
+                  </div>
+                  <h5 class="text-muted mb-3"><i class="fa-solid fa-code"></i> Preview: Notebook Visualization Code</h5>
+                  <div class="notebook-container">
+                      <div class="notebook-cell">
+                          <div class="cell-gutter">
+                              <a href="https://colab.research.google.com/drive/1PTKWNbQ1FRPk7Jr7RIEdpRKwyZfrIv4y?usp=sharing" target="_blank" class="play-btn">
+                                  <i class="fa-solid fa-play"></i>
+                              </a>
+                          </div>
+                          <div class="cell-content">
+                              <div class="input-area">
 <span class="nt-kw">import</span> py3Dmol
 <span class="nt-kw">import</span> glob
 <span class="nt-kw">import</span> matplotlib.pyplot <span class="nt-kw">as</span> plt
@@ -1147,65 +1114,59 @@ pdb_file = glob.glob(pdb_filename)
 show_pdb(rank_num, show_sidechains, show_mainchains, color).show()
 <span class="nt-kw">if</span> color == <span class="nt-str">"lDDT"</span>:
   plot_plddt_legend().show()</div>
-                            
-                            <div class="output-area">
-                                <img src="alphafold/af.png" alt="AlphaFold Output" class="img-fluid" style="border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                              <div class="output-area">
+                                  <img src="alphafold/af.png" alt="AlphaFold Output" class="img-fluid" style="border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
 
-            </div>
-        </div>
+          <div id="structure" class="tool-section" style="display: none;">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h2>3D Protein Structure</h2>
+                  <div class="d-flex gap-2">
+                      <input type="text" id="pdbInput" placeholder="PDB ID" value="4HHB" style="width: 100px; height: 38px;">
+                      <button class="btn btn-primary" onclick="loadPDB()">Load</button>
+                  </div>
+              </div>
+              <div class="card-custom">
+                  <div id="mol-container"></div>
+                  <small class="text-muted mt-2 d-block">Left click to rotate, scroll to zoom. Powered by 3Dmol.js</small>
+              </div>
+          </div>
 
-        <div id="structure" class="tool-section" style="display: none;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2>3D Protein Structure</h2>
-                <div class="d-flex gap-2">
-                    <input type="text" id="pdbInput" placeholder="PDB ID" value="4HHB" style="width: 100px; height: 38px;">
-                    <button class="btn btn-primary" onclick="loadPDB()">Load</button>
-                </div>
-            </div>
-            <div class="card-custom">
-                <div id="mol-container"></div>
-                <small class="text-muted mt-2 d-block">Left click to rotate, scroll to zoom. Powered by 3Dmol.js</small>
-            </div>
-        </div>
+          <div id="genome" class="tool-section active" style="display: block;">
+              <h2>Genome Browser (IGV.js)</h2>
+              <div class="card-custom">
+                  <div class="d-flex gap-3 align-items-center mb-3 flex-wrap">
+                      <button class="btn btn-outline-primary" onclick="initIGV()">
+                          <i class="fa-solid fa-rotate-right"></i> Reset/Init (HG19)
+                      </button>
+                      <div class="input-group" style="max-width: 450px;">
+                          <input type="text" id="igvSearchInput" class="form-control" style="background: var(--input-bg); color: var(--text); border-color: var(--glass-border);" placeholder="Search Gene (e.g. EGFR)">
+                          <button class="btn btn-primary" onclick="runIgvSearch()">
+                              <i class="fa-solid fa-magnifying-glass"></i> Go
+                          </button>
+                      </div>
+                      <div class="d-flex align-items-center gap-2" style="background: var(--input-bg); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--glass-border);">
+                          <label class="mb-0" style="white-space: nowrap; font-size: 0.9rem;">Add Track (.bed):</label>
+                          <input type="file" id="bedFileInput" accept=".bed,.bed.gz" class="form-control" style="width: auto; font-size: 0.8rem; padding: 4px;">
+                      </div>
+                  </div>
+                  <div id="igv-div"></div>
+              </div>
+          </div>
 
-        <div id="genome" class="tool-section active" style="display: block;">
-            <h2>Genome Browser (IGV.js)</h2>
-            <div class="card-custom">
-                <div class="d-flex gap-3 align-items-center mb-3 flex-wrap">
-                    <button class="btn btn-outline-primary" onclick="initIGV()">
-                        <i class="fa-solid fa-rotate-right"></i> Reset/Init (HG19)
-                    </button>
-                    
-                    <div class="input-group" style="max-width: 450px;">
-                        <input type="text" id="igvSearchInput" class="form-control" style="background: var(--input-bg); color: var(--text); border-color: var(--glass-border);" placeholder="Search Gene (e.g. EGFR)">
-                        <button class="btn btn-primary" onclick="runIgvSearch()">
-                            <i class="fa-solid fa-magnifying-glass"></i> Go
-                        </button>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-2" style="background: var(--input-bg); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--glass-border);">
-                        <label class="mb-0" style="white-space: nowrap; font-size: 0.9rem;">Add Track (.bed):</label>
-                        <input type="file" id="bedFileInput" accept=".bed,.bed.gz" class="form-control" style="width: auto; font-size: 0.8rem; padding: 4px;">
-                    </div>
-                </div>
-
-                <div id="igv-div"></div>
-            </div>
-        </div>
-
-        <div id="network" class="tool-section" style="display: none;">
-            <h2>Interaction Network Builder</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card-custom" style="height: 100%;">
-                        <label><strong>Interaction List</strong></label>
-                        <small class="text-muted mb-2 d-block">Source Target (Type)</small>
-                        
-                        <textarea id="cyData" class="form-control mb-3" style="min-height: 200px; font-size: 0.9rem;">
+          <div id="network" class="tool-section" style="display: none;">
+              <h2>Interaction Network Builder</h2>
+              <div class="row">
+                  <div class="col-md-4">
+                      <div class="card-custom" style="height: 100%;">
+                          <label><strong>Interaction List</strong></label>
+                          <small class="text-muted mb-2 d-block">Source Target (Type)</small>
+                          <textarea id="cyData" class="form-control mb-3" style="min-height: 200px; font-size: 0.9rem;">
 TP53 MDM2 inhibits
 EGFR GRB2 binds
 GRB2 SOS1 binds
@@ -1214,49 +1175,175 @@ RAS RAF activates
 RAF MEK phosphorylates
 MEK ERK phosphorylates
 ERK TP53 regulates</textarea>
-                        
-                        <label><strong>Layout Style</strong></label>
-                        <select id="cyLayout" class="form-control mb-3">
-                            <option value="circle">Circle</option>
-                            <option value="grid">Grid</option>
-                            <option value="breadthfirst">Tree / Hierarchy</option>
-                            <option value="cose" selected>Physics (Force Directed)</option>
-                            <option value="random">Random</option>
-                        </select>
+                          <label><strong>Layout Style</strong></label>
+                          <select id="cyLayout" class="form-control mb-3">
+                              <option value="circle">Circle</option>
+                              <option value="grid">Grid</option>
+                              <option value="breadthfirst">Tree / Hierarchy</option>
+                              <option value="cose" selected>Physics (Force Directed)</option>
+                              <option value="random">Random</option>
+                          </select>
+                          <button class="btn btn-primary w-100" onclick="runCytoscape()">
+                              <i class="fa-solid fa-arrows-rotate"></i> Render Graph
+                          </button>
+                      </div>
+                  </div>
+                  <div class="col-md-8">
+                      <div class="card-custom">
+                          <div id="cy" style="height: 500px; border: 1px solid var(--glass-border); border-radius: 8px; background: rgba(0,0,0,0.2);"></div>
+                          <small class="text-muted text-center d-block mt-2">Drag nodes to rearrange. Scroll to zoom.</small>
+                      </div>
+                  </div>
+              </div>
+          </div>
 
-                        <button class="btn btn-primary w-100" onclick="runCytoscape()">
-                            <i class="fa-solid fa-arrows-rotate"></i> Render Graph
-                        </button>
-                    </div>
-                </div>
+          <div id="formatter" class="tool-section" style="display: none;">
+              <h2>FASTA Formatter</h2>
+              <div class="card-custom">
+                  <label>Input Messy Sequence</label>
+                  <textarea id="fastaInput" class="mb-3" rows="4"></textarea>
+                  <label>Header Name (Optional)</label>
+                  <input type="text" id="fastaHeader" class="mb-3" placeholder="e.g. My_Sequence">
+                  <button class="btn btn-primary" onclick="formatFasta()">Format to 60 chars/line</button>
+                  <h5 class="mt-4 text-muted">Output</h5>
+                  <textarea id="fastaOutput" rows="6" readonly></textarea>
+              </div>
+          </div>
 
-                <div class="col-md-8">
-                    <div class="card-custom">
-                        <div id="cy" style="height: 500px; border: 1px solid var(--glass-border); border-radius: 8px; background: rgba(0,0,0,0.2);"></div>
-                        <small class="text-muted text-center d-block mt-2">
-                            Drag nodes to rearrange. Scroll to zoom.
-                        </small>
-                    </div>
-                </div>
+      </div><!-- .tool-content -->
+    </div><!-- .tool-layout -->
+  </div><!-- #page-biotoolbox -->
+
+
+  <!-- ============================================================
+       PAGE: INTERACTIVE DEMOS
+  ============================================================ -->
+  <div id="page-demos">
+    <div class="demos-container">
+      <div class="demos-page-header">
+        <h1>Interactive Demos</h1>
+        <p>Try my projects directly in your browser — TensorFlow JS</p>
+      </div>
+
+      <div class="demo-tabs">
+        <button class="demo-tab-btn active" onclick="switchDemo('gnn-cancer', event)">
+          <i class="fas fa-project-diagram"></i> GNN Cancer Prediction
+        </button>
+        <button class="demo-tab-btn" onclick="switchDemo('drug-discovery', event)">
+          <i class="fas fa-pills"></i> Drug Discovery (DTI)
+        </button>
+        <button class="demo-tab-btn" onclick="switchDemo('multi-omics', event)">
+          <i class="fas fa-dna"></i> Multi-Omics (Soon)
+        </button>
+      </div>
+
+      <!-- GNN Cancer Prediction -->
+      <div id="gnn-cancer" class="demo-pane active">
+        <section class="demo-card">
+          <div style="text-align: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Multi-Omics BRCA Classification</h2>
+            <p style="color: #888; font-size: 0.95rem;">Binary classification using Graph Neural Networks</p>
+          </div>
+
+          <div class="status-panel">
+            <div>
+              <span class="status-indicator" id="gnn-status-dot"></span>
+              <span id="gnn-status-text">Waiting to initialize...</span>
             </div>
-        </div>
+            <div id="gnn-backend-info" style="color: var(--accent);">Backend: Detecting...</div>
+          </div>
 
-        <div id="formatter" class="tool-section" style="display: none;">
-            <h2>FASTA Formatter</h2>
-            <div class="card-custom">
-                <label>Input Messy Sequence</label>
-                <textarea id="fastaInput" class="mb-3" rows="4"></textarea>
-                <label>Header Name (Optional)</label>
-                <input type="text" id="fastaHeader" class="mb-3" placeholder="e.g. My_Sequence">
-                <button class="btn btn-primary" onclick="formatFasta()">Format to 60 chars/line</button>
-                
-                <h5 class="mt-4 text-muted">Output</h5>
-                <textarea id="fastaOutput" rows="6" readonly></textarea>
+          <div class="controls">
+            <button id="btn-load-gnn" class="primary-btn" onclick="loadGNNModel()">
+              <i class="fas fa-download"></i> Load Weights & Graph
+            </button>
+            <button id="btn-predict-gnn" class="primary-btn" onclick="runGNNPrediction()" disabled>
+              <i class="fas fa-play"></i> Run Forward Pass
+            </button>
+          </div>
+
+          <div class="terminal" id="gnn-terminal">
+            <p class="info">> GNN System ready. Press "Load Weights & Graph" to begin.</p>
+          </div>
+
+          <div class="demo-results-container" id="gnn-results-container">
+            <h3>Prediction Results (Test Set)</h3>
+            <p id="gnn-metrics-text" style="margin-bottom: 10px;"></p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Patient Node ID</th>
+                  <th>Probability (Deceased)</th>
+                  <th>Predicted Class</th>
+                  <th>Actual Class</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody id="gnn-results-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- Drug Discovery (DTI) -->
+      <div id="drug-discovery" class="demo-pane">
+        <section class="demo-card">
+          <div style="text-align: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Drug-Target Interaction (DTI) Prediction</h2>
+            <p style="color: #888; font-size: 0.95rem;">Affinity (pKd) regression using Deep Neural Networks</p>
+          </div>
+
+          <div class="status-panel">
+            <div>
+              <span class="status-indicator" id="dti-status-dot"></span>
+              <span id="dti-status-text">Waiting to initialize...</span>
             </div>
-        </div>
+            <div id="dti-backend-info" style="color: var(--accent);">Backend: Detecting...</div>
+          </div>
 
-    </div>
-  </div>
+          <div class="controls">
+            <button id="btn-load-dti" class="primary-btn" onclick="loadDTIModel()">
+              <i class="fas fa-download"></i> Load Weights & Samples
+            </button>
+            <button id="btn-predict-dti" class="primary-btn" onclick="runDTIPrediction()" disabled>
+              <i class="fas fa-play"></i> Run Forward Pass
+            </button>
+          </div>
+
+          <div class="terminal" id="dti-terminal">
+            <p class="info">> DTI System ready. Press "Load Weights & Samples" to begin.</p>
+          </div>
+
+          <div class="demo-results-container" id="dti-results-container">
+            <h3>Prediction Results (Sample Set)</h3>
+            <p id="dti-metrics-text" style="margin-bottom: 10px;"></p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Sample Index</th>
+                  <th>Predicted Affinity (pKd)</th>
+                  <th>Actual Affinity (pKd)</th>
+                  <th>Absolute Error</th>
+                </tr>
+              </thead>
+              <tbody id="dti-results-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- Multi-Omics (Coming Soon) -->
+      <div id="multi-omics" class="demo-pane">
+        <section class="demo-card coming-soon">
+          <i class="fas fa-network-wired"></i>
+          <h2>Multi-Omics Integration Dashboard</h2>
+          <p>A new visualization and prediction tool is on the way.</p>
+        </section>
+      </div>
+
+    </div><!-- .demos-container -->
+  </div><!-- #page-demos -->
+
 
   <div class="theme-switcher" id="themeSwitcher">
     <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
@@ -1265,6 +1352,9 @@ ERK TP53 regulates</textarea>
   </div>
 
   <script>
+    /* ============================================================
+       THEME
+    ============================================================ */
     function switchTheme(theme) {
       if (theme === 'system') {
         document.documentElement.removeAttribute('data-theme');
@@ -1272,11 +1362,10 @@ ERK TP53 regulates</textarea>
         document.documentElement.setAttribute('data-theme', theme);
       }
       localStorage.setItem('preferred-theme', theme);
-      
       setTimeout(() => {
-          if(document.getElementById('structure').classList.contains('active')) loadPDB();
-          if(document.getElementById('network').classList.contains('active')) runCytoscape();
-          if(document.getElementById('volcano').classList.contains('active')) renderVolcano(); // Re-render plot
+        if(document.getElementById('structure').classList.contains('active')) loadPDB();
+        if(document.getElementById('network').classList.contains('active')) runCytoscape();
+        if(document.getElementById('volcano').classList.contains('active')) renderVolcano();
       }, 300);
     }
 
@@ -1285,52 +1374,526 @@ ERK TP53 regulates</textarea>
       document.documentElement.setAttribute('data-theme', savedTheme);
     })();
 
+    /* ============================================================
+       PAGE SWITCHER (BioToolbox <-> Demos)
+    ============================================================ */
+    function switchPage(pageId, btn) {
+      document.querySelectorAll('.page-switch-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-    function showTool(toolId) {
-        // Update nav state
-        document.querySelectorAll('.tool-nav-item').forEach(el => el.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+      const bioPage = document.getElementById('page-biotoolbox');
+      const demosPage = document.getElementById('page-demos');
 
-        // Hide all sections
-        document.querySelectorAll('.tool-section').forEach(el => {
-            el.classList.remove('active');
-            el.style.display = 'none';
-        });
-
-        // Show selected section
-        const activeSection = document.getElementById(toolId);
-        activeSection.classList.add('active');
-        
-        // Handle display type based on layout needs
-        if(toolId === 'vcf-viewer') {
-            activeSection.style.display = 'flex'; // VCF needs flex for full height
-        } else {
-            activeSection.style.display = 'block';
-        }
-
-        // Lazy load specific heavy tools
-        if(toolId === 'structure') loadPDB(); 
-        if(toolId === 'network') setTimeout(runCytoscape, 100); 
-        if(toolId === 'volcano') setTimeout(renderVolcano, 100);
-        // Automatically initialize IGV if it's not already running
-        if(toolId === 'genome' && !igvBrowser) initIGV(); 
+      if (pageId === 'biotoolbox') {
+        bioPage.style.display = 'flex';
+        demosPage.style.display = 'none';
+      } else {
+        bioPage.style.display = 'none';
+        demosPage.style.display = 'block';
+      }
     }
 
-    // --- AI DEMOS LOGIC --- //
-    
+    /* ============================================================
+       BIOTOOLBOX: TOOL NAVIGATION
+    ============================================================ */
+    function showTool(toolId) {
+      document.querySelectorAll('.tool-nav-item').forEach(el => el.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      document.querySelectorAll('.tool-section').forEach(el => {
+        el.classList.remove('active');
+        el.style.display = 'none';
+      });
+
+      const activeSection = document.getElementById(toolId);
+      activeSection.classList.add('active');
+      if(toolId === 'vcf-viewer') {
+        activeSection.style.display = 'flex';
+      } else {
+        activeSection.style.display = 'block';
+      }
+
+      if(toolId === 'structure') loadPDB(); 
+      if(toolId === 'network') setTimeout(runCytoscape, 100); 
+      if(toolId === 'volcano') setTimeout(renderVolcano, 100);
+      if(toolId === 'genome' && !igvBrowser) initIGV(); 
+    }
+
+    /* ============================================================
+       VCF VIEWER
+    ============================================================ */
+    let vcfData = { all: [], filtered: [] };
+
+    document.getElementById('vcfFileInput').addEventListener('change', handleVcfUpload);
+    document.getElementById('vcfSearchInput').addEventListener('input', debounce(applyVcfFilters, 300));
+    document.getElementById('vcfPassCheckbox').addEventListener('change', applyVcfFilters);
+
+    function handleVcfUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      vcfData.all = [];
+      document.querySelector('#vcfTable tbody').innerHTML = '';
+      document.getElementById('vcfDetailPanel').textContent = 'Select a variant to view full details...';
+      document.getElementById('vcf-loader').style.display = 'flex';
+      const reader = new FileReader();
+      reader.onload = function(e) { parseVCF(e.target.result); };
+      reader.readAsText(file);
+    }
+
+    function parseVCF(text) {
+      setTimeout(() => {
+        const lines = text.split('\n');
+        const data = [];
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line || line.startsWith('#')) continue;
+          const cols = line.split('\t');
+          if (cols.length < 8) continue;
+          data.push({ chrom: cols[0], pos: cols[1], id: cols[2], ref: cols[3],
+            alt: cols[4], qual: cols[5], filter: cols[6], info: cols[7], raw: line });
+        }
+        vcfData.all = data;
+        document.getElementById('vcfSearchInput').disabled = false;
+        document.getElementById('vcfPassCheckbox').disabled = false;
+        document.getElementById('vcf-loader').style.display = 'none';
+        applyVcfFilters();
+      }, 100);
+    }
+
+    function applyVcfFilters() {
+      const query = document.getElementById('vcfSearchInput').value.toLowerCase();
+      const showPassOnly = document.getElementById('vcfPassCheckbox').checked;
+      vcfData.filtered = vcfData.all.filter(v => {
+        if (showPassOnly && v.filter !== 'PASS') return false;
+        if (query) {
+          const searchStr = `${v.chrom} ${v.pos} ${v.id} ${v.info}`.toLowerCase();
+          if (!searchStr.includes(query)) return false;
+        }
+        return true;
+      });
+      document.getElementById('vcf-count').textContent = `Showing: ${vcfData.filtered.length.toLocaleString()}`;
+      renderVcfTable();
+    }
+
+    function renderVcfTable() {
+      const MAX_RENDER = 500;
+      const displayData = vcfData.filtered.slice(0, MAX_RENDER);
+      let html = '';
+      displayData.forEach((v, index) => {
+        let filterColor = v.filter === 'PASS' ? '#22c55e' : 'var(--text)';
+        if(v.filter !== 'PASS' && v.filter !== '.') filterColor = '#ef4444';
+        html += `<tr onclick="selectVariant(${index})">
+          <td>${v.chrom}</td>
+          <td style="text-align:right; font-family:monospace;">${v.pos}</td>
+          <td>${v.id === '.' ? '' : v.id}</td>
+          <td>${v.ref}</td><td>${v.alt}</td>
+          <td style="text-align:right;">${v.qual === '.' ? '' : v.qual}</td>
+          <td><span style="color:${filterColor}; font-weight:bold; font-size:0.8em;">${v.filter}</span></td>
+          <td>${v.info}</td>
+        </tr>`;
+      });
+      if (vcfData.filtered.length > MAX_RENDER) {
+        html += `<tr><td colspan="8" style="text-align:center; padding:10px; opacity:0.6;">... ${vcfData.filtered.length - MAX_RENDER} more variants hidden ...</td></tr>`;
+      }
+      document.querySelector('#vcfTable tbody').innerHTML = html;
+    }
+
+    function selectVariant(index) {
+      const rows = document.querySelectorAll('#vcfTable tbody tr');
+      rows.forEach(r => r.classList.remove('selected'));
+      if(rows[index]) rows[index].classList.add('selected');
+      const v = vcfData.filtered[index];
+      if(!v) return;
+      const infoFormatted = v.info.split(';').join('\n');
+      document.getElementById('vcfDetailPanel').textContent = 
+`=== VARIANT DETAILS ===
+Location:  ${v.chrom}:${v.pos}
+ID:        ${v.id}
+Ref / Alt: ${v.ref} -> ${v.alt}
+Quality:   ${v.qual}
+Filter:    ${v.filter}
+
+--- INFO FIELDS ---
+${infoFormatted}
+
+--- RAW LINE ---
+${v.raw}`;
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    /* ============================================================
+       SEQUENCE ANALYSIS
+    ============================================================ */
+    function runAnalysis() {
+      let seq = document.getElementById('mainInput').value.toUpperCase().replace(/[^ATGCU]/g, '');
+      let gc = (seq.match(/[GC]/g) || []).length;
+      let total = seq.length;
+      document.getElementById('gcResult').innerText = (total > 0 ? ((gc / total) * 100).toFixed(1) : 0) + "%";
+      document.getElementById('lenResult').innerText = "Length: " + total + " bp";
+      let revComp = seq.split('').reverse().map(b => ({ 'A':'T','T':'A','U':'A','G':'C','C':'G' }[b] || b)).join('');
+      document.getElementById('revCompResult').innerText = revComp || "Waiting for input...";
+      const codonTable = {
+        'ATA':'I','ATC':'I','ATT':'I','ATG':'M','ACA':'T','ACC':'T','ACG':'T','ACT':'T',
+        'AAC':'N','AAT':'N','AAA':'K','AAG':'K','AGC':'S','AGT':'S','AGA':'R','AGG':'R',
+        'CTA':'L','CTC':'L','CTG':'L','CTT':'L','CCA':'P','CCC':'P','CCG':'P','CCT':'P',
+        'CAC':'H','CAT':'H','CAA':'Q','CAG':'Q','CGA':'R','CGC':'R','CGG':'R','CGT':'R',
+        'GTA':'V','GTC':'V','GTG':'V','GTT':'V','GCA':'A','GCC':'A','GCG':'A','GCT':'A',
+        'GAC':'D','GAT':'D','GAA':'E','GAG':'E','GGA':'G','GGC':'G','GGG':'G','GGT':'G',
+        'TCA':'S','TCC':'S','TCG':'S','TCT':'S','TTC':'F','TTT':'F','TTA':'L','TTG':'L',
+        'TAC':'Y','TAT':'Y','TAA':'_','TAG':'_','TGC':'C','TGT':'C','TGA':'_','TGG':'W',
+      };
+      let protein = "";
+      for(let i = 0; i < seq.length - 2; i += 3) protein += codonTable[seq.substring(i, i+3)] || "?";
+      document.getElementById('protResult').innerText = protein || "Waiting for input...";
+    }
+
+    /* ============================================================
+       VOLCANO PLOT
+    ============================================================ */
+    document.getElementById('volcFileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('volcInput').value = e.target.result;
+        renderVolcano();
+      };
+      reader.readAsText(file);
+    });
+
+    function loadVolcanoDemo() {
+      document.getElementById('volcInput').value = `Gene,Log2FC,PValue
+TP53,2.5,0.0001
+EGFR,1.8,0.005
+BRCA1,-2.1,0.0002
+PTEN,-1.5,0.004
+MYC,3.2,0.00001
+GAPDH,0.1,0.8
+ACTB,-0.2,0.6
+VEGFA,1.2,0.03
+RB1,-1.1,0.045
+KRAS,0.5,0.2
+IL6,4.5,0.000001
+TNF,3.8,0.00005
+INS,-3.5,0.0001`;
+      renderVolcano();
+    }
+
+    function renderVolcano() {
+      const input = document.getElementById('volcInput').value.trim();
+      const pCutoff = parseFloat(document.getElementById('pCutoff').value);
+      const fcCutoff = parseFloat(document.getElementById('fcCutoff').value);
+      if(!input) return;
+      let rows = input.split('\n');
+      let genes = [], x = [], y = [], colors = [], texts = [];
+      let startIndex = rows[0].toLowerCase().includes('gene') ? 1 : 0;
+      for(let i = startIndex; i < rows.length; i++) {
+        let cols = rows[i].split(/[\t,]+/);
+        if(cols.length < 3) continue;
+        let gene = cols[0], fc = parseFloat(cols[1]), p = parseFloat(cols[2]);
+        let negLogP = -Math.log10(p);
+        genes.push(gene); x.push(fc); y.push(negLogP);
+        if(p < pCutoff && fc > fcCutoff) { colors.push('#ff6b6b'); texts.push(`UP: ${gene}`); }
+        else if(p < pCutoff && fc < -fcCutoff) { colors.push('#4ecdc4'); texts.push(`DOWN: ${gene}`); }
+        else { colors.push('#777777'); texts.push(gene); }
+      }
+      const textColor = getComputedStyle(document.body).getPropertyValue('--text').trim();
+      const gridColor = getComputedStyle(document.body).getPropertyValue('--glass-border').trim();
+      const trace = { x, y, mode: 'markers', type: 'scatter', text: texts,
+        marker: { size: 10, color: colors, opacity: 0.8 }, hoverinfo: 'x+y+text' };
+      const layout = {
+        title: { text: 'Volcano Plot', font: { color: textColor } },
+        paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+        xaxis: { title: 'Log2 Fold Change', color: textColor, gridcolor: gridColor, zerolinecolor: gridColor },
+        yaxis: { title: '-Log10 P-Value', color: textColor, gridcolor: gridColor, zerolinecolor: gridColor },
+        hovermode: 'closest', margin: { l: 50, r: 20, t: 40, b: 50 }
+      };
+      Plotly.newPlot('volcanoPlot', [trace], layout, { responsive: true, displayModeBar: true });
+    }
+
+    /* ============================================================
+       SEQUENCE VIEWER
+    ============================================================ */
+    function renderViewer() {
+      let seq = document.getElementById('viewerInput').value.toUpperCase();
+      let output = document.getElementById('viewerOutput');
+      output.innerHTML = "";
+      const hydrophobic = ['A','I','L','M','F','W','V'];
+      const polar = ['S','T','N','Q','Y','C'];
+      const charged = ['R','K','H','D','E'];
+      seq.split('').forEach(aa => {
+        let color = 'var(--text)';
+        if(hydrophobic.includes(aa)) color = '#ff6b6b';
+        if(polar.includes(aa)) color = '#4ecdc4';
+        if(charged.includes(aa)) color = '#bb86fc';
+        let span = document.createElement('span');
+        span.innerText = aa;
+        span.style.color = color;
+        span.style.fontWeight = "bold";
+        output.appendChild(span);
+      });
+    }
+
+    /* ============================================================
+       SEQUENCE ALIGNMENT
+    ============================================================ */
+    function toggleAlignParams() {
+      const algo = document.getElementById('alignAlgo').value;
+      const paramsDiv = document.getElementById('alignParams');
+      paramsDiv.style.opacity = algo === 'lev' ? '0.5' : '1';
+      paramsDiv.style.pointerEvents = algo === 'lev' ? 'none' : 'auto';
+    }
+
+    function runAlignment() {
+      const seq1 = document.getElementById('alignSeq1').value.toUpperCase().trim();
+      const seq2 = document.getElementById('alignSeq2').value.toUpperCase().trim();
+      const algo = document.getElementById('alignAlgo').value;
+      const match = parseInt(document.getElementById('alignMatch').value);
+      const mismatch = parseInt(document.getElementById('alignMismatch').value);
+      const gap = parseInt(document.getElementById('alignGap').value);
+      const outputDiv = document.getElementById('alignResult');
+      const matrixDiv = document.getElementById('matrixOutput');
+      if(!seq1 || !seq2) { outputDiv.innerHTML = "Please enter two sequences."; matrixDiv.innerHTML = ""; return; }
+      let res, typeText = "";
+      if(algo === 'lev') {
+        res = levenshtein(seq1, seq2); typeText = "Levenshtein Distance";
+        outputDiv.innerHTML = `Levenshtein Distance: <strong>${res.score}</strong>`;
+      } else if(algo === 'nw') {
+        res = needlemanWunsch(seq1, seq2, match, mismatch, gap); typeText = "Global (Needleman-Wunsch)";
+        outputDiv.innerHTML = formatAlignment(res.score, res.align1, res.align2, typeText);
+      } else if(algo === 'sw') {
+        res = smithWaterman(seq1, seq2, match, mismatch, gap); typeText = "Local (Smith-Waterman)";
+        outputDiv.innerHTML = formatAlignment(res.score, res.align1, res.align2, typeText);
+      }
+      renderMatrix(res.matrix, seq1, seq2, res.path);
+    }
+
+    function formatAlignment(score, align1, align2, type) {
+      let visual = "", matches = 0, length = align1.length;
+      for(let i=0; i<length; i++) {
+        if(align1[i] === align2[i] && align1[i] !== '-') { visual += "|"; matches++; }
+        else if(align1[i] === '-' || align2[i] === '-') visual += " ";
+        else visual += ".";
+      }
+      let identity = length > 0 ? ((matches / length) * 100).toFixed(1) : 0;
+      return `<strong>${type}</strong>\nScore: ${score} | Identity: ${identity}%\n\nSeq A: ${align1}\n       ${visual}\nSeq B: ${align2}`;
+    }
+
+    function levenshtein(seq1, seq2) {
+      let n = seq1.length, m = seq2.length;
+      let matrix = Array(n+1).fill(null).map(() => Array(m+1).fill(0));
+      for(let i=0; i<=n; i++) matrix[i][0] = i;
+      for(let j=0; j<=m; j++) matrix[0][j] = j;
+      for(let i=1; i<=n; i++) for(let j=1; j<=m; j++) {
+        if(seq1[i-1] === seq2[j-1]) matrix[i][j] = matrix[i-1][j-1];
+        else matrix[i][j] = Math.min(matrix[i-1][j-1]+1, matrix[i][j-1]+1, matrix[i-1][j]+1);
+      }
+      let path = [], i = n, j = m;
+      path.push([i,j]);
+      while(i > 0 || j > 0) {
+        let current = matrix[i][j];
+        if(i>0 && j>0 && seq1[i-1]===seq2[j-1] && matrix[i-1][j-1]===current) { i--; j--; }
+        else if(i>0 && j>0 && matrix[i-1][j-1]+1===current) { i--; j--; }
+        else if(i>0 && matrix[i-1][j]+1===current) i--;
+        else j--;
+        path.push([i,j]);
+      }
+      return { score: matrix[n][m], matrix, path };
+    }
+
+    function needlemanWunsch(seq1, seq2, match, mismatch, gap) {
+      let n = seq1.length, m = seq2.length;
+      let matrix = Array(n+1).fill(null).map(() => Array(m+1).fill(0));
+      for(let i=0; i<=n; i++) matrix[i][0] = i * gap;
+      for(let j=0; j<=m; j++) matrix[0][j] = j * gap;
+      for(let i=1; i<=n; i++) for(let j=1; j<=m; j++) {
+        let sd = matrix[i-1][j-1] + (seq1[i-1]===seq2[j-1] ? match : mismatch);
+        matrix[i][j] = Math.max(sd, matrix[i-1][j]+gap, matrix[i][j-1]+gap);
+      }
+      let align1="", align2="", path=[], i=n, j=m;
+      path.push([i,j]);
+      while(i>0 || j>0) {
+        let score = matrix[i][j];
+        if(i>0 && j>0 && score===matrix[i-1][j-1]+(seq1[i-1]===seq2[j-1]?match:mismatch)) { align1=seq1[i-1]+align1; align2=seq2[j-1]+align2; i--; j--; }
+        else if(i>0 && score===matrix[i-1][j]+gap) { align1=seq1[i-1]+align1; align2="-"+align2; i--; }
+        else { align1="-"+align1; align2=seq2[j-1]+align2; j--; }
+        path.push([i,j]);
+      }
+      return { score: matrix[n][m], align1, align2, matrix, path };
+    }
+
+    function smithWaterman(seq1, seq2, match, mismatch, gap) {
+      let n = seq1.length, m = seq2.length;
+      let matrix = Array(n+1).fill(null).map(() => Array(m+1).fill(0));
+      let maxScore=0, maxI=0, maxJ=0;
+      for(let i=1; i<=n; i++) for(let j=1; j<=m; j++) {
+        let sd = matrix[i-1][j-1] + (seq1[i-1]===seq2[j-1]?match:mismatch);
+        matrix[i][j] = Math.max(0, sd, matrix[i-1][j]+gap, matrix[i][j-1]+gap);
+        if(matrix[i][j] > maxScore) { maxScore=matrix[i][j]; maxI=i; maxJ=j; }
+      }
+      let align1="", align2="", path=[], i=maxI, j=maxJ;
+      path.push([i,j]);
+      while(matrix[i][j] > 0) {
+        let score = matrix[i][j];
+        if(i>0 && j>0 && score===matrix[i-1][j-1]+(seq1[i-1]===seq2[j-1]?match:mismatch)) { align1=seq1[i-1]+align1; align2=seq2[j-1]+align2; i--; j--; }
+        else if(i>0 && score===matrix[i-1][j]+gap) { align1=seq1[i-1]+align1; align2="-"+align2; i--; }
+        else { align1="-"+align1; align2=seq2[j-1]+align2; j--; }
+        path.push([i,j]);
+      }
+      return { score: maxScore, align1, align2, matrix, path };
+    }
+
+    function renderMatrix(matrix, seq1, seq2, path) {
+      const pathSet = new Set(path.map(p => `${p[0]},${p[1]}`));
+      let html = '<table class="matrix-table"><tr><td class="matrix-cell matrix-header"></td><td class="matrix-cell matrix-header"></td>';
+      for(let j=0; j<seq2.length; j++) html += `<td class="matrix-cell matrix-header">${seq2[j]}</td>`;
+      html += '</tr>';
+      for(let i=0; i<matrix.length; i++) {
+        html += '<tr>';
+        html += `<td class="matrix-cell matrix-header">${i===0 ? "" : seq1[i-1]}</td>`;
+        for(let j=0; j<matrix[i].length; j++) {
+          let cls = pathSet.has(`${i},${j}`) ? 'matrix-cell matrix-path' : 'matrix-cell';
+          html += `<td class="${cls}">${matrix[i][j]}</td>`;
+        }
+        html += '</tr>';
+      }
+      html += '</table>';
+      document.getElementById('matrixOutput').innerHTML = html;
+    }
+
+    /* ============================================================
+       3D PROTEIN STRUCTURE
+    ============================================================ */
+    let viewer3d = null;
+    function loadPDB() {
+      let pdbID = document.getElementById('pdbInput').value;
+      let element = document.getElementById('mol-container');
+      let isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      let bgColor = isLight ? 'white' : '#1e1e1e';
+      element.innerHTML = "";
+      viewer3d = $3Dmol.createViewer(element, { backgroundColor: bgColor });
+      $3Dmol.download("pdb:" + pdbID, viewer3d, { doAssembly: true, noSecondaryStructure: false }, function() {
+        viewer3d.setStyle({}, { cartoon: { color: 'spectrum' } });
+        viewer3d.zoomTo(); viewer3d.render();
+      });
+    }
+
+    /* ============================================================
+       GENOME BROWSER (IGV)
+    ============================================================ */
+    let igvBrowser = null;
+    function initIGV() {
+      var igvDiv = document.getElementById("igv-div");
+      igvDiv.innerHTML = "";
+      igv.createBrowser(igvDiv, { genome: "hg19", locus: "chr8:128,747,267-128,754,546" }).then(function(browser) {
+        igvBrowser = browser;
+      });
+    }
+    function runIgvSearch() {
+      let term = document.getElementById('igvSearchInput').value;
+      if(igvBrowser && term) igvBrowser.search(term);
+      else alert("Please initialize the browser first!");
+    }
+
+    document.getElementById('bedFileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!igvBrowser) { alert("Please initialize the Genome Browser first."); return; }
+      igvBrowser.loadTrack({ name: file.name, type: 'annotation', format: 'bed', url: file, displayMode: "EXPANDED", color: "#ff6b6b" });
+      if(!file.name.endsWith('.gz')) {
+        const reader = new FileReader();
+        const blob = file.slice(0, 10000);
+        reader.onload = function(event) {
+          const lines = event.target.result.split('\n');
+          for(let line of lines) {
+            line = line.trim();
+            if(!line || line.startsWith('#') || line.startsWith('track') || line.startsWith('browser')) continue;
+            const parts = line.split(/\s+/);
+            if(parts.length >= 3) {
+              const chrom = parts[0], start = parts[1], end = parts[2];
+              if(!isNaN(start) && !isNaN(end)) {
+                const loc = `${chrom}:${Math.max(0, parseInt(start)-100)}-${parseInt(end)+100}`;
+                setTimeout(() => igvBrowser.search(loc), 500);
+              }
+              break;
+            }
+          }
+        };
+        reader.readAsText(blob);
+      }
+      e.target.value = '';
+    });
+
+    /* ============================================================
+       CYTOSCAPE NETWORK
+    ============================================================ */
+    function runCytoscape() {
+      var rawData = document.getElementById('cyData').value.trim();
+      var layoutName = document.getElementById('cyLayout').value;
+      var lines = rawData.split('\n');
+      var elements = [];
+      var nodes = new Set();
+      let accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      let textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
+      lines.forEach(line => {
+        let parts = line.trim().split(/\s+/);
+        if(parts.length >= 2) {
+          let source = parts[0], target = parts[1], label = parts[2] || "";
+          if(!nodes.has(source)) { elements.push({ data: { id: source } }); nodes.add(source); }
+          if(!nodes.has(target)) { elements.push({ data: { id: target } }); nodes.add(target); }
+          elements.push({ data: { source, target, label } });
+        }
+      });
+      cytoscape({
+        container: document.getElementById('cy'), elements,
+        style: [
+          { selector: 'node', style: { 'background-color': accentColor, 'label': 'data(id)', 'color': textColor,
+            'text-outline-color': '#000', 'text-outline-width': 0, 'font-weight': 'bold', 'width': '50px', 'height': '50px' }},
+          { selector: 'edge', style: { 'width': 2, 'line-color': '#888', 'target-arrow-color': '#888',
+            'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'label': 'data(label)',
+            'color': textColor, 'font-size': '10px', 'text-rotation': 'autorotate', 'text-background-opacity': 0 }}
+        ],
+        layout: { name: layoutName, animate: true, padding: 30 }
+      });
+    }
+
+    /* ============================================================
+       FASTA FORMATTER
+    ============================================================ */
+    function formatFasta() {
+      let raw = document.getElementById('fastaInput').value.replace(/\s+/g, '');
+      let header = document.getElementById('fastaHeader').value || "Formatted_Sequence";
+      let formatted = ">" + header + "\n";
+      for(let i = 0; i < raw.length; i += 60) formatted += raw.substring(i, i+60) + "\n";
+      document.getElementById('fastaOutput').value = formatted;
+    }
+
+    /* ============================================================
+       DEMOS: TAB SWITCHER
+    ============================================================ */
     function switchDemo(demoId, event) {
       document.querySelectorAll('.demo-pane').forEach(pane => pane.classList.remove('active'));
       document.querySelectorAll('.demo-tab-btn').forEach(btn => btn.classList.remove('active'));
       document.getElementById(demoId).classList.add('active');
-      if (event) event.currentTarget.classList.add('active');
+      if(event) event.currentTarget.classList.add('active');
     }
 
+    /* ============================================================
+       DEMOS: TF.js UTILITIES
+    ============================================================ */
     function logToTerminal(terminalId, message, type="normal") {
       const terminal = document.getElementById(terminalId);
       if(!terminal) return;
       const p = document.createElement('p');
       p.innerText = `> ${message}`;
-      if (type) p.className = type;
+      if(type) p.className = type;
       terminal.appendChild(p);
       terminal.scrollTop = terminal.scrollHeight;
     }
@@ -1341,47 +1904,46 @@ ERK TP53 regulates</textarea>
       if(statusText) statusText.innerText = text;
       if(dot) {
         dot.className = 'status-indicator';
-        if (state) dot.classList.add(state);
+        if(state) dot.classList.add(state);
       }
     }
 
     async function initTF() {
       try {
-        if (!navigator.gpu) await tf.setBackend('webgl');
+        if(!navigator.gpu) await tf.setBackend('webgl');
         else await tf.setBackend('webgpu');
         await tf.ready();
-        
         const backend = tf.getBackend().toUpperCase();
         document.getElementById('gnn-backend-info').innerText = `Backend: ${backend}`;
         document.getElementById('dti-backend-info').innerText = `Backend: ${backend}`;
-      } catch (e) {
+      } catch(e) {
         console.error("TF initialization failed:", e);
       }
     }
     window.addEventListener('DOMContentLoaded', initTF);
 
+    /* ============================================================
+       DEMOS: GNN CANCER PREDICTION
+    ============================================================ */
     let gnnWeights = null;
     let gnnData = null;
 
     async function loadGNNModel() {
       updateStatusUI("gnn", "Downloading files...", "working");
       document.getElementById('btn-load-gnn').disabled = true;
-
       try {
         logToTerminal("gnn-terminal", "Fetching gnn_model_weights.json...");
         const wRes = await fetch('model_weights/gnn_model_weights.json');
-        if (!wRes.ok) throw new Error("Could not find gnn_model_weights.json");
+        if(!wRes.ok) throw new Error("Could not find gnn_model_weights.json");
         gnnWeights = await wRes.json();
-
         logToTerminal("gnn-terminal", "Fetching demo_graph_data.json...");
         const dRes = await fetch('test_data/demo_graph_data.json');
-        if (!dRes.ok) throw new Error("Could not find demo_graph_data.json");
+        if(!dRes.ok) throw new Error("Could not find demo_graph_data.json");
         gnnData = await dRes.json();
-
         logToTerminal("gnn-terminal", `Loaded! Patients: ${gnnData.features.length}`, "info");
         document.getElementById('btn-predict-gnn').disabled = false;
         updateStatusUI("gnn", "Ready for prediction", "ready");
-      } catch (e) {
+      } catch(e) {
         logToTerminal("gnn-terminal", e.message, "err");
         updateStatusUI("gnn", "Error loading files", "");
         document.getElementById('btn-load-gnn').disabled = false;
@@ -1397,7 +1959,7 @@ ERK TP53 regulates</textarea>
         const neighborMessages = tf.matMul(x, wMsg);
         const aggregated = tf.matMul(adj, neighborMessages);
         let output = tf.add(selfOutput, aggregated);
-        if (bias.size > 0) output = tf.add(output, bias);
+        if(bias.size > 0) output = tf.add(output, bias);
         return tf.relu(output);
       });
     }
@@ -1406,32 +1968,24 @@ ERK TP53 regulates</textarea>
       updateStatusUI("gnn", "Running Forward Pass...", "working");
       document.getElementById('btn-predict-gnn').disabled = true;
       logToTerminal("gnn-terminal", "Starting WebGPU computation...", "info");
-
       try {
         const startTime = performance.now();
         const layerNames = Object.keys(gnnWeights);
         const gnnLayers = layerNames.filter(k => k.includes('graph_neural_layer')).sort();
         const denseLayerName = layerNames.find(k => k.includes('patient_predictions') || k.includes('dense'));
-
         let x = tf.tensor(gnnData.features);
         const adj = tf.tensor(gnnData.adjacency_matrix);
-
-        for (let i = 0; i < gnnLayers.length; i++) {
-          x = applyGNNLayer(x, adj, gnnWeights[gnnLayers[i]]);
-        }
-
+        for(let i=0; i<gnnLayers.length; i++) x = applyGNNLayer(x, adj, gnnWeights[gnnLayers[i]]);
         const predictionsTensor = tf.tidy(() => {
           const w = tf.tensor(gnnWeights[denseLayerName].kernel);
           const b = tf.tensor(gnnWeights[denseLayerName].bias);
           return tf.sigmoid(tf.matMul(x, w).add(b));
         });
-        
         const predictions = await predictionsTensor.array();
-        logToTerminal("gnn-terminal", `Inference completed in ${(performance.now() - startTime).toFixed(2)} ms.`, "info");
-
+        logToTerminal("gnn-terminal", `Inference completed in ${(performance.now()-startTime).toFixed(2)} ms.`, "info");
         tf.dispose([x, adj, predictionsTensor]);
         displayGNNResults(predictions);
-      } catch (e) {
+      } catch(e) {
         logToTerminal("gnn-terminal", `Prediction error: ${e.message}`, "err");
       }
       updateStatusUI("gnn", "Task completed", "ready");
@@ -1440,57 +1994,51 @@ ERK TP53 regulates</textarea>
 
     function displayGNNResults(predictions) {
       const tbody = document.getElementById('gnn-results-body');
-      tbody.innerHTML = ''; 
+      tbody.innerHTML = '';
       let correctCount = 0;
-      
       gnnData.test_indices.forEach(idx => {
         const prob = predictions[idx][0];
         const predClass = prob > 0.5 ? 1 : 0;
         const actualClass = gnnData.labels[idx];
         const isCorrect = predClass === actualClass;
-        if (isCorrect) correctCount++;
-
-        tbody.innerHTML += `
-          <tr>
-            <td>Node ${idx}</td>
-            <td>${prob.toFixed(4)}</td>
-            <td>${predClass === 1 ? 'Deceased (1)' : 'Alive (0)'}</td>
-            <td>${actualClass === 1 ? 'Deceased (1)' : 'Alive (0)'}</td>
-            <td class="${isCorrect ? 'correct' : 'incorrect'}">
-              ${isCorrect ? '<i class="fas fa-check"></i> Correct' : '<i class="fas fa-times"></i> Missed'}
-            </td>
-          </tr>
-        `;
+        if(isCorrect) correctCount++;
+        tbody.innerHTML += `<tr>
+          <td>Node ${idx}</td>
+          <td>${prob.toFixed(4)}</td>
+          <td>${predClass===1 ? 'Deceased (1)' : 'Alive (0)'}</td>
+          <td>${actualClass===1 ? 'Deceased (1)' : 'Alive (0)'}</td>
+          <td class="${isCorrect ? 'demo-correct' : 'demo-incorrect'}">
+            ${isCorrect ? '<i class="fas fa-check"></i> Correct' : '<i class="fas fa-times"></i> Missed'}
+          </td>
+        </tr>`;
       });
-
       const acc = (correctCount / gnnData.test_indices.length) * 100;
       document.getElementById('gnn-metrics-text').innerHTML = `<strong>Test Accuracy:</strong> ${acc.toFixed(2)}%`;
       document.getElementById('gnn-results-container').style.display = 'block';
     }
 
-
+    /* ============================================================
+       DEMOS: DTI PREDICTION
+    ============================================================ */
     let dtiWeights = null;
     let dtiData = null;
 
     async function loadDTIModel() {
       updateStatusUI("dti", "Downloading files...", "working");
       document.getElementById('btn-load-dti').disabled = true;
-
       try {
         logToTerminal("dti-terminal", "Fetching dti_model_weights.json...");
         const wRes = await fetch('model_weights/dti_model_weights.json');
-        if (!wRes.ok) throw new Error("Could not find dti_model_weights.json");
+        if(!wRes.ok) throw new Error("Could not find dti_model_weights.json");
         dtiWeights = await wRes.json();
-
         logToTerminal("dti-terminal", "Fetching dti_demo_data.json...");
         const dRes = await fetch('test_data/dti_demo_data.json');
-        if (!dRes.ok) throw new Error("Could not find dti_demo_data.json");
+        if(!dRes.ok) throw new Error("Could not find dti_demo_data.json");
         dtiData = await dRes.json();
-
         logToTerminal("dti-terminal", `Loaded! Test Samples: ${dtiData.labels.length}`, "info");
         document.getElementById('btn-predict-dti').disabled = false;
         updateStatusUI("dti", "Ready for prediction", "ready");
-      } catch (e) {
+      } catch(e) {
         logToTerminal("dti-terminal", e.message, "err");
         updateStatusUI("dti", "Error loading files", "");
         document.getElementById('btn-load-dti').disabled = false;
@@ -1502,15 +2050,13 @@ ERK TP53 regulates</textarea>
         let w = tf.tensor(weights[`network.${linIdx}.weight`]);
         let b = tf.tensor(weights[`network.${linIdx}.bias`]);
         let out = x.matMul(w).add(b);
-
-        if (bnIdx !== null) {
+        if(bnIdx !== null) {
           let gamma = tf.tensor(weights[`network.${bnIdx}.weight`]);
           let beta = tf.tensor(weights[`network.${bnIdx}.bias`]);
           let mean = tf.tensor(weights[`network.${bnIdx}.running_mean`]);
           let variance = tf.tensor(weights[`network.${bnIdx}.running_var`]);
           out = tf.batchNorm(out, mean, variance, beta, gamma, 1e-5);
         }
-
         return tf.relu(out);
       });
     }
@@ -1519,29 +2065,23 @@ ERK TP53 regulates</textarea>
       updateStatusUI("dti", "Running Forward Pass...", "working");
       document.getElementById('btn-predict-dti').disabled = true;
       logToTerminal("dti-terminal", "Starting WebGPU computation for PyTorch model...", "info");
-
       try {
         const startTime = performance.now();
         let x = tf.tensor(dtiData.features);
-
         x = applyDTIBlock(x, 0, 1, dtiWeights);
         x = applyDTIBlock(x, 4, 5, dtiWeights);
         x = applyDTIBlock(x, 8, 9, dtiWeights);
         x = applyDTIBlock(x, 12, null, dtiWeights);
-
         const predictionsTensor = tf.tidy(() => {
           let w = tf.tensor(dtiWeights[`network.14.weight`]);
           let b = tf.tensor(dtiWeights[`network.14.bias`]);
           return x.matMul(w).add(b);
         });
-
         const predictions = await predictionsTensor.array();
-        logToTerminal("dti-terminal", `Inference completed in ${(performance.now() - startTime).toFixed(2)} ms.`, "info");
-
+        logToTerminal("dti-terminal", `Inference completed in ${(performance.now()-startTime).toFixed(2)} ms.`, "info");
         tf.dispose([x, predictionsTensor]);
         displayDTIResults(predictions);
-
-      } catch (e) {
+      } catch(e) {
         logToTerminal("dti-terminal", `Prediction error: ${e.message}`, "err");
       }
       updateStatusUI("dti", "Task completed", "ready");
@@ -1550,730 +2090,35 @@ ERK TP53 regulates</textarea>
 
     function displayDTIResults(predictions) {
       const tbody = document.getElementById('dti-results-body');
-      tbody.innerHTML = ''; 
-      
+      tbody.innerHTML = '';
       let totalAbsoluteError = 0;
       const numSamples = dtiData.labels.length;
-
-      for(let i = 0; i < numSamples; i++) {
+      for(let i=0; i<numSamples; i++) {
         const pred = predictions[i][0];
         const actual = dtiData.labels[i];
         const error = Math.abs(pred - actual);
         totalAbsoluteError += error;
-
-        let errorClass = "neutral";
-        if (error < 0.5) errorClass = "correct";
-        else if (error > 1.5) errorClass = "incorrect";
-
-        tbody.innerHTML += `
-          <tr>
-            <td>Sample #${i+1}</td>
-            <td>${pred.toFixed(4)}</td>
-            <td>${actual.toFixed(4)}</td>
-            <td class="${errorClass}">${error.toFixed(4)}</td>
-          </tr>
-        `;
+        let errorClass = "demo-neutral";
+        if(error < 0.5) errorClass = "demo-correct";
+        else if(error > 1.5) errorClass = "demo-incorrect";
+        tbody.innerHTML += `<tr>
+          <td>Sample #${i+1}</td>
+          <td>${pred.toFixed(4)}</td>
+          <td>${actual.toFixed(4)}</td>
+          <td class="${errorClass}">${error.toFixed(4)}</td>
+        </tr>`;
       }
-
       const mae = totalAbsoluteError / numSamples;
       document.getElementById('dti-metrics-text').innerHTML = `<strong>Mean Absolute Error (MAE):</strong> ${mae.toFixed(4)}`;
       document.getElementById('dti-results-container').style.display = 'block';
     }
 
-
-    // --- VCF, BIOINFORMATICS & OTHERS --- //
-    
-    let vcfData = { all: [], filtered: [] };
-
-    document.getElementById('vcfFileInput').addEventListener('change', handleVcfUpload);
-    document.getElementById('vcfSearchInput').addEventListener('input', debounce(applyVcfFilters, 300));
-    document.getElementById('vcfPassCheckbox').addEventListener('change', applyVcfFilters);
-
-    function handleVcfUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        vcfData.all = [];
-        document.querySelector('#vcfTable tbody').innerHTML = '';
-        document.getElementById('vcfDetailPanel').textContent = 'Select a variant to view full details...';
-        
-        document.getElementById('vcf-loader').style.display = 'flex';
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            parseVCF(e.target.result);
-        };
-        reader.readAsText(file);
-    }
-
-    function parseVCF(text) {
-        setTimeout(() => {
-            const lines = text.split('\n');
-            const data = [];
-            
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line || line.startsWith('#')) continue;
-
-                const cols = line.split('\t');
-                if (cols.length < 8) continue;
-
-                data.push({
-                    chrom: cols[0],
-                    pos: cols[1],
-                    id: cols[2],
-                    ref: cols[3],
-                    alt: cols[4],
-                    qual: cols[5],
-                    filter: cols[6],
-                    info: cols[7],
-                    raw: line
-                });
-            }
-
-            vcfData.all = data;
-            
-            document.getElementById('vcfSearchInput').disabled = false;
-            document.getElementById('vcfPassCheckbox').disabled = false;
-            document.getElementById('vcf-loader').style.display = 'none';
-            
-            applyVcfFilters();
-        }, 100); 
-    }
-
-    function applyVcfFilters() {
-        const query = document.getElementById('vcfSearchInput').value.toLowerCase();
-        const showPassOnly = document.getElementById('vcfPassCheckbox').checked;
-
-        vcfData.filtered = vcfData.all.filter(v => {
-            if (showPassOnly && v.filter !== 'PASS') return false;
-            if (query) {
-                const searchStr = `${v.chrom} ${v.pos} ${v.id} ${v.info}`.toLowerCase();
-                if (!searchStr.includes(query)) return false;
-            }
-            return true;
-        });
-
-        document.getElementById('vcf-count').textContent = `Showing: ${vcfData.filtered.length.toLocaleString()}`;
-        renderVcfTable();
-    }
-
-    function renderVcfTable() {
-        const MAX_RENDER = 500; 
-        const displayData = vcfData.filtered.slice(0, MAX_RENDER);
-        let html = '';
-        
-        displayData.forEach((v, index) => {
-            let filterColor = v.filter === 'PASS' ? '#22c55e' : 'var(--text)'; 
-            if(v.filter !== 'PASS' && v.filter !== '.') filterColor = '#ef4444'; 
-
-            html += `
-                <tr onclick="selectVariant(${index})">
-                    <td>${v.chrom}</td>
-                    <td style="text-align:right; font-family:monospace;">${v.pos}</td>
-                    <td>${v.id === '.' ? '' : v.id}</td>
-                    <td>${v.ref}</td>
-                    <td>${v.alt}</td>
-                    <td style="text-align:right;">${v.qual === '.' ? '' : v.qual}</td>
-                    <td><span style="color:${filterColor}; font-weight:bold; font-size:0.8em;">${v.filter}</span></td>
-                    <td>${v.info}</td>
-                </tr>
-            `;
-        });
-        
-        if (vcfData.filtered.length > MAX_RENDER) {
-            html += `<tr><td colspan="8" style="text-align:center; padding:10px; opacity:0.6;">... ${vcfData.filtered.length - MAX_RENDER} more variants hidden (filter to see them) ...</td></tr>`;
-        }
-        document.querySelector('#vcfTable tbody').innerHTML = html;
-    }
-
-    function selectVariant(index) {
-        const rows = document.querySelectorAll('#vcfTable tbody tr');
-        rows.forEach(r => r.classList.remove('selected'));
-        if(rows[index]) rows[index].classList.add('selected');
-
-        const v = vcfData.filtered[index];
-        if(!v) return;
-
-        const infoFormatted = v.info.split(';').join('\n');
-        const detailText = 
-`=== VARIANT DETAILS ===
-Location:  ${v.chrom}:${v.pos}
-ID:        ${v.id}
-Ref / Alt: ${v.ref} -> ${v.alt}
-Quality:   ${v.qual}
-Filter:    ${v.filter}
-
---- INFO FIELDS ---
-${infoFormatted}
-
---- RAW LINE ---
-${v.raw}`;
-        document.getElementById('vcfDetailPanel').textContent = detailText;
-    }
-
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
-
-    function runAnalysis() {
-        let seq = document.getElementById('mainInput').value.toUpperCase().replace(/[^ATGCU]/g, ''); 
-        
-        let gc = (seq.match(/[GC]/g) || []).length;
-        let total = seq.length;
-        let gcPercent = total > 0 ? ((gc / total) * 100).toFixed(1) : 0;
-        document.getElementById('gcResult').innerText = gcPercent + "%";
-        document.getElementById('lenResult').innerText = "Length: " + total + " bp";
-
-        let revComp = seq.split('').reverse().map(b => {
-            return { 'A':'T', 'T':'A', 'U':'A', 'G':'C', 'C':'G' }[b] || b;
-        }).join('');
-        document.getElementById('revCompResult').innerText = revComp || "Waiting for input...";
-
-        const codonTable = {
-            'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M', 'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',
-            'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K', 'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',
-            'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L', 'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',
-            'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q', 'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',
-            'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V', 'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',
-            'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E', 'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',
-            'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S', 'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',
-            'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_', 'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W',
-        };
-        
-        let protein = "";
-        for(let i = 0; i < seq.length - 2; i += 3) {
-            let codon = seq.substring(i, i+3);
-            protein += codonTable[codon] || "?";
-        }
-        document.getElementById('protResult').innerText = protein || "Waiting for input...";
-    }
-
-    document.getElementById('volcFileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if(!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const text = e.target.result;
-            document.getElementById('volcInput').value = text;
-            renderVolcano();
-        };
-        reader.readAsText(file);
-    });
-
-    function loadVolcanoDemo() {
-        const demoData = `Gene,Log2FC,PValue
-TP53,2.5,0.0001
-EGFR,1.8,0.005
-BRCA1,-2.1,0.0002
-PTEN,-1.5,0.004
-MYC,3.2,0.00001
-GAPDH,0.1,0.8
-ACTB,-0.2,0.6
-VEGFA,1.2,0.03
-RB1,-1.1,0.045
-KRAS,0.5,0.2
-IL6,4.5,0.000001
-TNF,3.8,0.00005
-INS,-3.5,0.0001`;
-        document.getElementById('volcInput').value = demoData;
-        renderVolcano();
-    }
-
-    function renderVolcano() {
-        const input = document.getElementById('volcInput').value.trim();
-        const pCutoff = parseFloat(document.getElementById('pCutoff').value);
-        const fcCutoff = parseFloat(document.getElementById('fcCutoff').value);
-        
-        if(!input) return;
-
-        let rows = input.split('\n');
-        let genes = [], x = [], y = [], colors = [], texts = [];
-        
-        let startIndex = 0;
-        if(rows[0].toLowerCase().includes('gene')) startIndex = 1;
-
-        for(let i = startIndex; i < rows.length; i++) {
-            let cols = rows[i].split(/[\t,]+/); 
-            if(cols.length < 3) continue;
-            
-            let gene = cols[0];
-            let fc = parseFloat(cols[1]);
-            let p = parseFloat(cols[2]);
-            let negLogP = -Math.log10(p);
-
-            genes.push(gene);
-            x.push(fc);
-            y.push(negLogP);
-            
-            if(p < pCutoff && fc > fcCutoff) {
-                colors.push('#ff6b6b'); 
-                texts.push(`UP: ${gene}`);
-            } else if (p < pCutoff && fc < -fcCutoff) {
-                colors.push('#4ecdc4'); 
-                texts.push(`DOWN: ${gene}`);
-            } else {
-                colors.push('#777777'); 
-                texts.push(gene);
-            }
-        }
-
-        const textColor = getComputedStyle(document.body).getPropertyValue('--text').trim();
-        const gridColor = getComputedStyle(document.body).getPropertyValue('--glass-border').trim();
-
-        const trace = {
-            x: x,
-            y: y,
-            mode: 'markers',
-            type: 'scatter',
-            text: texts,
-            marker: { size: 10, color: colors, opacity: 0.8 },
-            hoverinfo: 'x+y+text'
-        };
-
-        const layout = {
-            title: { text: 'Volcano Plot', font: { color: textColor } },
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
-            xaxis: { 
-                title: 'Log2 Fold Change', 
-                color: textColor, 
-                gridcolor: gridColor,
-                zerolinecolor: gridColor
-            },
-            yaxis: { 
-                title: '-Log10 P-Value', 
-                color: textColor, 
-                gridcolor: gridColor,
-                zerolinecolor: gridColor
-            },
-            hovermode: 'closest',
-            margin: { l: 50, r: 20, t: 40, b: 50 }
-        };
-
-        Plotly.newPlot('volcanoPlot', [trace], layout, {responsive: true, displayModeBar: true});
-    }
-
-    function renderViewer() {
-        let seq = document.getElementById('viewerInput').value.toUpperCase();
-        let output = document.getElementById('viewerOutput');
-        output.innerHTML = "";
-        
-        const hydrophobic = ['A','I','L','M','F','W','V'];
-        const polar = ['S','T','N','Q','Y','C'];
-        const charged = ['R','K','H','D','E']; 
-
-        seq.split('').forEach(aa => {
-            let color = 'var(--text)';
-            if(hydrophobic.includes(aa)) color = '#ff6b6b'; 
-            if(polar.includes(aa)) color = '#4ecdc4'; 
-            if(charged.includes(aa)) color = '#bb86fc'; 
-            
-            let span = document.createElement('span');
-            span.innerText = aa;
-            span.style.color = color;
-            span.style.fontWeight = "bold";
-            output.appendChild(span);
-        });
-    }
-
-    function toggleAlignParams() {
-        const algo = document.getElementById('alignAlgo').value;
-        const paramsDiv = document.getElementById('alignParams');
-        if(algo === 'lev') {
-            paramsDiv.style.opacity = '0.5';
-            paramsDiv.style.pointerEvents = 'none';
-        } else {
-            paramsDiv.style.opacity = '1';
-            paramsDiv.style.pointerEvents = 'auto';
-        }
-    }
-
-    function runAlignment() {
-        const seq1 = document.getElementById('alignSeq1').value.toUpperCase().trim();
-        const seq2 = document.getElementById('alignSeq2').value.toUpperCase().trim();
-        const algo = document.getElementById('alignAlgo').value;
-        const match = parseInt(document.getElementById('alignMatch').value);
-        const mismatch = parseInt(document.getElementById('alignMismatch').value);
-        const gap = parseInt(document.getElementById('alignGap').value);
-        const outputDiv = document.getElementById('alignResult');
-        const matrixDiv = document.getElementById('matrixOutput');
-
-        if(!seq1 || !seq2) {
-            outputDiv.innerHTML = "Please enter two sequences.";
-            matrixDiv.innerHTML = "";
-            return;
-        }
-
-        let res;
-        let typeText = "";
-        if(algo === 'lev') {
-            res = levenshtein(seq1, seq2);
-            typeText = "Levenshtein Distance";
-            outputDiv.innerHTML = `Levenshtein Distance: <strong>${res.score}</strong>`;
-        } else if (algo === 'nw') {
-            res = needlemanWunsch(seq1, seq2, match, mismatch, gap);
-            typeText = "Global (Needleman-Wunsch)";
-            outputDiv.innerHTML = formatAlignment(res.score, res.align1, res.align2, typeText);
-        } else if (algo === 'sw') {
-            res = smithWaterman(seq1, seq2, match, mismatch, gap);
-            typeText = "Local (Smith-Waterman)";
-            outputDiv.innerHTML = formatAlignment(res.score, res.align1, res.align2, typeText);
-        }
-        
-        renderMatrix(res.matrix, seq1, seq2, res.path);
-    }
-
-    function formatAlignment(score, align1, align2, type) {
-        let visual = "";
-        let matches = 0;
-        let length = align1.length;
-        
-        for(let i=0; i<length; i++) {
-            if(align1[i] === align2[i] && align1[i] !== '-') {
-                visual += "|";
-                matches++;
-            } else if (align1[i] === '-' || align2[i] === '-') {
-                visual += " ";
-            } else {
-                visual += ".";
-            }
-        }
-        
-        let identity = length > 0 ? ((matches / length) * 100).toFixed(1) : 0;
-        
-        return `<strong>${type}</strong>
-Score: ${score} | Identity: ${identity}%
-
-Seq A: ${align1}
-       ${visual}
-Seq B: ${align2}`;
-    }
-
-    function levenshtein(seq1, seq2) {
-        let n = seq1.length; 
-        let m = seq2.length; 
-        let matrix = Array(n + 1).fill(null).map(() => Array(m + 1).fill(0));
-        
-        for (let i = 0; i <= n; i++) matrix[i][0] = i;
-        for (let j = 0; j <= m; j++) matrix[0][j] = j;
-
-        for (let i = 1; i <= n; i++) {
-            for (let j = 1; j <= m; j++) {
-                if (seq1[i - 1] === seq2[j - 1]) {
-                    matrix[i][j] = matrix[i - 1][j - 1];
-                } else {
-                    matrix[i][j] = Math.min(
-                        matrix[i - 1][j - 1] + 1, 
-                        matrix[i][j - 1] + 1,     
-                        matrix[i - 1][j] + 1      
-                    );
-                }
-            }
-        }
-
-        let path = [];
-        let i = n, j = m;
-        path.push([i, j]);
-        while (i > 0 || j > 0) {
-            let current = matrix[i][j];
-            if (i > 0 && j > 0 && seq1[i-1] === seq2[j-1] && matrix[i-1][j-1] === current) {
-                i--; j--;
-            } else if (i > 0 && j > 0 && matrix[i-1][j-1] + 1 === current) { 
-                i--; j--;
-            } else if (i > 0 && matrix[i-1][j] + 1 === current) { 
-                i--;
-            } else {
-                j--;
-            }
-            path.push([i, j]);
-        }
-
-        return { score: matrix[n][m], matrix: matrix, path: path };
-    }
-
-    function needlemanWunsch(seq1, seq2, match, mismatch, gap) {
-        let n = seq1.length;
-        let m = seq2.length;
-        let matrix = Array(n + 1).fill(null).map(() => Array(m + 1).fill(0));
-        
-        for (let i = 0; i <= n; i++) matrix[i][0] = i * gap;
-        for (let j = 0; j <= m; j++) matrix[0][j] = j * gap;
-
-        for (let i = 1; i <= n; i++) {
-            for (let j = 1; j <= m; j++) {
-                let scoreDiag = matrix[i-1][j-1] + (seq1[i-1] === seq2[j-1] ? match : mismatch);
-                let scoreUp = matrix[i-1][j] + gap;
-                let scoreLeft = matrix[i][j-1] + gap;
-                matrix[i][j] = Math.max(scoreDiag, scoreUp, scoreLeft);
-            }
-        }
-
-        let align1 = "", align2 = "";
-        let i = n, j = m;
-        let path = [];
-        path.push([i, j]);
-        
-        while (i > 0 || j > 0) {
-            let score = matrix[i][j];
-            if (i > 0 && j > 0 && score === matrix[i-1][j-1] + (seq1[i-1] === seq2[j-1] ? match : mismatch)) {
-                align1 = seq1[i-1] + align1;
-                align2 = seq2[j-1] + align2;
-                i--; j--;
-            } else if (i > 0 && score === matrix[i-1][j] + gap) {
-                align1 = seq1[i-1] + align1;
-                align2 = "-" + align2;
-                i--;
-            } else {
-                align1 = "-" + align1;
-                align2 = seq2[j-1] + align2;
-                j--;
-            }
-            path.push([i, j]);
-        }
-        return { score: matrix[n][m], align1, align2, matrix: matrix, path: path };
-    }
-
-    function smithWaterman(seq1, seq2, match, mismatch, gap) {
-        let n = seq1.length;
-        let m = seq2.length;
-        let matrix = Array(n + 1).fill(null).map(() => Array(m + 1).fill(0));
-        let maxScore = 0;
-        let maxI = 0, maxJ = 0;
-
-        for (let i = 1; i <= n; i++) {
-            for (let j = 1; j <= m; j++) {
-                let scoreDiag = matrix[i-1][j-1] + (seq1[i-1] === seq2[j-1] ? match : mismatch);
-                let scoreUp = matrix[i-1][j] + gap;
-                let scoreLeft = matrix[i][j-1] + gap;
-                matrix[i][j] = Math.max(0, scoreDiag, scoreUp, scoreLeft);
-                
-                if(matrix[i][j] > maxScore) {
-                    maxScore = matrix[i][j];
-                    maxI = i; maxJ = j;
-                }
-            }
-        }
-
-        let align1 = "", align2 = "";
-        let i = maxI, j = maxJ;
-        let path = [];
-        path.push([i, j]);
-
-        while (matrix[i][j] > 0) {
-            let score = matrix[i][j];
-            if (i > 0 && j > 0 && score === matrix[i-1][j-1] + (seq1[i-1] === seq2[j-1] ? match : mismatch)) {
-                align1 = seq1[i-1] + align1;
-                align2 = seq2[j-1] + align2;
-                i--; j--;
-            } else if (i > 0 && score === matrix[i-1][j] + gap) {
-                align1 = seq1[i-1] + align1;
-                align2 = "-" + align2;
-                i--;
-            } else {
-                align1 = "-" + align1;
-                align2 = seq2[j-1] + align2;
-                j--;
-            }
-            path.push([i, j]);
-        }
-        return { score: maxScore, align1, align2, matrix: matrix, path: path };
-    }
-
-    function renderMatrix(matrix, seq1, seq2, path) {
-        const pathSet = new Set(path.map(p => `${p[0]},${p[1]}`));
-        
-        let html = '<table class="matrix-table">';
-        
-        html += '<tr><td class="matrix-cell matrix-header"></td><td class="matrix-cell matrix-header"></td>';
-        for (let j = 0; j < seq2.length; j++) {
-            html += `<td class="matrix-cell matrix-header">${seq2[j]}</td>`;
-        }
-        html += '</tr>';
-
-        for (let i = 0; i < matrix.length; i++) {
-            html += '<tr>';
-            let rowLabel = i === 0 ? "" : seq1[i - 1];
-            html += `<td class="matrix-cell matrix-header">${rowLabel}</td>`;
-            
-            for (let j = 0; j < matrix[i].length; j++) {
-                let isPath = pathSet.has(`${i},${j}`);
-                let className = isPath ? 'matrix-cell matrix-path' : 'matrix-cell';
-                html += `<td class="${className}">${matrix[i][j]}</td>`;
-            }
-            html += '</tr>';
-        }
-        html += '</table>';
-        
-        document.getElementById('matrixOutput').innerHTML = html;
-    }
-
-    let viewer3d = null;
-    function loadPDB() {
-        let pdbID = document.getElementById('pdbInput').value;
-        let element = document.getElementById('mol-container');
-        
-        let isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        let bgColor = isLight ? 'white' : '#1e1e1e'; 
-        
-        element.innerHTML = "";
-        viewer3d = $3Dmol.createViewer(element, { backgroundColor: bgColor });
-        
-        $3Dmol.download("pdb:" + pdbID, viewer3d, { doAssembly: true, noSecondaryStructure: false }, function() {
-            viewer3d.setStyle({}, { cartoon: { color: 'spectrum' } });
-            viewer3d.zoomTo();
-            viewer3d.render();
-        });
-    }
-
-    let igvBrowser = null;
-    function initIGV() {
-        var igvDiv = document.getElementById("igv-div");
-        igvDiv.innerHTML = ""; 
-        var options = { genome: "hg19", locus: "chr8:128,747,267-128,754,546" };
-        igv.createBrowser(igvDiv, options).then(function (browser) {
-            igvBrowser = browser;
-        });
-    }
-    function runIgvSearch() {
-        let term = document.getElementById('igvSearchInput').value;
-        if(igvBrowser && term) igvBrowser.search(term);
-        else alert("Please initialize the browser first!");
-    }
-    
-    document.getElementById('bedFileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (!igvBrowser) {
-            alert("Please initialize the Genome Browser first by clicking the Reset/Init button.");
-            return;
-        }
-
-        igvBrowser.loadTrack({
-            name: file.name,
-            type: 'annotation',
-            format: 'bed',
-            url: file, 
-            displayMode: "EXPANDED",
-            color: "#ff6b6b" 
-        });
-
-        if(!file.name.endsWith('.gz')) {
-            const reader = new FileReader();
-            const blob = file.slice(0, 10000); 
-            
-            reader.onload = function(event) {
-                const text = event.target.result;
-                const lines = text.split('\n');
-                
-                for(let line of lines) {
-                    line = line.trim();
-                    if(!line || line.startsWith('#') || line.startsWith('track') || line.startsWith('browser')) continue;
-                    
-                    const parts = line.split(/\s+/);
-                    if(parts.length >= 3) {
-                        const chrom = parts[0];
-                        const start = parts[1];
-                        const end = parts[2];
-                        
-                        if(!isNaN(start) && !isNaN(end)) {
-                            const loc = `${chrom}:${Math.max(0, parseInt(start)-100)}-${parseInt(end)+100}`;
-                            
-                            console.log("Auto-zooming to:", loc);
-                            setTimeout(() => {
-                                igvBrowser.search(loc);
-                            }, 500); 
-                        }
-                        break; 
-                    }
-                }
-            };
-            reader.readAsText(blob);
-        } else {
-            console.log("Skipping auto-zoom for compressed file.");
-        }
-
-        e.target.value = '';
-    });
-
-    function runCytoscape() {
-        var rawData = document.getElementById('cyData').value.trim();
-        var layoutName = document.getElementById('cyLayout').value;
-        var lines = rawData.split('\n');
-        var elements = [];
-        var nodes = new Set(); 
-
-        let accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-        let textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
-
-        lines.forEach(line => {
-            let parts = line.trim().split(/\s+/); 
-            if (parts.length >= 2) {
-                let source = parts[0];
-                let target = parts[1];
-                let label = parts[2] || ""; 
-                if (!nodes.has(source)) { elements.push({ data: { id: source } }); nodes.add(source); }
-                if (!nodes.has(target)) { elements.push({ data: { id: target } }); nodes.add(target); }
-                elements.push({ data: { source: source, target: target, label: label } });
-            }
-        });
-
-        var cy = cytoscape({
-            container: document.getElementById('cy'),
-            elements: elements,
-            style: [ 
-                {
-                    selector: 'node',
-                    style: {
-                        'background-color': accentColor,
-                        'label': 'data(id)',
-                        'color': textColor,
-                        'text-outline-color': '#000',
-                        'text-outline-width': 0, 
-                        'font-weight': 'bold',
-                        'width': '50px', 'height': '50px'
-                    }
-                },
-                {
-                    selector: 'edge',
-                    style: {
-                        'width': 2,
-                        'line-color': '#888',
-                        'target-arrow-color': '#888',
-                        'target-arrow-shape': 'triangle',
-                        'curve-style': 'bezier',
-                        'label': 'data(label)',
-                        'color': textColor,
-                        'font-size': '10px',
-                        'text-rotation': 'autorotate',
-                        'text-background-opacity': 0
-                    }
-                }
-            ],
-            layout: { name: layoutName, animate: true, padding: 30 }
-        });
-    }
-
-    function formatFasta() {
-        let raw = document.getElementById('fastaInput').value.replace(/\s+/g, '');
-        let header = document.getElementById('fastaHeader').value || "Formatted_Sequence";
-        let formatted = ">" + header + "\n";
-        for(let i = 0; i < raw.length; i += 60) {
-            formatted += raw.substring(i, i+60) + "\n";
-        }
-        document.getElementById('fastaOutput').value = formatted;
-    }
-
+    /* ============================================================
+       INIT ON LOAD
+    ============================================================ */
     runAnalysis();
-    loadVolcanoDemo(); 
-    initIGV(); 
-
+    loadVolcanoDemo();
+    initIGV();
   </script>
 </body>
 </html>
