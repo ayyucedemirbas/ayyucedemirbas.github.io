@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BioToolbox | Ayyuce Demirbas</title>
+  <title>Demos & BioToolbox | Ayyuce Demirbas</title>
   
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas.github.io/refs/heads/main/logo.png" />
   
@@ -16,6 +16,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/igv@2.15.5/dist/igv.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgpu@4.17.0/dist/tf-backend-webgpu.min.js"></script>
 
   <style>
 
@@ -307,7 +310,7 @@
         border-color: var(--accent);
     }
 
-
+    /* VCF Styles */
     .vcf-container {
         display: flex;
         flex-direction: column;
@@ -410,7 +413,6 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-
     /* Visualization Containers */
     #mol-container {
         width: 100%;
@@ -442,7 +444,6 @@
         margin-bottom: 15px;
     }
 
-    /* Left Gutter with Play Button */
     .cell-gutter {
         width: 45px;
         padding-top: 8px;
@@ -474,13 +475,11 @@
     
     .play-btn i { font-size: 0.8rem; margin-left: 2px; }
 
-    /* Main Cell Content */
     .cell-content {
         flex: 1;
         overflow-x: hidden;
     }
 
-    /* Code Input Area */
     .input-area {
         background: #1e1e1e; /* Specific Dark BG for code */
         border: 1px solid var(--glass-border);
@@ -494,16 +493,14 @@
         position: relative;
     }
     
-    /* Code Syntax Colors */
-    .nt-kw { color: #c586c0; font-weight: bold; } /* Keyword */
-    .nt-func { color: #dcdcaa; } /* Function */
-    .nt-str { color: #ce9178; } /* String */
-    .nt-com { color: #6a9955; } /* Comment */
-    .nt-num { color: #b5cea8; } /* Number */
-    .nt-bi { color: #4ec9b0; } /* Built-in */
-    .nt-op { color: #d4d4d4; } /* Operator */
+    .nt-kw { color: #c586c0; font-weight: bold; } 
+    .nt-func { color: #dcdcaa; } 
+    .nt-str { color: #ce9178; } 
+    .nt-com { color: #6a9955; } 
+    .nt-num { color: #b5cea8; } 
+    .nt-bi { color: #4ec9b0; } 
+    .nt-op { color: #d4d4d4; } 
 
-    /* Output Area */
     .output-area {
         padding: 10px 0 10px 0;
         animation: fadeIn 0.5s;
@@ -527,7 +524,130 @@
         background: #fff;
     }
 
+    /* ------------------------------------- */
+    /* AI DEMOS SPECIFIC STYLES            */
+    /* ------------------------------------- */
+    .demo-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
 
+    .demo-tab-btn {
+      background: var(--glass-bg);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.8rem 1.5rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .demo-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .demo-tab-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+    }
+
+    .demo-pane {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .demo-pane.active { display: block; }
+
+    .demo-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .status-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-family: monospace;
+      font-size: 0.95rem;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ff6b6b;
+      margin-right: 8px;
+    }
+    
+    .status-indicator.ready { background-color: #4ecdc4; }
+    .status-indicator.working { background-color: #feca57; }
+
+    .terminal {
+      background-color: #0d0d0d;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 1.5rem;
+      border-radius: 8px;
+      height: 250px;
+      overflow-y: auto;
+      border: 1px solid #333;
+    }
+
+    .terminal p { margin-bottom: 0.5rem; }
+    .terminal .err { color: #ff6b6b; }
+    .terminal .info { color: #4ecdc4; }
+    .terminal .warn { color: #feca57; }
+
+    .results-container {
+      margin-top: 1.5rem;
+      overflow-x: auto;
+      display: none;
+    }
+
+    .results-container table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .results-container th, .results-container td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .results-container th {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .correct { color: #4ecdc4; font-weight: bold; }
+    .incorrect { color: #ff6b6b; font-weight: bold; }
+    .neutral { color: #bb86fc; font-weight: bold; }
+
+    .coming-soon { text-align: center; padding: 4rem 2rem; color: #888; }
+    .coming-soon i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+    /* Theme Switcher */
     .theme-switcher {
       position: fixed;
       bottom: 1.5rem;
@@ -580,7 +700,7 @@
       nav.main-nav ul { flex-wrap: wrap; gap: 1rem; }
       
       .vcf-container { height: 600px; }
-      .cell-gutter { width: 30px; } /* Smaller gutter on mobile */
+      .cell-gutter { width: 30px; } 
     }
   </style>
 </head>
@@ -594,9 +714,9 @@
         <li><a href="publications.html">Publications</a></li>
         <li><a href="projects.html">Projects</a></li>
         <li><a href="repositories.html">Repositories</a></li>
-        <li><a href="demos.html">Demos</a></li>
+        <li><a href="teaching.html">Teaching</a></li>
         <li><a href="people.html">People</a></li>
-        <li><a href="bioinformatics-tools.html" aria-current="page">BioToolbox</a></li>
+        <li><a href="bioinformatics-tools.html" aria-current="page">Demos & BioToolbox</a></li>
         <li><a href="cats.html">🐾</a></li>
       </ul>
     </div>
@@ -608,7 +728,9 @@
         <div class="tool-nav-item active" onclick="showTool('genome')">
             <i class="fa-solid fa-magnifying-glass-location"></i> Genome Browser
         </div>
-
+        <div class="tool-nav-item" onclick="showTool('ai-demos')">
+            <i class="fa-solid fa-microchip"></i> AI & ML Models
+        </div>
         <div class="tool-nav-item" onclick="showTool('structure')">
             <i class="fa-solid fa-cube"></i> 3D Protein Structure
         </div>
@@ -630,7 +752,6 @@
         <div class="tool-nav-item" onclick="showTool('alphafold')">
             <i class="fa-solid fa-dna"></i> AlphaFold Colab
         </div>      
-        
         <div class="tool-nav-item" onclick="showTool('network')">
             <i class="fa-solid fa-circle-nodes"></i> Network Builder
         </div>
@@ -641,6 +762,124 @@
 
     <div class="tool-content">
         
+        <div id="ai-demos" class="tool-section" style="display: none;">
+            <h2>Interactive Demos</h2>
+            <p class="text-muted mb-4">Try my projects directly in your browser.</p>
+
+            <div class="demo-tabs">
+              <button class="demo-tab-btn active" onclick="switchDemo('gnn-cancer', event)">
+                <i class="fas fa-project-diagram"></i> GNN Cancer Prediction
+              </button>
+              <button class="demo-tab-btn" onclick="switchDemo('drug-discovery', event)">
+                <i class="fas fa-pills"></i> Drug Discovery (DTI)
+              </button>
+              <button class="demo-tab-btn" onclick="switchDemo('multi-omics', event)">
+                <i class="fas fa-dna"></i> Multi-Omics (Soon)
+              </button>
+            </div>
+
+            <div id="gnn-cancer" class="demo-pane active">
+              <div class="card-custom">
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                  <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">Multi-Omics BRCA Classification</h2>
+                  <p style="color: #888; font-size: 0.95rem;">Binary classification using Graph Neural Networks</p>
+                </div>
+
+                <div class="status-panel">
+                  <div>
+                    <span class="status-indicator" id="gnn-status-dot"></span>
+                    <span id="gnn-status-text">Waiting to initialize...</span>
+                  </div>
+                  <div id="gnn-backend-info" style="color: var(--accent);">Backend: Detecting...</div>
+                </div>
+
+                <div class="demo-controls">
+                  <button id="btn-load-gnn" class="btn btn-primary d-flex align-items-center gap-2" onclick="loadGNNModel()">
+                    <i class="fas fa-download"></i> Load Weights & Graph
+                  </button>
+                  <button id="btn-predict-gnn" class="btn btn-primary d-flex align-items-center gap-2" onclick="runGNNPrediction()" disabled>
+                    <i class="fas fa-play"></i> Run Forward Pass
+                  </button>
+                </div>
+
+                <div class="terminal" id="gnn-terminal">
+                  <p class="info">> GNN System ready. Press "Load Weights & Graph" to begin.</p>
+                </div>
+
+                <div class="results-container" id="gnn-results-container">
+                  <h3>Prediction Results (Test Set)</h3>
+                  <p id="gnn-metrics-text" style="margin-bottom: 10px;"></p>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Patient Node ID</th>
+                        <th>Probability (Deceased)</th>
+                        <th>Predicted Class</th>
+                        <th>Actual Class</th>
+                        <th>Result</th>
+                      </tr>
+                    </thead>
+                    <tbody id="gnn-results-body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div id="drug-discovery" class="demo-pane">
+              <div class="card-custom">
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                  <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">Drug-Target Interaction (DTI) Prediction</h2>
+                  <p style="color: #888; font-size: 0.95rem;">Affinity (pKd) regression using Deep Neural Networks</p>
+                </div>
+
+                <div class="status-panel">
+                  <div>
+                    <span class="status-indicator" id="dti-status-dot"></span>
+                    <span id="dti-status-text">Waiting to initialize...</span>
+                  </div>
+                  <div id="dti-backend-info" style="color: var(--accent);">Backend: Detecting...</div>
+                </div>
+
+                <div class="demo-controls">
+                  <button id="btn-load-dti" class="btn btn-primary d-flex align-items-center gap-2" onclick="loadDTIModel()">
+                    <i class="fas fa-download"></i> Load Weights & Samples
+                  </button>
+                  <button id="btn-predict-dti" class="btn btn-primary d-flex align-items-center gap-2" onclick="runDTIPrediction()" disabled>
+                    <i class="fas fa-play"></i> Run Forward Pass
+                  </button>
+                </div>
+
+                <div class="terminal" id="dti-terminal">
+                  <p class="info">> DTI System ready. Press "Load Weights & Samples" to begin.</p>
+                </div>
+
+                <div class="results-container" id="dti-results-container">
+                  <h3>Prediction Results (Sample Set)</h3>
+                  <p id="dti-metrics-text" style="margin-bottom: 10px;"></p>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Sample Index</th>
+                        <th>Predicted Affinity (pKd)</th>
+                        <th>Actual Affinity (pKd)</th>
+                        <th>Absolute Error</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dti-results-body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div id="multi-omics" class="demo-pane">
+              <div class="card-custom coming-soon">
+                <i class="fas fa-network-wired"></i>
+                <h2 style="font-family: 'Inter', sans-serif;">Multi-Omics Integration Dashboard</h2>
+                <p>A new visualization and prediction tool is on the way.</p>
+              </div>
+            </div>
+        </div>
+
         <div id="dashboard" class="tool-section" style="display: none;"> 
             <h2>Sequence Analysis Dashboard</h2>
             <div class="card-custom">
@@ -717,7 +956,7 @@
             </div>
         </div>
 
-        <div id="vcf-viewer" class="tool-section">
+        <div id="vcf-viewer" class="tool-section" style="display: none;">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h2>VCF Studio Web</h2>
                 <small id="vcf-count" class="text-muted">Variants: 0</small>
@@ -1077,7 +1316,273 @@ ERK TP53 regulates</textarea>
         if(toolId === 'genome' && !igvBrowser) initIGV(); 
     }
 
+    // --- AI DEMOS LOGIC --- //
+    
+    function switchDemo(demoId, event) {
+      document.querySelectorAll('.demo-pane').forEach(pane => pane.classList.remove('active'));
+      document.querySelectorAll('.demo-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(demoId).classList.add('active');
+      if (event) event.currentTarget.classList.add('active');
+    }
 
+    function logToTerminal(terminalId, message, type="normal") {
+      const terminal = document.getElementById(terminalId);
+      if(!terminal) return;
+      const p = document.createElement('p');
+      p.innerText = `> ${message}`;
+      if (type) p.className = type;
+      terminal.appendChild(p);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function updateStatusUI(prefix, text, state) {
+      const statusText = document.getElementById(`${prefix}-status-text`);
+      const dot = document.getElementById(`${prefix}-status-dot`);
+      if(statusText) statusText.innerText = text;
+      if(dot) {
+        dot.className = 'status-indicator';
+        if (state) dot.classList.add(state);
+      }
+    }
+
+    async function initTF() {
+      try {
+        if (!navigator.gpu) await tf.setBackend('webgl');
+        else await tf.setBackend('webgpu');
+        await tf.ready();
+        
+        const backend = tf.getBackend().toUpperCase();
+        document.getElementById('gnn-backend-info').innerText = `Backend: ${backend}`;
+        document.getElementById('dti-backend-info').innerText = `Backend: ${backend}`;
+      } catch (e) {
+        console.error("TF initialization failed:", e);
+      }
+    }
+    window.addEventListener('DOMContentLoaded', initTF);
+
+    let gnnWeights = null;
+    let gnnData = null;
+
+    async function loadGNNModel() {
+      updateStatusUI("gnn", "Downloading files...", "working");
+      document.getElementById('btn-load-gnn').disabled = true;
+
+      try {
+        logToTerminal("gnn-terminal", "Fetching gnn_model_weights.json...");
+        const wRes = await fetch('model_weights/gnn_model_weights.json');
+        if (!wRes.ok) throw new Error("Could not find gnn_model_weights.json");
+        gnnWeights = await wRes.json();
+
+        logToTerminal("gnn-terminal", "Fetching demo_graph_data.json...");
+        const dRes = await fetch('test_data/demo_graph_data.json');
+        if (!dRes.ok) throw new Error("Could not find demo_graph_data.json");
+        gnnData = await dRes.json();
+
+        logToTerminal("gnn-terminal", `Loaded! Patients: ${gnnData.features.length}`, "info");
+        document.getElementById('btn-predict-gnn').disabled = false;
+        updateStatusUI("gnn", "Ready for prediction", "ready");
+      } catch (e) {
+        logToTerminal("gnn-terminal", e.message, "err");
+        updateStatusUI("gnn", "Error loading files", "");
+        document.getElementById('btn-load-gnn').disabled = false;
+      }
+    }
+
+    function applyGNNLayer(x, adj, weightsObj) {
+      return tf.tidy(() => {
+        const wMsg = tf.tensor(weightsObj.W_msg);
+        const wSelf = tf.tensor(weightsObj.W_self);
+        const bias = tf.tensor(weightsObj.bias);
+        const selfOutput = tf.matMul(x, wSelf);
+        const neighborMessages = tf.matMul(x, wMsg);
+        const aggregated = tf.matMul(adj, neighborMessages);
+        let output = tf.add(selfOutput, aggregated);
+        if (bias.size > 0) output = tf.add(output, bias);
+        return tf.relu(output);
+      });
+    }
+
+    async function runGNNPrediction() {
+      updateStatusUI("gnn", "Running Forward Pass...", "working");
+      document.getElementById('btn-predict-gnn').disabled = true;
+      logToTerminal("gnn-terminal", "Starting WebGPU computation...", "info");
+
+      try {
+        const startTime = performance.now();
+        const layerNames = Object.keys(gnnWeights);
+        const gnnLayers = layerNames.filter(k => k.includes('graph_neural_layer')).sort();
+        const denseLayerName = layerNames.find(k => k.includes('patient_predictions') || k.includes('dense'));
+
+        let x = tf.tensor(gnnData.features);
+        const adj = tf.tensor(gnnData.adjacency_matrix);
+
+        for (let i = 0; i < gnnLayers.length; i++) {
+          x = applyGNNLayer(x, adj, gnnWeights[gnnLayers[i]]);
+        }
+
+        const predictionsTensor = tf.tidy(() => {
+          const w = tf.tensor(gnnWeights[denseLayerName].kernel);
+          const b = tf.tensor(gnnWeights[denseLayerName].bias);
+          return tf.sigmoid(tf.matMul(x, w).add(b));
+        });
+        
+        const predictions = await predictionsTensor.array();
+        logToTerminal("gnn-terminal", `Inference completed in ${(performance.now() - startTime).toFixed(2)} ms.`, "info");
+
+        tf.dispose([x, adj, predictionsTensor]);
+        displayGNNResults(predictions);
+      } catch (e) {
+        logToTerminal("gnn-terminal", `Prediction error: ${e.message}`, "err");
+      }
+      updateStatusUI("gnn", "Task completed", "ready");
+      document.getElementById('btn-predict-gnn').disabled = false;
+    }
+
+    function displayGNNResults(predictions) {
+      const tbody = document.getElementById('gnn-results-body');
+      tbody.innerHTML = ''; 
+      let correctCount = 0;
+      
+      gnnData.test_indices.forEach(idx => {
+        const prob = predictions[idx][0];
+        const predClass = prob > 0.5 ? 1 : 0;
+        const actualClass = gnnData.labels[idx];
+        const isCorrect = predClass === actualClass;
+        if (isCorrect) correctCount++;
+
+        tbody.innerHTML += `
+          <tr>
+            <td>Node ${idx}</td>
+            <td>${prob.toFixed(4)}</td>
+            <td>${predClass === 1 ? 'Deceased (1)' : 'Alive (0)'}</td>
+            <td>${actualClass === 1 ? 'Deceased (1)' : 'Alive (0)'}</td>
+            <td class="${isCorrect ? 'correct' : 'incorrect'}">
+              ${isCorrect ? '<i class="fas fa-check"></i> Correct' : '<i class="fas fa-times"></i> Missed'}
+            </td>
+          </tr>
+        `;
+      });
+
+      const acc = (correctCount / gnnData.test_indices.length) * 100;
+      document.getElementById('gnn-metrics-text').innerHTML = `<strong>Test Accuracy:</strong> ${acc.toFixed(2)}%`;
+      document.getElementById('gnn-results-container').style.display = 'block';
+    }
+
+
+    let dtiWeights = null;
+    let dtiData = null;
+
+    async function loadDTIModel() {
+      updateStatusUI("dti", "Downloading files...", "working");
+      document.getElementById('btn-load-dti').disabled = true;
+
+      try {
+        logToTerminal("dti-terminal", "Fetching dti_model_weights.json...");
+        const wRes = await fetch('model_weights/dti_model_weights.json');
+        if (!wRes.ok) throw new Error("Could not find dti_model_weights.json");
+        dtiWeights = await wRes.json();
+
+        logToTerminal("dti-terminal", "Fetching dti_demo_data.json...");
+        const dRes = await fetch('test_data/dti_demo_data.json');
+        if (!dRes.ok) throw new Error("Could not find dti_demo_data.json");
+        dtiData = await dRes.json();
+
+        logToTerminal("dti-terminal", `Loaded! Test Samples: ${dtiData.labels.length}`, "info");
+        document.getElementById('btn-predict-dti').disabled = false;
+        updateStatusUI("dti", "Ready for prediction", "ready");
+      } catch (e) {
+        logToTerminal("dti-terminal", e.message, "err");
+        updateStatusUI("dti", "Error loading files", "");
+        document.getElementById('btn-load-dti').disabled = false;
+      }
+    }
+
+    function applyDTIBlock(x, linIdx, bnIdx, weights) {
+      return tf.tidy(() => {
+        let w = tf.tensor(weights[`network.${linIdx}.weight`]);
+        let b = tf.tensor(weights[`network.${linIdx}.bias`]);
+        let out = x.matMul(w).add(b);
+
+        if (bnIdx !== null) {
+          let gamma = tf.tensor(weights[`network.${bnIdx}.weight`]);
+          let beta = tf.tensor(weights[`network.${bnIdx}.bias`]);
+          let mean = tf.tensor(weights[`network.${bnIdx}.running_mean`]);
+          let variance = tf.tensor(weights[`network.${bnIdx}.running_var`]);
+          out = tf.batchNorm(out, mean, variance, beta, gamma, 1e-5);
+        }
+
+        return tf.relu(out);
+      });
+    }
+
+    async function runDTIPrediction() {
+      updateStatusUI("dti", "Running Forward Pass...", "working");
+      document.getElementById('btn-predict-dti').disabled = true;
+      logToTerminal("dti-terminal", "Starting WebGPU computation for PyTorch model...", "info");
+
+      try {
+        const startTime = performance.now();
+        let x = tf.tensor(dtiData.features);
+
+        x = applyDTIBlock(x, 0, 1, dtiWeights);
+        x = applyDTIBlock(x, 4, 5, dtiWeights);
+        x = applyDTIBlock(x, 8, 9, dtiWeights);
+        x = applyDTIBlock(x, 12, null, dtiWeights);
+
+        const predictionsTensor = tf.tidy(() => {
+          let w = tf.tensor(dtiWeights[`network.14.weight`]);
+          let b = tf.tensor(dtiWeights[`network.14.bias`]);
+          return x.matMul(w).add(b);
+        });
+
+        const predictions = await predictionsTensor.array();
+        logToTerminal("dti-terminal", `Inference completed in ${(performance.now() - startTime).toFixed(2)} ms.`, "info");
+
+        tf.dispose([x, predictionsTensor]);
+        displayDTIResults(predictions);
+
+      } catch (e) {
+        logToTerminal("dti-terminal", `Prediction error: ${e.message}`, "err");
+      }
+      updateStatusUI("dti", "Task completed", "ready");
+      document.getElementById('btn-predict-dti').disabled = false;
+    }
+
+    function displayDTIResults(predictions) {
+      const tbody = document.getElementById('dti-results-body');
+      tbody.innerHTML = ''; 
+      
+      let totalAbsoluteError = 0;
+      const numSamples = dtiData.labels.length;
+
+      for(let i = 0; i < numSamples; i++) {
+        const pred = predictions[i][0];
+        const actual = dtiData.labels[i];
+        const error = Math.abs(pred - actual);
+        totalAbsoluteError += error;
+
+        let errorClass = "neutral";
+        if (error < 0.5) errorClass = "correct";
+        else if (error > 1.5) errorClass = "incorrect";
+
+        tbody.innerHTML += `
+          <tr>
+            <td>Sample #${i+1}</td>
+            <td>${pred.toFixed(4)}</td>
+            <td>${actual.toFixed(4)}</td>
+            <td class="${errorClass}">${error.toFixed(4)}</td>
+          </tr>
+        `;
+      }
+
+      const mae = totalAbsoluteError / numSamples;
+      document.getElementById('dti-metrics-text').innerHTML = `<strong>Mean Absolute Error (MAE):</strong> ${mae.toFixed(4)}`;
+      document.getElementById('dti-results-container').style.display = 'block';
+    }
+
+
+    // --- VCF, BIOINFORMATICS & OTHERS --- //
+    
     let vcfData = { all: [], filtered: [] };
 
     document.getElementById('vcfFileInput').addEventListener('change', handleVcfUpload);
@@ -1088,12 +1593,10 @@ ERK TP53 regulates</textarea>
         const file = event.target.files[0];
         if (!file) return;
 
-        // Reset
         vcfData.all = [];
         document.querySelector('#vcfTable tbody').innerHTML = '';
         document.getElementById('vcfDetailPanel').textContent = 'Select a variant to view full details...';
         
-        // Show Loader
         document.getElementById('vcf-loader').style.display = 'flex';
 
         const reader = new FileReader();
@@ -1130,15 +1633,12 @@ ERK TP53 regulates</textarea>
 
             vcfData.all = data;
             
-            // Enable controls
             document.getElementById('vcfSearchInput').disabled = false;
             document.getElementById('vcfPassCheckbox').disabled = false;
-            
-            // Hide Loader
             document.getElementById('vcf-loader').style.display = 'none';
             
             applyVcfFilters();
-        }, 100); // Small delay to allow UI to update loader
+        }, 100); 
     }
 
     function applyVcfFilters() {
@@ -1159,13 +1659,13 @@ ERK TP53 regulates</textarea>
     }
 
     function renderVcfTable() {
-        const MAX_RENDER = 500; // Cap for performance
+        const MAX_RENDER = 500; 
         const displayData = vcfData.filtered.slice(0, MAX_RENDER);
         let html = '';
         
         displayData.forEach((v, index) => {
-            let filterColor = v.filter === 'PASS' ? '#22c55e' : 'var(--text)'; // Green or text color
-            if(v.filter !== 'PASS' && v.filter !== '.') filterColor = '#ef4444'; // Red for failures
+            let filterColor = v.filter === 'PASS' ? '#22c55e' : 'var(--text)'; 
+            if(v.filter !== 'PASS' && v.filter !== '.') filterColor = '#ef4444'; 
 
             html += `
                 <tr onclick="selectVariant(${index})">
@@ -1188,7 +1688,6 @@ ERK TP53 regulates</textarea>
     }
 
     function selectVariant(index) {
-        // Handle row selection visual
         const rows = document.querySelectorAll('#vcfTable tbody tr');
         rows.forEach(r => r.classList.remove('selected'));
         if(rows[index]) rows[index].classList.add('selected');
@@ -1300,7 +1799,7 @@ INS,-3.5,0.0001`;
         if(rows[0].toLowerCase().includes('gene')) startIndex = 1;
 
         for(let i = startIndex; i < rows.length; i++) {
-            let cols = rows[i].split(/[\t,]+/); // Handle csv or tsv
+            let cols = rows[i].split(/[\t,]+/); 
             if(cols.length < 3) continue;
             
             let gene = cols[0];
@@ -1313,13 +1812,13 @@ INS,-3.5,0.0001`;
             y.push(negLogP);
             
             if(p < pCutoff && fc > fcCutoff) {
-                colors.push('#ff6b6b'); // Up - Red
+                colors.push('#ff6b6b'); 
                 texts.push(`UP: ${gene}`);
             } else if (p < pCutoff && fc < -fcCutoff) {
-                colors.push('#4ecdc4'); // Down - Blue/Cyan
+                colors.push('#4ecdc4'); 
                 texts.push(`DOWN: ${gene}`);
             } else {
-                colors.push('#777777'); // NS
+                colors.push('#777777'); 
                 texts.push(gene);
             }
         }
@@ -1457,8 +1956,8 @@ Seq B: ${align2}`;
     }
 
     function levenshtein(seq1, seq2) {
-        let n = seq1.length; // Rows
-        let m = seq2.length; // Cols
+        let n = seq1.length; 
+        let m = seq2.length; 
         let matrix = Array(n + 1).fill(null).map(() => Array(m + 1).fill(0));
         
         for (let i = 0; i <= n; i++) matrix[i][0] = i;
@@ -1470,9 +1969,9 @@ Seq B: ${align2}`;
                     matrix[i][j] = matrix[i - 1][j - 1];
                 } else {
                     matrix[i][j] = Math.min(
-                        matrix[i - 1][j - 1] + 1, // substitution
-                        matrix[i][j - 1] + 1,     // insertion
-                        matrix[i - 1][j] + 1      // deletion
+                        matrix[i - 1][j - 1] + 1, 
+                        matrix[i][j - 1] + 1,     
+                        matrix[i - 1][j] + 1      
                     );
                 }
             }
@@ -1485,9 +1984,9 @@ Seq B: ${align2}`;
             let current = matrix[i][j];
             if (i > 0 && j > 0 && seq1[i-1] === seq2[j-1] && matrix[i-1][j-1] === current) {
                 i--; j--;
-            } else if (i > 0 && j > 0 && matrix[i-1][j-1] + 1 === current) { // Sub
+            } else if (i > 0 && j > 0 && matrix[i-1][j-1] + 1 === current) { 
                 i--; j--;
-            } else if (i > 0 && matrix[i-1][j] + 1 === current) { // Del
+            } else if (i > 0 && matrix[i-1][j] + 1 === current) { 
                 i--;
             } else {
                 j--;
@@ -1587,7 +2086,6 @@ Seq B: ${align2}`;
     }
 
     function renderMatrix(matrix, seq1, seq2, path) {
-        // path is array of [i, j] arrays
         const pathSet = new Set(path.map(p => `${p[0]},${p[1]}`));
         
         let html = '<table class="matrix-table">';
@@ -1648,7 +2146,6 @@ Seq B: ${align2}`;
         else alert("Please initialize the browser first!");
     }
     
-    // UPDATED BED Uploader Listener with Auto-Zoom
     document.getElementById('bedFileInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -1658,21 +2155,17 @@ Seq B: ${align2}`;
             return;
         }
 
-        // 1. Load the track (IGV can read the file object directly)
         igvBrowser.loadTrack({
             name: file.name,
             type: 'annotation',
             format: 'bed',
             url: file, 
             displayMode: "EXPANDED",
-            color: "#ff6b6b" // Force a visible color
+            color: "#ff6b6b" 
         });
 
-        // 2. Read first few lines to find where to zoom
-        // If it's a .gz file, we skip auto-zoom because we can't easily peek inside without a library.
         if(!file.name.endsWith('.gz')) {
             const reader = new FileReader();
-            // Read only the first 10KB to save memory
             const blob = file.slice(0, 10000); 
             
             reader.onload = function(event) {
@@ -1681,7 +2174,6 @@ Seq B: ${align2}`;
                 
                 for(let line of lines) {
                     line = line.trim();
-                    // Skip headers or empty lines
                     if(!line || line.startsWith('#') || line.startsWith('track') || line.startsWith('browser')) continue;
                     
                     const parts = line.split(/\s+/);
@@ -1690,17 +2182,15 @@ Seq B: ${align2}`;
                         const start = parts[1];
                         const end = parts[2];
                         
-                        // Valid coordinate check
                         if(!isNaN(start) && !isNaN(end)) {
-                             // Add padding to the view
                             const loc = `${chrom}:${Math.max(0, parseInt(start)-100)}-${parseInt(end)+100}`;
                             
                             console.log("Auto-zooming to:", loc);
                             setTimeout(() => {
                                 igvBrowser.search(loc);
-                            }, 500); // Slight delay to allow track load to register
+                            }, 500); 
                         }
-                        break; // Stop after finding the first feature
+                        break; 
                     }
                 }
             };
@@ -1709,10 +2199,8 @@ Seq B: ${align2}`;
             console.log("Skipping auto-zoom for compressed file.");
         }
 
-        // Clear input to allow re-upload
         e.target.value = '';
     });
-
 
     function runCytoscape() {
         var rawData = document.getElementById('cyData').value.trim();
@@ -1782,11 +2270,10 @@ Seq B: ${align2}`;
         document.getElementById('fastaOutput').value = formatted;
     }
 
-
     runAnalysis();
     loadVolcanoDemo(); 
-    
     initIGV(); 
+
   </script>
 </body>
 </html>
