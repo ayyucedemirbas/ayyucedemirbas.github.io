@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ayyuce Demirbas - Projects</title>
+  <title>Ayyuce Demirbas - Projects & Repositories</title>
+  
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas.github.io/refs/heads/main/logo.png">
+  
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -13,10 +15,12 @@
       --gradient-1: linear-gradient(45deg, #ff6b6b, #4ecdc4);
       --gradient-2: linear-gradient(45deg, #bb86fc, #03dac6);
       --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
       --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
       --bg-dark: #121212;
       --text-dark: #f0f0f0;
       --accent-dark: #bb86fc;
+      
       --bg: var(--bg-dark);
       --text: var(--text-dark);
       --accent: var(--accent-dark);
@@ -28,6 +32,7 @@
       --text: #111111;
       --accent: #0077ff;
       --glass-bg: rgba(0, 0, 0, 0.03);
+      --glass-border: rgba(0, 0, 0, 0.1);
       --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
     }
 
@@ -44,9 +49,13 @@
       line-height: 1.6;
       transition: background-color var(--transition-speed), color var(--transition-speed);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Enhanced Navigation */
+    /* --------------------------------
+       NAVIGATION
+    -------------------------------- */
     nav {
       background-color: rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(15px);
@@ -54,7 +63,7 @@
       top: 0;
       width: 100%;
       z-index: 1000;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .nav-container {
@@ -106,20 +115,72 @@
       opacity: 0.9;
     }
 
+    /* --------------------------------
+       PAGE SWITCHER
+    -------------------------------- */
+    .page-switcher {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.15);
+      border-bottom: 1px solid var(--glass-border);
+      position: sticky;
+      top: 65px;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+
+    .page-switch-btn {
+      background: var(--glass-bg);
+      color: var(--text);
+      border: 1px solid var(--glass-border);
+      padding: 0.6rem 1.6rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .page-switch-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .page-switch-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(187, 134, 252, 0.35);
+    }
+
+    [data-theme="light"] .page-switch-btn.active {
+      box-shadow: 0 4px 20px rgba(0, 119, 255, 0.25);
+    }
+
     .container {
       max-width: 1400px;
       margin: 0 auto;
       padding: 0 2rem;
+      flex: 1;
     }
 
-    .projects-header {
+    /* --------------------------------
+       HEADER & FILTERS
+    -------------------------------- */
+    .section-header {
       text-align: center;
-      padding: 6rem 0 4rem;
+      padding: 4rem 0 3rem;
       position: relative;
       overflow: hidden;
     }
 
-    .projects-header h1 {
+    .section-header h1 {
       font-size: 4rem;
       font-family: 'Playfair Display', serif;
       background: var(--gradient-1);
@@ -129,14 +190,14 @@
       margin-bottom: 1.5rem;
     }
 
-    .projects-header p {
+    .section-header p {
       font-size: 1.2rem;
       max-width: 700px;
       margin: 0 auto;
       opacity: 0.9;
     }
 
-    .project-filters {
+    .filters {
       display: flex;
       gap: 1rem;
       justify-content: center;
@@ -165,6 +226,9 @@
       box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
 
+    /* --------------------------------
+       PROJECT CARDS (Flex Layout)
+    -------------------------------- */
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -178,7 +242,7 @@
       border-radius: 25px;
       padding: 2rem;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--glass-border);
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
@@ -187,7 +251,7 @@
       flex-direction: column;
     }
 
-    .project-card::before {
+    .project-card::before, .repo-card::before {
       content: '';
       position: absolute;
       top: 0;
@@ -200,12 +264,12 @@
       z-index: -1;
     }
 
-    .project-card:hover {
+    .project-card:hover, .repo-card:hover {
       transform: translateY(-10px);
       box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
 
-    .project-card:hover::before {
+    .project-card:hover::before, .repo-card:hover::before {
       opacity: 0.1;
     }
 
@@ -295,6 +359,7 @@
       color: var(--bg);
       font-weight: 500;
       transition: all 0.3s ease;
+      text-decoration: none;
     }
 
     .project-link:hover {
@@ -312,12 +377,139 @@
       color: var(--bg);
     }
 
+    /* --------------------------------
+       REPO CARDS (Block Layout)
+    -------------------------------- */
+    .repos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+
+    .repo-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      display: block; /* Different from project flex layout */
+    }
+
+    .repo-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .repo-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: var(--gradient-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .repo-title {
+      font-size: 1.5rem;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 0.25rem;
+    }
+
+    .repo-description {
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .repo-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-icon {
+      color: var(--accent);
+    }
+
+    .repo-topics {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .topic {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .topic:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .repo-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .repo-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .repo-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .repo-link.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .repo-link.secondary:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
     .hf-logo {
       height: 16px;
       width: auto;
       margin-right: 5px;
     }
 
+    /* --------------------------------
+       THEME SWITCHER & FOOTER
+    -------------------------------- */
     .theme-switcher {
       position: fixed;
       bottom: 1.5rem;
@@ -345,6 +537,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
     }
 
     .theme-switcher button:hover {
@@ -356,9 +549,16 @@
       text-align: center;
       padding: 3rem 0;
       margin-top: 4rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid var(--glass-border);
       font-size: 0.9rem;
       color: #888;
+    }
+
+    /* --------------------------------
+       RESPONSIVE
+    -------------------------------- */
+    @media (max-width: 900px) {
+      .page-switcher { top: 0; position: relative; }
     }
 
     @media (max-width: 768px) {
@@ -368,45 +568,26 @@
         overflow-x: auto;
         padding: 1rem 0;
       }
-
-      nav a {
-        font-size: 0.95rem;
-        padding: 0.6rem 1rem;
-      }
-
-      .projects-header h1 {
-        font-size: 2.5rem;
-      }
-
-      .projects-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .project-image {
-        height: 200px;
-      }
+      nav a { font-size: 0.95rem; padding: 0.6rem 1rem; }
+      .page-switch-btn { font-size: 0.9rem; padding: 0.5rem 1.1rem; }
       
-      .project-links {
-        flex-direction: column;
-      }
-      
-      .project-link {
-        width: 100%;
-        justify-content: center;
-      }
+      .section-header h1 { font-size: 2.5rem; }
+      .projects-grid, .repos-grid { grid-template-columns: 1fr; }
+      .project-image { height: 200px; }
+      .project-links, .repo-links { flex-direction: column; }
+      .project-link, .repo-link { width: 100%; justify-content: center; }
     }
   </style>
 </head>
 <body>
+
   <nav>
     <div class="nav-container">
       <ul>
         <li><a href="index.html">About</a></li>
         <li><a href="blog.html">Blog</a></li>
         <li><a href="publications.html">Publications</a></li>
-        <li><a href="projects.html"aria-current="page">Projects</a></li>
-        <li><a href="repositories.html">Repositories</a></li>
-         <!-- <li><a href="demos.html">Demos</a></li> -->
+        <li><a href="projects.html" aria-current="page">Projects & Repositories</a></li>
         <li><a href="teaching.html">Teaching</a></li>
         <li><a href="people.html">People</a></li>
         <li><a href="bioinformatics-tools.html">Demos & BioToolbox</a></li>
@@ -415,647 +596,1007 @@
     </div>
   </nav>
 
-  <div class="container">
-    <header class="projects-header">
-      <h1>Projects</h1>
-      <p>My projects</p>
-    </header>
+  <div class="page-switcher">
+    <button class="page-switch-btn active" onclick="switchPage('projects', this)">
+      <i class="fa-solid fa-briefcase"></i> Projects
+    </button>
+    <button class="page-switch-btn" onclick="switchPage('repositories', this)">
+      <i class="fa-solid fa-code-branch"></i> Repositories
+    </button>
+  </div>
 
-    <div class="project-filters">
-      <button class="filter-btn active" data-filter="all">All Projects</button>
-      <button class="filter-btn" data-filter="ai">AI Research</button>
-      <button class="filter-btn" data-filter="medical">Medical Imaging</button>
-      <button class="filter-btn" data-filter="opensource">Open Source</button>
-      <button class="filter-btn" data-filter="aitool">AI Tools</button>
+
+  <div id="page-projects">
+    <div class="container">
+      <header class="section-header">
+        <h1>Projects</h1>
+        <p>My projects</p>
+      </header>
+
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All Projects</button>
+        <button class="filter-btn" data-filter="ai">AI Research</button>
+        <button class="filter-btn" data-filter="medical">Medical Imaging</button>
+        <button class="filter-btn" data-filter="opensource">Open Source</button>
+        <button class="filter-btn" data-filter="aitool">AI Tools</button>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/ch.png" alt="ChIP-Seq" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">ChIP-Seq</h3>
+            <p class="project-description">Downloading and analyzing ChIP-seq data.</p>
+            <div class="project-tags">
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/ChIP-Seq" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/ChIP-Seq/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/wsi_to_st.png" alt="WSI to ST" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">WSI to ST</h3>
+            <p class="project-description">Predicting Spatial Transcriptomics (ST) using Whole Slide Images (WSI).</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/WSI_to_ST" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/WSI_to_ST/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/gc.png" alt="Genome Comparison" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">Genome Comparison</h3>
+            <p class="project-description">Genetic differences between the Cockatiel (Nymphicus hollandicus) and a biological control species, the Chicken (Gallus gallus).</p>
+            <div class="project-tags">
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/Genome_Comparison" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/Genome_Comparison/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/mpi.png" alt="A Custom MPI" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">A Custom MPI</h3>
+            <p class="project-description">A Custom Message Passing Interface (MPI) with Remote Direct Memory Access (RDMA).</p>
+            <div class="project-tags">
+              <span class="project-tag">RDMA</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/share_RAM" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/share_RAM/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/wsi.png" alt="WSI Preprocessing" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">WSI Preprocessing</h3>
+            <p class="project-description">WSI Data Preprocessing Pipeline</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+              <span class="project-tag">Image Processing</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/wsi_preprocessing" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/wsi_preprocessing/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/dti.png" alt="Drug-Target Interaction" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">Drug-Target Interaction</h3>
+            <p class="project-description">Affinity (pKd) regression using Deep Neural Networks</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+              <span class="project-tag">Drug-Target Interaction</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/Drug-Target_Interaction" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/Drug-Target_Interaction/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/DermGemma.png" alt="DermGemma" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">DermGemma</h3>
+            <p class="project-description">A multi-agent, multimodal RAG, AI dermatological assistant.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+              <span class="project-tag">Agentic AI</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/DermGemma" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/medgemma-dermatology-isic2019-full-1ep" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/DermGemma/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/scAnalyzer.png" alt="scAnalyzer" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">scAnalyzer</h3>
+            <p class="project-description">A Python toolkit for single-cell RNA sequencing (scRNA-seq) analysis.</p>
+            <div class="project-tags">
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/scAnalyzer" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/scAnalyzer/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/ig.png" alt="BRCA Integrated Gradients" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">BRCA Integrated Gradients</h3>
+            <p class="project-description">This 5-layer model predicts five clinical outcomes: histological, vital, and receptor status by concatenating 1,936 multi-omics features per patient node and using an LSTM unit to prevent GCN oversmoothing. Integrated Gradients provide explainability.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/BRCA_Integrated_Gradients" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/BRCA_Integrated_Gradients/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/genept.png" alt="Single cell RNA sequencing" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">Single cell RNA sequencing</h3>
+            <p class="project-description">Single cell RNA sequencing using GenePT.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/GenePT_scRNA-seq" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/GenePT_scRNA-seq/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/kegg.png" alt="KEGG Pathway Enrichment Analysis" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">KEGG Pathway Enrichment Analysis</h3>
+            <p class="project-description">KEGG Pathway Enrichment Analysis using R and clusterProfiler.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/KEGG_Pathway_Enrichment_Analysis" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/KEGG_Pathway_Enrichment_Analysis/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/capsulenet.png" alt="Histopathologic CapsuleNet" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">Histopathologic CapsuleNet</h3>
+            <p class="project-description">Histopathologic CapsuleNet for cancer classification.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/Histopathologic_CapsuleNet" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/Histopathologic_CapsuleNet/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/monalisa.png" alt="Genetic Algorithm Mona Lisa" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">Genetic Algorithm Mona Lisa</h3>
+            <p class="project-description">This Python script implements a genetic algorithm that recreates a target image (the Mona Lisa) by iteratively evolving a population of 500 semi-transparent circles through processes of selection, crossover, and mutation to minimize the visual difference between the generated art and the original.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/genetic_algorithm_Mona_Lisa" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/genetic_algorithm_Mona_Lisa/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/hmo.png" alt="Multimodal Histopathology & Multi-omics Fusion" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">Multimodal Histopathology & Multi-omics Fusion</h3>
+            <p class="project-description">A multimodal model that combines histopathology image data and multi-omics data to classify breast cancer subtypes. It uses mamba, GNNs, and a pretrained ConvNext model.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/histopathology_multi-omics" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/histopathology_multi-omics/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/hinn.png" alt="HINN" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">HINN PyTorch implementation</h3>
+            <p class="project-description">PyTorch implementation of the paper: HINN: Hierarchical Input Neural Network identifies multi-omics biomarker for cognitive decline.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/HINN_unofficial_paper_implementation" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/HINN_unofficial_paper_implementation/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/igcn.png" alt="IGCN Optimized" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">IGCN Optimized</h3>
+            <p class="project-description">Improved the IGCN paper’s performance on the TCGA-BRCA dataset by replacing threshold-based adjacency with k-nearest neighbors and implementing k-fold cross-validation. Reduced runtime from 206 to 60 seconds.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/IGCN_optimized" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/IGCN" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/IGCN_optimized/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/brca_ds.png" alt="BRCA-multi-omics" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">BRCA-multi-omics</h3>
+            <p class="project-description">A graph neural network (GNN) pipeline for binary survival classification.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Optimization</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/multi_omics_BRCA_TCGA" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/multi_omics_BRCA_TCGA/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai">
+          <img src="projects_content/chestblip.png" alt="ChestBLIP" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">ChestBLIP</h3>
+            <p class="project-description">Fine-tuned the BLIP model on MIMIC-CXR dataset.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Medical Imaging</span>
+              <span class="project-tag">Optimization</span>
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
+                <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub
+              </a>
+              <a href="#" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-type="ai medical">
+          <img src="projects_content/segdicom.png" alt="SegDICOM" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">SegDICOM</h3>
+            <p class="project-description">A web-based application for manual segmentation of DICOM medical images. Upload files, annotate via brush, assign labels, and export segmentation maps.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Tools</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/SegDICOM" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://github.com/ayyucedemirbas/SegDICOM/blob/main/README.md" class="project-link secondary">
+                <i class="fas fa-book-open"></i> Docs
+              </a>
+            </div>
+          </div>
+        </article>
+        
+        <article class="project-card" data-type="ai medical">
+          <img src="projects_content/sac.png" alt="Medical Vision Transformer" class="project-image">
+          <div class="project-content">
+            <h3 class="project-title">Spatial-attention ConvMixer</h3>
+            <p class="project-description">A new technique for gastrointestinal image classification.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI Research</span>
+              <span class="project-tag">Medical Imaging</span>
+              <span class="project-tag">TensorFlow</span>
+              <span class="project-tag">Open Source</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/ayyucedemirbas/Spatial-Attention-ConvMixer" class="project-link">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="https://link.springer.com/article/10.1007/s13755-024-00290-x" class="project-link secondary">
+                <i class="fas fa-file-lines"></i> Paper
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
     </div>
-
-    <div class="projects-grid" id="projects-container">
-
+  </div>
 
 
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/ch.png" 
-             alt="ChIP-Seq" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">ChIP-Seq</h3>
-          <p class="project-description">
-            Downloading and analyzing ChIP-seq data.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">Open Source</span>
+  <div id="page-repositories" style="display: none;">
+    <div class="container">
+      <header class="section-header">
+        <h1>Code Repositories</h1>
+        <p>Open-source implementations, research code, and tools for the machine learning community</p>
+      </header>
+
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All Repos</button>
+        <button class="filter-btn" data-filter="research">Research</button>
+        <button class="filter-btn" data-filter="library">Libraries</button>
+        <button class="filter-btn" data-filter="tool">Tools</button>
+      </div>
+
+      <div class="repos-grid">
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">ChIP-Seq</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/ChIP-Seq" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/ChIP-Seq/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">Downloading and analyzing ChIP-seq data.</p>
+          <div class="repo-topics"><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/ChIP-Seq" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/wsi_to_st.png" 
-             alt="WSI to ST" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">WSI to ST</h3>
-          <p class="project-description">
-            Predicting Spatial Transcriptomics (ST) using Whole Slide Images (WSI).
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-image"></i></div>
+            <div>
+              <h3 class="repo-title">WSI to ST</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/WSI_to_ST" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/WSI_to_ST/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">Predicting Spatial Transcriptomics (ST) using Whole Slide Images (WSI).</p>
+          <div class="repo-topics"><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/WSI_to_ST" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/gc.png" 
-             alt="Genome Comparison" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Genome Comparison</h3>
-          <p class="project-description">
-            Genetic differences between the Cockatiel (Nymphicus hollandicus) and a biological control species, the Chicken (Gallus gallus).
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">Genome Comparison</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/Genome_Comparison" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/Genome_Comparison/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">Genetic differences between the Cockatiel and a biological control species, the Chicken.</p>
+          <div class="repo-topics"><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/Genome_Comparison" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/mpi.png" 
-             alt="A Custom MPI" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">A Custom MPI</h3>
-          <p class="project-description">
-            A Custom Message Passing Interface (MPI) with Remote Direct Memory Access (RDMA).
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">RDMA</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-memory"></i></div>
+            <div>
+              <h3 class="repo-title">A Custom MPI</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>1</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/share_RAM" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/share_RAM/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">A Custom Message Passing Interface (MPI) with Remote Direct Memory Access (RDMA).</p>
+          <div class="repo-topics"><span class="topic">MPI</span><span class="topic">RDMA</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/share_RAM" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/wsi.png" 
-             alt="WSI Preprocessing" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">WSI Preprocessing</h3>
-          <p class="project-description">
-            WSI Data Preprocessing Pipeline
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
-            <span class="project-tag">Image Processing</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-image"></i></div>
+            <div>
+              <h3 class="repo-title">WSI Preprocessing</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/wsi_preprocessing" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/wsi_preprocessing/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">WSI Data Preprocessing Pipeline.</p>
+          <div class="repo-topics"><span class="topic">Histopathology</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/wsi_preprocessing" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/dti.png" 
-             alt="Drug-Target Interaction" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Drug-Target Interaction</h3>
-          <p class="project-description">
-            Affinity (pKd) regression using Deep Neural Networks
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
-            <span class="project-tag">Drug-Target Interaction</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-capsules"></i></div>
+            <div>
+              <h3 class="repo-title">Drug-Target Interaction</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/Drug-Target_Interaction" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/Drug-Target_Interaction/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">Affinity (pKd) regression using Deep Neural Networks.</p>
+          <div class="repo-topics"><span class="topic">Bioinformatics</span><span class="topic">Drug-Target Interaction</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/Drug-Target_Interaction" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/DermGemma.png" 
-             alt="DermGemma" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">DermGemma</h3>
-          <p class="project-description">
-            A multi-agent, multimodal RAG, AI dermatological assistant.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
-            <span class="project-tag">Agentic AI</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fa-solid fa-robot"></i></div>
+            <div>
+              <h3 class="repo-title">DermGemma</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>1</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/DermGemma" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/medgemma-dermatology-isic2019-full-1ep" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/DermGemma/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">A multi-agent, multimodal RAG, AI dermatological assistant.</p>
+          <div class="repo-topics"><span class="topic">Bioinformatics</span><span class="topic">RAG</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/DermGemma" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/scAnalyzer.png" 
-             alt="scAnalyzer" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">scAnalyzer</h3>
-          <p class="project-description">
-            A Python toolkit for single-cell RNA sequencing (scRNA-seq) analysis.
-          <div class="project-tags">
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">BRCA Integrated Gradients</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/scAnalyzer" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/scAnalyzer/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">A model to predict histological, vital, and receptor status by concatenating 1,936 multi-omics features per patient node.</p>
+          <div class="repo-topics"><span class="topic">Bioinformatics</span><span class="topic">PyTorch</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/BRCA_Integrated_Gradients" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/ig.png" 
-             alt="BRCA Integrated Gradients" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">BRCA Integrated Gradients</h3>
-          <p class="project-description">
-            This 5-layer model predicts five clinical outcomes: histological, vital, and receptor status by concatenating 1,936 multi-omics features per patient node and using an LSTM unit to prevent GCN oversmoothing. Integrated Gradients provide explainability.
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">scAnalyzer</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/BRCA_Integrated_Gradients" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/BRCA_Integrated_Gradients/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">A Python toolkit for single-cell RNA sequencing (scRNA-seq) analysis.</p>
+          <div class="repo-topics"><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/scAnalyzer" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/genept.png" 
-             alt="Single cell RNA sequencing" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Single cell RNA sequencing</h3>
-          <p class="project-description">
-            Single cell RNA sequencing using GenePT.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">FASTQ k-merization</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/GenePT_scRNA-seq" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/GenePT_scRNA-seq/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">FASTQ k-merization</p>
+          <div class="repo-topics"><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/FASTQ_k-merization" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/kegg.png" 
-             alt="KEGG Pathway Enrichment Analysis" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">KEGG Pathway Enrichment Analysis</h3>
-          <p class="project-description">
-            KEGG Pathway Enrichment Analysis using R and clusterProfiler.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">RNA Sequence Data Normalization</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/KEGG_Pathway_Enrichment_Analysis" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/KEGG_Pathway_Enrichment_Analysis/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">RNA sequence data normalization.</p>
+          <div class="repo-topics"><span class="topic">R</span><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/RNA-seq_data_normalization" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/capsulenet.png" 
-             alt="Histopathologic CapsuleNet" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Histopathologic CapsuleNet</h3>
-          <p class="project-description">
-            Histopathologic CapsuleNet for cancer classification.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">Exon Junction Analyzer</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/Histopathologic_CapsuleNet" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/Histopathologic_CapsuleNet/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">Exon Junction Analyzer.</p>
+          <div class="repo-topics">
+            <span class="topic">PyTorch</span><span class="topic">Bioinformatics</span><span class="topic">STAR</span>
           </div>
-        </div>
-      </article>
-
-
-       <article class="project-card" data-type="ai">
-        <img src="projects_content/monalisa.png" 
-             alt="Genetic Algorithm Mona Lisa" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Genetic Algorithm Mona Lisa</h3>
-          <p class="project-description">
-            This Python script implements a genetic algorithm that recreates a target image (the Mona Lisa) by iteratively evolving a population of 500 semi-transparent circles through processes of selection, crossover, and mutation to minimize the visual difference between the generated art and the original.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/ExonJunctionAnalyzer" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/genetic_algorithm_Mona_Lisa" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/genetic_algorithm_Mona_Lisa/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
-          </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/hmo.png" 
-             alt="Multimodal Histopathology & Multi-omics Fusion" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Multimodal Histopathology & Multi-omics Fusion</h3>
-          <p class="project-description">
-            A multimodal model that combines histopathology image data and multi-omics data to classify breast cancer subtypes. It uses mamba, GNNs, and a pretrained ConvNext model.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">Single cell RNA sequencing</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>1</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/histopathology_multi-omics" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/histopathology_multi-omics/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">Single cell RNA sequencing using GenePT.</p>
+          <div class="repo-topics"><span class="topic">PyTorch</span><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/GenePT_scRNA-seq" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/hinn.png" 
-             alt="HINN" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">HINN PyTorch implementation</h3>
-          <p class="project-description">
-            PyTorch implementation of the paper: HINN: Hierarchical Input Neural Network identifies multi-omics biomarker for cognitive decline
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">KEGG Pathway Enrichment Analysis</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/HINN_unofficial_paper_implementation" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/HINN_unofficial_paper_implementation/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">KEGG Pathway Enrichment Analysis using R and clusterProfiler.</p>
+          <div class="repo-topics"><span class="topic">R</span><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/KEGG_Pathway_Enrichment_Analysis" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/igcn.png" 
-             alt="IGCN Optimized" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">IGCN Optimized</h3>
-          <p class="project-description">
-            I improved the IGCN paper’s performance on the TCGA-BRCA dataset by replacing threshold-based adjacency with k-nearest neighbors (top-k cosine similarity) and implementing k-fold cross-validation. By streamlining the code, replacing cal_adj_mat_parameter calls with a single cosine_adj function call from utils.py, I increased accuracy to 0.808 (from 0.754), weighted F1 to 0.807 (from 0.767), macro F1 to 0.773 (from 0.734), and MCC to 0.719 (from 0.655). These optimizations also reduced runtime from 206 to 60 seconds, achieving a 3.4x speedup.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-image"></i></div>
+            <div>
+              <h3 class="repo-title">Histopathologic CapsuleNet</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/IGCN_optimized" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/IGCN" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/IGCN_optimized/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">Histopathologic CapsuleNet for cancer classification.</p>
+          <div class="repo-topics"><span class="topic">PyTorch</span><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/Histopathologic_CapsuleNet" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/brca_ds.png" 
-             alt="BRCA-multi-omics" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">BRCA-multi-omics</h3>
-          <p class="project-description">
-            A graph neural network (GNN) pipeline for binary survival classification.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Optimization</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-project-diagram"></i></div>
+            <div>
+              <h3 class="repo-title">Genetic Algorithm Mona Lisa</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/multi_omics_BRCA_TCGA" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="https://github.com/ayyucedemirbas/multi_omics_BRCA_TCGA/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">This Python script implements a genetic algorithm that recreates a target image (the Mona Lisa) by iteratively evolving a population of 500 semi-transparent circles.</p>
+          <div class="repo-topics"><span class="topic">PyTorch</span><span class="topic">Bioinformatics</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/genetic_algorithm_Mona_Lisa" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="project-card" data-type="ai">
-        <img src="projects_content/chestblip.png" 
-             alt="ChestBLIP" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">ChestBLIP</h3>
-          <p class="project-description">
-            Fine-tuned the BLIP model on MIMIC-CXR dataset.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Medical Imaging</span>
-            <span class="project-tag">Optimization</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">BRCA-multi-omics</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>1</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="#" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://huggingface.co/ayyuce/" target="_blank" class="project-link secondary">
-              <img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face">
-              Model Hub
-            </a>
-            <a href="#" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">This Jupyter Notebook implements a graph neural network (GNN) pipeline for binary survival classification using multi-omics breast cancer data.</p>
+          <div class="repo-topics"><span class="topic">TensorFlow</span><span class="topic">Medical AI</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/multi_omics_BRCA_TCGA" class="repo-link"><i class="fab fa-github"></i> View Code</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-
-
-      <article class="project-card" data-type="ai medical">
-        <img src="projects_content/segdicom.png" 
-             alt="SegDICOM" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">SegDICOM</h3>
-          <p class="project-description">
-            A web-based application for manual segmentation of DICOM medical images. It allows users to upload DICOM files, navigate slice-by-slice, annotate regions of interest via a brush or erase tool, assign labels, and export segmentation maps in DICOM-SEG format. Annotations are also logged in a CSV for easy tracking and further analysis.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Tools</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="research">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-dna"></i></div>
+            <div>
+              <h3 class="repo-title">NeoProtein-GPT</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/SegDICOM" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            
-            <a href="https://github.com/ayyucedemirbas/SegDICOM/blob/main/README.md" class="project-link secondary">
-              <i class="fas fa-book-open"></i>
-              Docs
-            </a>
+          <p class="repo-description">Design novel protein sequences with unique binding sites using GPT-2.</p>
+          <div class="repo-topics"><span class="topic">PyTorch</span><span class="topic">Medical AI</span><span class="topic">Transformers</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/Protein-GPT" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+            <a href="https://huggingface.co/spaces/ayyuce/NeoProtein-GPT" target="_blank" class="repo-link secondary"><img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Space</a>
           </div>
-        </div>
-      </article>
+        </article>
 
-      
-      <article class="project-card" data-type="ai medical">
-        <img src="projects_content/sac.png" 
-             alt="Medical Vision Transformer" 
-             class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Spatial-attention ConvMixer</h3>
-          <p class="project-description">
-            A new technique for gastrointestinal image classification.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">AI Research</span>
-            <span class="project-tag">Medical Imaging</span>
-            <span class="project-tag">TensorFlow</span>
-            <span class="project-tag">Open Source</span>
+        <article class="repo-card" data-type="library">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-brain"></i></div>
+            <div>
+              <h3 class="repo-title">DINOv2 Nuclei Segmentation</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>1</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/ayyucedemirbas/Spatial-Attention-ConvMixer" class="project-link">
-              <i class="fab fa-github"></i>
-              GitHub
-            </a>
-            <a href="https://link.springer.com/article/10.1007/s13755-024-00290-x" class="project-link secondary">
-              <i class="fas fa-file-lines"></i>
-              Paper
-            </a>
+          <p class="repo-description">DINOv2 Nuclei Segmentation.</p>
+          <div class="repo-topics"><span class="topic">Python</span><span class="topic">Medical AI</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/dinov2_nuclei_seg" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+            <a href="https://huggingface.co/ayyuce/dinov2-nuclei-segmentation" target="_blank" class="repo-link secondary"><img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub</a>
           </div>
-        </div>
-      </article>
+        </article>
 
+        <article class="repo-card" data-type="tool">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fa-solid fa-x-ray"></i></div>
+            <div>
+              <h3 class="repo-title">MAIRA 2</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>1</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="repo-description">A Gradio app for Microsoft's SOTA grounded radiology report generation model.</p>
+          <div class="repo-topics"><span class="topic">Visualization</span><span class="topic">Medical AI</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/MAIRA-2" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+            <a href="https://huggingface.co/spaces/ayyuce/MAIRA-2" target="_blank" class="repo-link secondary"><img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Space</a>
+          </div>
+        </article>
 
+        <article class="repo-card" data-type="tool">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-language"></i></div>
+            <div>
+              <h3 class="repo-title">SmolGRPO-135M</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>4</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="repo-description">Fine tuned SmolLM-135M-Instruct using Group Relative Policy Optimization.</p>
+          <div class="repo-topics"><span class="topic">LLMs</span><span class="topic">GRPO</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/Group-Relative-Policy-Optimization" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+            <a href="https://huggingface.co/spaces/ayyuce/SmolGRPO-135M2" target="_blank" class="repo-link secondary"><img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Space</a>
+          </div>
+        </article>
 
-      
+        <article class="repo-card" data-type="tool">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-language"></i></div>
+            <div>
+              <h3 class="repo-title">Llama 2 Instruction Tuning</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>4</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="repo-description">Fine tuned Llama 2 on a custom product review sentiment dataset with instructions.</p>
+          <div class="repo-topics"><span class="topic">LLMs</span><span class="topic">Instruction Tuning</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/llama2_instruction_tuning" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+            <a href="https://huggingface.co/datasets/ayyuce/amazon-product-review-sentiment-dataset" target="_blank" class="repo-link secondary"><img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Dataset</a>
+          </div>
+        </article>
 
+        <article class="repo-card" data-type="tool">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fa-solid fa-x-ray"></i></div>
+            <div>
+              <h3 class="repo-title">TotalSegmentator</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>1</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="repo-description">A Gradio app for TotalSegmentator.</p>
+          <div class="repo-topics"><span class="topic">Visualization</span><span class="topic">Medical AI</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/TotalSegmentator" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+            <a href="https://huggingface.co/spaces/ayyuce/TotalSegmentator" target="_blank" class="repo-link secondary"><img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Space</a>
+          </div>
+        </article>
+
+        <article class="repo-card" data-type="tool">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fa-solid fa-x-ray"></i></div>
+            <div>
+              <h3 class="repo-title">SAM Radiology</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="repo-description">Fine-tuned the model.</p>
+          <div class="repo-topics"><span class="topic">Medical AI</span><span class="topic">Python</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/sam2rad" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+            <a href="https://huggingface.co/ayyuce/sam2rad" target="_blank" class="repo-link secondary"><img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Model Hub</a>
+          </div>
+        </article>
+
+        <article class="repo-card" data-type="tool">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-toolbox"></i></div>
+            <div>
+              <h3 class="repo-title">SegDICOM</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>4</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="repo-description">A DICOM annotation tool for 3D segmentation.</p>
+          <div class="repo-topics"><span class="topic">Medical AI</span><span class="topic">Visualization</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/SegDICOM" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+          </div>
+        </article>
+
+        <article class="repo-card" data-type="tool">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-microphone"></i></div>
+            <div>
+              <h3 class="repo-title">Speech Emotion Classification</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>2</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="repo-description">Speech emotion classification with multi-head self-attention.</p>
+          <div class="repo-topics"><span class="topic">Audio classification</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/speech_emotion_classification_multi-head_self-attention" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+          </div>
+        </article>
+
+        <article class="repo-card" data-type="tool">
+          <div class="repo-header">
+            <div class="repo-icon"><i class="fas fa-image"></i></div>
+            <div>
+              <h3 class="repo-title">SigLIP 2 Zero-shot</h3>
+              <div class="repo-stats">
+                <div class="stat-item"><i class="fas fa-star stat-icon"></i><span>0</span></div>
+                <div class="stat-item"><i class="fas fa-code-branch stat-icon"></i><span>0</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="repo-description">A Gradio app for SigLIP 2 Zero-shot image classification.</p>
+          <div class="repo-topics"><span class="topic">Python</span></div>
+          <div class="repo-links">
+            <a href="https://github.com/ayyucedemirbas/SigLIP-2_zero_shot_classification/tree/main" class="repo-link"><i class="fab fa-github"></i> View Code</a>
+            <a href="https://huggingface.co/spaces/ayyuce/SigLIP_2_zero-shot_image_classification" target="_blank" class="repo-link secondary"><img src="https://huggingface.co/front/assets/huggingface_logo.svg" class="hf-logo" alt="Hugging Face"> Space</a>
+          </div>
+        </article>
+
+      </div>
     </div>
   </div>
 
@@ -1070,7 +1611,7 @@
   </footer>
 
   <script>
-    // Theme switching
+    // Theme switching logic
     function switchTheme(theme) {
       if (theme === "system") {
         document.documentElement.removeAttribute("data-theme");
@@ -1080,27 +1621,44 @@
       localStorage.setItem("preferred-theme", theme);
     }
 
-    // Initialize theme
+    // Initialize theme on load
     document.addEventListener("DOMContentLoaded", () => {
       const savedTheme = localStorage.getItem("preferred-theme") || "dark";
       document.documentElement.setAttribute("data-theme", savedTheme);
       
-      // Add filter functionality
-      const filterButtons = document.querySelectorAll('.filter-btn');
-      const projectCards = document.querySelectorAll('.project-card');
+      /* --- Setup Filters for Projects --- */
+      const projectFilterButtons = document.querySelectorAll('#page-projects .filter-btn');
+      const projectCards = document.querySelectorAll('#page-projects .project-card');
       
-      filterButtons.forEach(button => {
+      projectFilterButtons.forEach(button => {
         button.addEventListener('click', () => {
-          // Update active button
-          filterButtons.forEach(btn => btn.classList.remove('active'));
+          projectFilterButtons.forEach(btn => btn.classList.remove('active'));
           button.classList.add('active');
-          
           const filter = button.dataset.filter;
           
-          // Filter projects
           projectCards.forEach(card => {
             if (filter === 'all' || card.dataset.type.includes(filter)) {
-              card.style.display = 'flex';
+              card.style.display = 'flex'; // maintain flex layout for projects
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      /* --- Setup Filters for Repositories --- */
+      const repoFilterButtons = document.querySelectorAll('#page-repositories .filter-btn');
+      const repoCards = document.querySelectorAll('#page-repositories .repo-card');
+      
+      repoFilterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          repoFilterButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          const filter = button.dataset.filter;
+          
+          repoCards.forEach(card => {
+            if (filter === 'all' || card.dataset.type.includes(filter)) {
+              card.style.display = 'block'; // maintain block layout for repos
             } else {
               card.style.display = 'none';
             }
@@ -1108,6 +1666,27 @@
         });
       });
     });
+
+    /* ============================================================
+       PAGE SWITCHER (Projects <-> Repositories)
+    ============================================================ */
+    function switchPage(pageId, btn) {
+      document.querySelectorAll('.page-switch-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const projectsPage = document.getElementById('page-projects');
+      const reposPage = document.getElementById('page-repositories');
+
+      if (pageId === 'projects') {
+        projectsPage.style.display = 'block';
+        reposPage.style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        projectsPage.style.display = 'none';
+        reposPage.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
   </script>
 </body>
 </html>
