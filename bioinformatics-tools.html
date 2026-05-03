@@ -828,6 +828,10 @@
     <button class="page-switch-btn" onclick="switchPage('demos', this)">
       <i class="fa-solid fa-play-circle"></i> Interactive Demos
     </button>
+
+    <button class="page-switch-btn" onclick="switchPage('intel4004', this)">
+    <i class="fa-solid fa-microchip"></i> Intel 4004 Simulator
+</button>
   </div>
 
   <!-- ============================================================
@@ -1209,6 +1213,7 @@ ERK TP53 regulates</textarea>
               </div>
           </div>
 
+
       </div><!-- .tool-content -->
     </div><!-- .tool-layout -->
   </div><!-- #page-biotoolbox -->
@@ -1344,6 +1349,15 @@ ERK TP53 regulates</textarea>
   </div><!-- #page-demos -->
 
 
+  <div id="page-intel4004" style="display: none; flex: 1;">
+    <iframe 
+    src="intel_4004_simulator.html" 
+    style="width: 100%; height: calc(100vh - 145px); border: none; display: block;"
+    title="Intel 4004 Simulator">
+</iframe>
+</div>
+
+
   <div class="theme-switcher" id="themeSwitcher">
     <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
     <button onclick="switchTheme('dark')"><i class="fas fa-moon"></i> Dark</button>
@@ -1377,20 +1391,21 @@ ERK TP53 regulates</textarea>
        PAGE SWITCHER (BioToolbox <-> Demos)
     ============================================================ */
     function switchPage(pageId, btn) {
-      document.querySelectorAll('.page-switch-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    document.querySelectorAll('.page-switch-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 
-      const bioPage = document.getElementById('page-biotoolbox');
-      const demosPage = document.getElementById('page-demos');
+    document.getElementById('page-biotoolbox').style.display = 'none';
+    document.getElementById('page-demos').style.display = 'none';
+    document.getElementById('page-intel4004').style.display = 'none';
 
-      if (pageId === 'biotoolbox') {
-        bioPage.style.display = 'flex';
-        demosPage.style.display = 'none';
-      } else {
-        bioPage.style.display = 'none';
-        demosPage.style.display = 'block';
-      }
+    if (pageId === 'biotoolbox') {
+        document.getElementById('page-biotoolbox').style.display = 'flex';
+    } else if (pageId === 'demos') {
+        document.getElementById('page-demos').style.display = 'block';
+    } else if (pageId === 'intel4004') {
+        document.getElementById('page-intel4004').style.display = 'block';
     }
+}
 
     /* ============================================================
        BIOTOOLBOX: TOOL NAVIGATION
