@@ -202,12 +202,42 @@
       gap: 1.5rem;
     }
 
-    .hero-img img {
-      border-radius: 8px;
+    /* --------------------------------
+       THUGLIFE PHOTO WRAPPER
+    -------------------------------- */
+    .photo-wrapper {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
       max-width: 300px;
+      width: 100%;
+    }
+
+    .photo-wrapper img.main-photo {
+      border-radius: 8px;
       width: 100%;
       object-fit: cover;
       box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      display: block;
+      user-select: none;
+    }
+
+    .thuglife-glasses {
+      position: absolute;
+      /* Start above the image */
+      top: -40%;
+      left: 33%;
+      transform: translateX(-50%);
+      width: 60%;
+      pointer-events: none;
+      opacity: 0;
+      transition: top 0.9s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.15s ease;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+    }
+
+    .thuglife-glasses.dropped {
+      top: 22%;
+      opacity: 1;
     }
 
     /* Social icons */
@@ -236,36 +266,32 @@
     .gr_grid_container {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px; /* Increased gap for better spacing */
+      gap: 12px;
       margin-top: 15px;
     }
     
-    /* Updated book container styles */
     .gr_grid_book_container {
-      flex: 0 0 70px; /* Increased width */
-      height: auto; /* Height now adjusts automatically */
-      overflow: visible; /* Changed to visible to show entire image */
+      flex: 0 0 70px;
+      height: auto;
+      overflow: visible;
       position: relative;
     }
     
-    /* New styles for book images */
     .gr_grid_book_container img {
-      width: 70px; /* Fixed width */
-      height: 105px; /* Fixed height for consistency */
-      object-fit: contain; /* Show entire cover without cropping */
+      width: 70px;
+      height: 105px;
+      object-fit: contain;
       border-radius: 4px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.2);
       transition: all 0.3s ease;
     }
     
-    /* Hover effect for book images */
     .gr_grid_book_container img:hover {
       transform: scale(1.05);
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       z-index: 10;
     }
     
-    /* Book title tooltip */
     .gr_grid_book_container::after {
       content: attr(data-title);
       position: absolute;
@@ -400,7 +426,6 @@
         justify-content: center;
       }
       
-      /* Adjust book sizes for mobile */
       .gr_grid_book_container {
         flex: 0 0 60px;
       }
@@ -411,7 +436,6 @@
       }
     }
     
-    /* Book grid title */
     .goodreads-widgets h3 {
       font-size: 1.4rem;
       margin-bottom: 10px;
@@ -419,7 +443,6 @@
       font-weight: 500;
     }
     
-    /* Grid branding */
     .gr_grid_branding {
       display: block;
       text-align: right;
@@ -438,7 +461,6 @@
         <li><a href="blog.html">Blog</a></li>
         <li><a href="publications.html">Publications</a></li>
         <li><a href="projects.html">Projects & Repositories</a></li>
-         <!-- <li><a href="demos.html">Demos</a></li> -->
         <li><a href="teaching.html">Teaching</a></li>
         <li><a href="people.html">People</a></li>
         <li><a href="bioinformatics-tools.html">Demos & BioToolbox</a></li>
@@ -458,7 +480,7 @@
         My research focuses on graph-based multi-omics integration, cancer biomarker discovery using machine learning, and spatial transcriptomics expression prediction from WSI data. I will soon join the <a href="https://engineering.unt.edu/cse/research/labs/biocomp/index.html" target="_blank">Bozdag Lab</a> at the University of North Texas as a PhD student in Computer Science and Engineering.  🎉 🎊
         </p>
         <p>
-           I’m interested in staying up-to-date with the novel research and techniques in my field. I enjoy learning new things and am always looking for new challenges and exploring innovative approaches. <strong>Resume is available upon request.</strong>
+           I'm interested in staying up-to-date with the novel research and techniques in my field. I enjoy learning new things and am always looking for new challenges and exploring innovative approaches. <strong>Resume is available upon request.</strong>
         </p>
 
         <!-- Awards section -->
@@ -472,59 +494,45 @@
 
          <!-- Social Links -->
         <div class="social-links">
-          <!-- E-mail -->
           <a href="mailto: a.ayyuced@gmail.com" target="_blank">
-            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/gmail.jpg" height="70"  alt="Gmail"/>
+            <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/gmail.jpg" height="70" alt="Gmail"/>
           </a>
-          <!-- GitHub -->
           <a href="https://github.com/ayyucedemirbas" target="_blank">
             <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/github.jpg" alt="GitHub"/>
           </a>
-          <!-- Google Scholar -->
           <a href="https://scholar.google.com/citations?user=J1Zh37QAAAAJ&hl=en" target="_blank">
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="Google Scholar"/>
           </a>
-          <!-- ORCID -->
           <a href="https://orcid.org/0000-0002-6731-9345" target="_blank">
-            <img src="https://cdn.simpleicons.org/orcid"" alt="ORCID"/>
+            <img src="https://cdn.simpleicons.org/orcid" alt="ORCID"/>
           </a>
-          <!-- ResearchGate -->
           <a href="https://www.researchgate.net/profile/Ayse-Demirbas" target="_blank">
             <img src="https://cdn.simpleicons.org/researchgate" alt="ResearchGate"/>
           </a>
-          <!-- PyPI -->
           <a href="https://pypi.org/user/ayyuce" target="_blank">
             <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/refs/heads/master/logo/pypi.png" alt="PyPI" width="50" height="50"/>
           </a>
-          <!-- Hugging Face -->
           <a href="https://huggingface.co/ayyuce" target="_blank">
             <img src="https://huggingface.co/front/assets/huggingface_logo.svg" alt="Hugging Face"/>
           </a>
-          <!-- Kaggle -->
           <a href="https://www.kaggle.com/ayyuce" target="_blank">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kaggle/kaggle-original.svg" alt="Kaggle"/>
           </a>
-          <!-- GitLab -->
           <a href="https://gitlab.com/ayyuce" target="_blank">
             <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/gitlab.png" alt="GitLab"/>
           </a>
-          <!-- LeetCode -->
           <a href="https://leetcode.com/u/ayyuce" target="_blank">
             <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/lcode.png" alt="LeetCode"/>
           </a>
-          <!-- Medium -->
           <a href="https://medium.com/@ayyucedemirbas" target="_blank">
             <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/medium.jpeg" alt="Medium"/>
           </a>
-          <!-- Goodreads -->
           <a href="https://www.goodreads.com/ayyuce" target="_blank">
             <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/goodreads.png" alt="Goodreads"/>
           </a>
-          <!-- X -->
           <a href="https://x.com/demirbasayyuce" target="_blank">
             <img src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/x.png" alt="X"/>
           </a>
-         <!-- LinkedIn -->
           <a href="https://www.linkedin.com/in/ayse-ayyuce-demirbas-6560633a2" target="_blank">
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="50" height="50"/>
           </a>
@@ -644,16 +652,29 @@
           </div>
         </div>
 
-       
       </div>
 
       <!-- Hero Image and Reading Challenge -->
       <div class="hero-img">
-        <img 
-          src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/IMG_0126.JPG"
-          alt="Ayyuce's Photo"
-        />
-        
+
+        <!-- ── THUGLIFE PHOTO WRAPPER ── -->
+        <div class="photo-wrapper" id="photoWrapper" title="Click me 😎">
+          <img
+            class="main-photo"
+            src="https://raw.githubusercontent.com/ayyucedemirbas/ayyucedemirbas/master/logo/IMG_0126.JPG"
+            alt="Ayyuce's Photo"
+            draggable="false"
+          />
+          <!-- thuglife.png must be in the same folder as index.html -->
+          <img
+            class="thuglife-glasses"
+            id="thugGlasses"
+            src="thuglife.png"
+            alt="😎"
+            draggable="false"
+          />
+        </div>
+
         <!-- Reading Challenge Widget -->
         <div class="reading-challenge">
           <div class="challenge-header">
@@ -694,7 +715,7 @@
   </footer>
 
   <script>
-    // THEME SWITCHING
+    // ── THEME SWITCHING ──
     function switchTheme(theme) {
       if (theme === 'system') {
         document.documentElement.removeAttribute('data-theme');
@@ -704,21 +725,30 @@
       localStorage.setItem('preferred-theme', theme);
     }
 
-    // Initialize theme
     (function initTheme() {
       const savedTheme = localStorage.getItem('preferred-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
     })();
-    
-    // Goodreads widgets scripts
-    document.addEventListener('DOMContentLoaded', function() {
-      // Book grid widget script
+
+    // ── THUGLIFE GLASSES ──
+    (function initThugLife() {
+      const wrapper = document.getElementById('photoWrapper');
+      const glasses = document.getElementById('thugGlasses');
+      let   dropped = false;
+
+      wrapper.addEventListener('click', function () {
+        dropped = !dropped;
+        glasses.classList.toggle('dropped', dropped);
+      });
+    })();
+
+    // ── GOODREADS WIDGETS ──
+    document.addEventListener('DOMContentLoaded', function () {
       const gridScript = document.createElement('script');
       gridScript.src = "https://www.goodreads.com/review/grid_widget/110847520.Ayyuce's%20favorites%20book%20montage?cover_size=small&hide_link=&hide_title=&num_books=40&order=a&shelf=favorites&sort=date_added&widget_id=1750365637";
       gridScript.charset = "utf-8";
       document.body.appendChild(gridScript);
-      
-      // Reading challenge widget script
+
       const challengeScript = document.createElement('script');
       challengeScript.src = "https://www.goodreads.com/user_challenges/widget/110847520-ayyuce-demirbas?challenge_id=11627&v=2";
       document.body.appendChild(challengeScript);
