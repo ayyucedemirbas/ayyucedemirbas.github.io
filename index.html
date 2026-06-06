@@ -388,6 +388,40 @@
       width: 40%;
     }
 
+    /* ── 3D BOOKSHELF LINK ── */
+    .bookshelf-link {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 12px 15px;
+      max-width: 230px;
+      width: 100%;
+      border: 1px solid var(--accent);
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .bookshelf-link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(187, 134, 252, 0.2);
+    }
+
+    .bookshelf-link a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .bookshelf-link a i {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
     /* -------------------------------
        THEME SWITCHER
     --------------------------------*/
@@ -733,6 +767,14 @@
             <a href="https://www.goodreads.com/readingchallenges/gr/annual/2026" style="font-size: 0.9em;">View books</a>
           </div>
         </div>
+
+        <!-- ── 3D BOOKSHELF LINK ── -->
+        <div class="bookshelf-link">
+          <a href="bookshelf.html">
+            <i class="fas fa-book-open"></i> Check out my 3D Bookshelf
+          </a>
+        </div>
+
       </div>
     </section>
   </div>
