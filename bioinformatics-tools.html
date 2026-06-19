@@ -17,7 +17,6 @@
   <script src="https://cdn.jsdelivr.net/npm/igv@2.15.5/dist/igv.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
-  <!-- TF.js for Demos -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgpu@4.17.0/dist/tf-backend-webgpu.min.js"></script>
 
@@ -78,7 +77,6 @@
       transition: color 0.2s;
     }
 
-    /* Bootstrap Overrides */
     .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
         color: var(--text);
         font-family: 'Playfair Display', serif;
@@ -88,9 +86,6 @@
         opacity: 0.7;
     }
 
-    /* --------------------------------
-       NAVIGATION
-    -------------------------------- */
     nav.main-nav {
       background-color: rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(15px);
@@ -139,9 +134,6 @@
       box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
     }
 
-    /* --------------------------------
-       PAGE SWITCHER
-    -------------------------------- */
     .page-switcher {
       display: flex;
       justify-content: center;
@@ -187,9 +179,6 @@
       box-shadow: 0 4px 20px rgba(0, 119, 255, 0.25);
     }
 
-    /* --------------------------------
-       PAGE VIEWS
-    -------------------------------- */
     #page-biotoolbox {
       flex: 1;
       display: flex;
@@ -200,9 +189,6 @@
       display: none;
     }
 
-    /* --------------------------------
-       BIOTOOLBOX LAYOUT
-    -------------------------------- */
     .tool-layout {
         display: flex;
         flex: 1;
@@ -210,7 +196,7 @@
         margin: 0 auto;
         width: 100%;
         padding-top: 20px;
-        height: calc(100vh - 145px); /* nav + page-switcher */
+        height: calc(100vh - 145px);
     }
 
     .tool-sidebar {
@@ -310,7 +296,6 @@
         outline: none;
     }
 
-    /* Buttons */
     .btn-primary {
         background-color: var(--accent);
         border-color: var(--accent);
@@ -332,7 +317,6 @@
         color: var(--bg);
     }
 
-    /* Result Box */
     .result-box {
         background: var(--input-bg);
         border: 1px dashed var(--glass-border);
@@ -344,7 +328,6 @@
         color: var(--text);
     }
     
-    /* Alignment Matrix */
     .matrix-wrapper {
         overflow-x: auto;
         margin-top: 20px;
@@ -374,7 +357,6 @@
         border-color: var(--accent);
     }
 
-    /* VCF Viewer */
     .vcf-container {
         display: flex;
         flex-direction: column;
@@ -468,7 +450,6 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Mol / IGV */
     #mol-container {
         width: 100%;
         height: 500px;
@@ -484,7 +465,6 @@
         color: #333;
     }
     
-    /* Notebook (Colab) style */
     .notebook-container {
         font-family: 'Roboto Mono', monospace;
         margin-top: 20px;
@@ -546,9 +526,149 @@
     }
     .colab-badge:hover { transform: scale(1.05); background: #fff; }
 
-    /* --------------------------------
-       DEMOS PAGE STYLES
-    -------------------------------- */
+    .scanalyzer-wrapper {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .scanalyzer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .scanalyzer-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, rgba(187,134,252,0.18), rgba(3,218,198,0.12));
+        border: 1px solid rgba(187,134,252,0.35);
+        border-radius: 30px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: 0.02em;
+    }
+
+    [data-theme="light"] .scanalyzer-badge {
+        background: linear-gradient(135deg, rgba(0,119,255,0.1), rgba(3,218,198,0.08));
+        border-color: rgba(0,119,255,0.25);
+    }
+
+    .scanalyzer-badge i {
+        font-size: 0.9rem;
+    }
+
+    .scanalyzer-open-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--accent);
+        font-size: 0.85rem;
+        font-weight: 500;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 5px 14px;
+    }
+
+    .scanalyzer-open-link:hover {
+        opacity: 1;
+        background: var(--glass-bg);
+    }
+
+    .scanalyzer-frame-card {
+        flex: 1;
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        box-shadow: var(--shadow), 0 0 0 1px rgba(187,134,252,0.08);
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 560px;
+    }
+
+    .scanalyzer-frame-topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        background: rgba(0,0,0,0.18);
+        border-bottom: 1px solid var(--glass-border);
+        flex-shrink: 0;
+    }
+
+    [data-theme="light"] .scanalyzer-frame-topbar {
+        background: rgba(0,0,0,0.04);
+    }
+
+    .frame-dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+    }
+
+    .frame-dot-red   { background: #ff5f57; }
+    .frame-dot-yellow { background: #febc2e; }
+    .frame-dot-green  { background: #28c840; }
+
+    .frame-url-bar {
+        flex: 1;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid var(--glass-border);
+        border-radius: 6px;
+        padding: 4px 12px;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 0.78rem;
+        color: var(--text);
+        opacity: 0.6;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    [data-theme="light"] .frame-url-bar {
+        background: rgba(0,0,0,0.04);
+    }
+
+    .scanalyzer-iframe {
+        flex: 1;
+        width: 100%;
+        border: none;
+        display: block;
+        min-height: 500px;
+        background: transparent;
+    }
+
+    .scanalyzer-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 0 2px;
+        font-size: 0.78rem;
+        color: var(--text);
+        opacity: 0.45;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .scanalyzer-footer i {
+        font-size: 0.75rem;
+        color: var(--accent);
+        opacity: 0.7;
+    }
+
     .demos-container {
       max-width: 1100px;
       margin: 0 auto;
@@ -735,9 +855,6 @@
       display: block;
     }
 
-    /* --------------------------------
-       THEME SWITCHER
-    -------------------------------- */
     .theme-switcher {
       position: fixed;
       bottom: 1.5rem;
@@ -773,9 +890,6 @@
       color: var(--bg);
     }
 
-    /* --------------------------------
-       RESPONSIVE
-    -------------------------------- */
     @media (max-width: 900px) {
       .tool-layout {
         flex-direction: column;
@@ -794,6 +908,8 @@
       .vcf-container { height: 600px; }
       .cell-gutter { width: 30px; }
       .page-switcher { top: 0; position: relative; }
+      .scanalyzer-frame-card { min-height: 420px; }
+      .scanalyzer-iframe { min-height: 380px; }
     }
 
     @media (max-width: 768px) {
@@ -820,7 +936,6 @@
     </div>
   </nav>
 
-  <!-- Top-level page switcher -->
   <div class="page-switcher">
     <button class="page-switch-btn active" onclick="switchPage('biotoolbox', this)">
       <i class="fa-solid fa-flask-vial"></i> BioToolbox
@@ -828,15 +943,11 @@
     <button class="page-switch-btn" onclick="switchPage('demos', this)">
       <i class="fa-solid fa-play-circle"></i> Interactive Demos
     </button>
-
     <button class="page-switch-btn" onclick="switchPage('intel4004', this)">
-    <i class="fa-solid fa-microchip"></i> Intel 4004 Simulator
-</button>
+      <i class="fa-solid fa-microchip"></i> Intel 4004 Simulator
+    </button>
   </div>
 
-  <!-- ============================================================
-       PAGE: BIOTOOLBOX
-  ============================================================ -->
   <div id="page-biotoolbox">
     <div class="tool-layout">
       
@@ -870,6 +981,9 @@
           </div>
           <div class="tool-nav-item" onclick="showTool('formatter')">
               <i class="fa-solid fa-file-code"></i> FASTA Formatter
+          </div>
+          <div class="tool-nav-item" onclick="showTool('scanalyzer')">
+              <i class="fa-solid fa-microscope"></i> scAnalyzer Studio
           </div>
       </div>
 
@@ -1213,15 +1327,52 @@ ERK TP53 regulates</textarea>
               </div>
           </div>
 
+          <div id="scanalyzer" class="tool-section" style="display: none;">
+              <div class="scanalyzer-wrapper">
+                  <div class="scanalyzer-header">
+                      <div>
+                          <h2 style="margin-bottom: 4px;">scAnalyzer Studio</h2>
+                          <p class="text-muted" style="font-size: 0.9rem; margin: 0;">Interactive analysis powered by Hugging Face Spaces</p>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                          <span class="scanalyzer-badge">
+                              <i class="fa-solid fa-circle" style="font-size: 0.55rem; color: #28c840;"></i>
+                              Live on Hugging Face
+                          </span>
+                          <a href="https://ayyuce-scanalyzer-studio.hf.space" target="_blank" class="scanalyzer-open-link">
+                              <i class="fa-solid fa-arrow-up-right-from-square"></i> Open full page
+                          </a>
+                      </div>
+                  </div>
 
-      </div><!-- .tool-content -->
-    </div><!-- .tool-layout -->
-  </div><!-- #page-biotoolbox -->
+                  <div class="scanalyzer-frame-card">
+                      <div class="scanalyzer-frame-topbar">
+                          <span class="frame-dot frame-dot-red"></span>
+                          <span class="frame-dot frame-dot-yellow"></span>
+                          <span class="frame-dot frame-dot-green"></span>
+                          <span class="frame-url-bar">ayyuce-scanalyzer-studio.hf.space</span>
+                      </div>
+                      <iframe
+                          src="https://ayyuce-scanalyzer-studio.hf.space"
+                          frameborder="0"
+                          class="scanalyzer-iframe"
+                          title="Scanalyzer Studio"
+                          allow="accelerometer; camera; microphone; clipboard-read; clipboard-write"
+                          loading="lazy"
+                      ></iframe>
+                  </div>
 
+                  <div class="scanalyzer-footer">
+                      <i class="fa-solid fa-lock"></i>
+                      Embedded from Hugging Face Spaces &mdash; your data is processed by the hosted Space
+                  </div>
+              </div>
+          </div>
 
-  <!-- ============================================================
-       PAGE: INTERACTIVE DEMOS
-  ============================================================ -->
+      </div>
+    </div>
+  </div>
+
   <div id="page-demos">
     <div class="demos-container">
       <div class="demos-page-header">
@@ -1241,7 +1392,6 @@ ERK TP53 regulates</textarea>
         </button>
       </div>
 
-      <!-- GNN Cancer Prediction -->
       <div id="gnn-cancer" class="demo-pane active">
         <section class="demo-card">
           <div style="text-align: center; margin-bottom: 1.5rem;">
@@ -1289,7 +1439,6 @@ ERK TP53 regulates</textarea>
         </section>
       </div>
 
-      <!-- Drug Discovery (DTI) -->
       <div id="drug-discovery" class="demo-pane">
         <section class="demo-card">
           <div style="text-align: center; margin-bottom: 1.5rem;">
@@ -1336,7 +1485,6 @@ ERK TP53 regulates</textarea>
         </section>
       </div>
 
-      <!-- Multi-Omics (Coming Soon) -->
       <div id="multi-omics" class="demo-pane">
         <section class="demo-card coming-soon">
           <i class="fas fa-network-wired"></i>
@@ -1345,18 +1493,16 @@ ERK TP53 regulates</textarea>
         </section>
       </div>
 
-    </div><!-- .demos-container -->
-  </div><!-- #page-demos -->
-
+    </div>
+  </div>
 
   <div id="page-intel4004" style="display: none; flex: 1;">
     <iframe 
-    src="intel_4004_simulator.html" 
-    style="width: 100%; height: calc(100vh - 145px); border: none; display: block;"
-    title="Intel 4004 Simulator">
-</iframe>
-</div>
-
+      src="intel_4004_simulator.html" 
+      style="width: 100%; height: calc(100vh - 145px); border: none; display: block;"
+      title="Intel 4004 Simulator">
+    </iframe>
+  </div>
 
   <div class="theme-switcher" id="themeSwitcher">
     <button onclick="switchTheme('light')"><i class="fas fa-sun"></i> Light</button>
@@ -1365,9 +1511,6 @@ ERK TP53 regulates</textarea>
   </div>
 
   <script>
-    /* ============================================================
-       THEME
-    ============================================================ */
     function switchTheme(theme) {
       if (theme === 'system') {
         document.documentElement.removeAttribute('data-theme');
@@ -1387,29 +1530,23 @@ ERK TP53 regulates</textarea>
       document.documentElement.setAttribute('data-theme', savedTheme);
     })();
 
-    /* ============================================================
-       PAGE SWITCHER (BioToolbox <-> Demos)
-    ============================================================ */
     function switchPage(pageId, btn) {
-    document.querySelectorAll('.page-switch-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+      document.querySelectorAll('.page-switch-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-    document.getElementById('page-biotoolbox').style.display = 'none';
-    document.getElementById('page-demos').style.display = 'none';
-    document.getElementById('page-intel4004').style.display = 'none';
+      document.getElementById('page-biotoolbox').style.display = 'none';
+      document.getElementById('page-demos').style.display = 'none';
+      document.getElementById('page-intel4004').style.display = 'none';
 
-    if (pageId === 'biotoolbox') {
+      if (pageId === 'biotoolbox') {
         document.getElementById('page-biotoolbox').style.display = 'flex';
-    } else if (pageId === 'demos') {
+      } else if (pageId === 'demos') {
         document.getElementById('page-demos').style.display = 'block';
-    } else if (pageId === 'intel4004') {
+      } else if (pageId === 'intel4004') {
         document.getElementById('page-intel4004').style.display = 'block';
+      }
     }
-}
 
-    /* ============================================================
-       BIOTOOLBOX: TOOL NAVIGATION
-    ============================================================ */
     function showTool(toolId) {
       document.querySelectorAll('.tool-nav-item').forEach(el => el.classList.remove('active'));
       event.currentTarget.classList.add('active');
@@ -1423,6 +1560,8 @@ ERK TP53 regulates</textarea>
       activeSection.classList.add('active');
       if(toolId === 'vcf-viewer') {
         activeSection.style.display = 'flex';
+      } else if(toolId === 'scanalyzer') {
+        activeSection.style.display = 'flex';
       } else {
         activeSection.style.display = 'block';
       }
@@ -1433,9 +1572,6 @@ ERK TP53 regulates</textarea>
       if(toolId === 'genome' && !igvBrowser) initIGV(); 
     }
 
-    /* ============================================================
-       VCF VIEWER
-    ============================================================ */
     let vcfData = { all: [], filtered: [] };
 
     document.getElementById('vcfFileInput').addEventListener('change', handleVcfUpload);
@@ -1542,9 +1678,6 @@ ${v.raw}`;
       };
     }
 
-    /* ============================================================
-       SEQUENCE ANALYSIS
-    ============================================================ */
     function runAnalysis() {
       let seq = document.getElementById('mainInput').value.toUpperCase().replace(/[^ATGCU]/g, '');
       let gc = (seq.match(/[GC]/g) || []).length;
@@ -1568,9 +1701,6 @@ ${v.raw}`;
       document.getElementById('protResult').innerText = protein || "Waiting for input...";
     }
 
-    /* ============================================================
-       VOLCANO PLOT
-    ============================================================ */
     document.getElementById('volcFileInput').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if(!file) return;
@@ -1632,9 +1762,6 @@ INS,-3.5,0.0001`;
       Plotly.newPlot('volcanoPlot', [trace], layout, { responsive: true, displayModeBar: true });
     }
 
-    /* ============================================================
-       SEQUENCE VIEWER
-    ============================================================ */
     function renderViewer() {
       let seq = document.getElementById('viewerInput').value.toUpperCase();
       let output = document.getElementById('viewerOutput');
@@ -1655,9 +1782,6 @@ INS,-3.5,0.0001`;
       });
     }
 
-    /* ============================================================
-       SEQUENCE ALIGNMENT
-    ============================================================ */
     function toggleAlignParams() {
       const algo = document.getElementById('alignAlgo').value;
       const paramsDiv = document.getElementById('alignParams');
@@ -1782,9 +1906,6 @@ INS,-3.5,0.0001`;
       document.getElementById('matrixOutput').innerHTML = html;
     }
 
-    /* ============================================================
-       3D PROTEIN STRUCTURE
-    ============================================================ */
     let viewer3d = null;
     function loadPDB() {
       let pdbID = document.getElementById('pdbInput').value;
@@ -1799,9 +1920,6 @@ INS,-3.5,0.0001`;
       });
     }
 
-    /* ============================================================
-       GENOME BROWSER (IGV)
-    ============================================================ */
     let igvBrowser = null;
     function initIGV() {
       var igvDiv = document.getElementById("igv-div");
@@ -1845,9 +1963,6 @@ INS,-3.5,0.0001`;
       e.target.value = '';
     });
 
-    /* ============================================================
-       CYTOSCAPE NETWORK
-    ============================================================ */
     function runCytoscape() {
       var rawData = document.getElementById('cyData').value.trim();
       var layoutName = document.getElementById('cyLayout').value;
@@ -1878,9 +1993,6 @@ INS,-3.5,0.0001`;
       });
     }
 
-    /* ============================================================
-       FASTA FORMATTER
-    ============================================================ */
     function formatFasta() {
       let raw = document.getElementById('fastaInput').value.replace(/\s+/g, '');
       let header = document.getElementById('fastaHeader').value || "Formatted_Sequence";
@@ -1889,9 +2001,6 @@ INS,-3.5,0.0001`;
       document.getElementById('fastaOutput').value = formatted;
     }
 
-    /* ============================================================
-       DEMOS: TAB SWITCHER
-    ============================================================ */
     function switchDemo(demoId, event) {
       document.querySelectorAll('.demo-pane').forEach(pane => pane.classList.remove('active'));
       document.querySelectorAll('.demo-tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -1899,9 +2008,6 @@ INS,-3.5,0.0001`;
       if(event) event.currentTarget.classList.add('active');
     }
 
-    /* ============================================================
-       DEMOS: TF.js UTILITIES
-    ============================================================ */
     function logToTerminal(terminalId, message, type="normal") {
       const terminal = document.getElementById(terminalId);
       if(!terminal) return;
@@ -1936,9 +2042,6 @@ INS,-3.5,0.0001`;
     }
     window.addEventListener('DOMContentLoaded', initTF);
 
-    /* ============================================================
-       DEMOS: GNN CANCER PREDICTION
-    ============================================================ */
     let gnnWeights = null;
     let gnnData = null;
 
@@ -2031,9 +2134,6 @@ INS,-3.5,0.0001`;
       document.getElementById('gnn-results-container').style.display = 'block';
     }
 
-    /* ============================================================
-       DEMOS: DTI PREDICTION
-    ============================================================ */
     let dtiWeights = null;
     let dtiData = null;
 
@@ -2127,9 +2227,6 @@ INS,-3.5,0.0001`;
       document.getElementById('dti-results-container').style.display = 'block';
     }
 
-    /* ============================================================
-       INIT ON LOAD
-    ============================================================ */
     runAnalysis();
     loadVolcanoDemo();
     initIGV();
